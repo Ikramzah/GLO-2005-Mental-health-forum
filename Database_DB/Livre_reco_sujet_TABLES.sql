@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Livre (Id_Livre INT PRIMARY KEY AUTO_INCREMENT,
 
 CREATE TABLE IF NOT EXISTS Recommander ( Livre_Id_Livre INT,
                                          Conseillers_id_conseillers INT,
-                                         PRIMARY KEY (Livre_Id_Livre /*, id_conseiller*/),
+                                         PRIMARY KEY (Livre_Id_Livre /*, id_conseiller*/), --les /**/ sont utilisés occasionnellement avant la création des relations mères
                                          FOREIGN KEY (Livre_Id_Livre) REFERENCES Livre(Id_Livre) ON DELETE CASCADE,
                                          FOREIGN KEY (/id_conseiller*/) REFERENCES /* Conseillers(id_conseiller*/ ON DELETE CASCADE
 );
