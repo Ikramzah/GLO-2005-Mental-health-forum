@@ -4,7 +4,7 @@ CREATE TABLE Publications (
     p_titre TEXT NOT NULL,                            
     texte TEXT NOT NULL,                              
     date DATETIME DEFAULT CURRENT_TIMESTAMP,          
-    statut ENUM("anonyme", "public") DEFAULT 'public',
+    statut ENUM('anonyme', 'public') DEFAULT 'public',
     nb_reponses INT DEFAULT 0,                        
     nb_reaction INT DEFAULT 0,                        
     images LONGBLOB,        
