@@ -144,3 +144,53 @@ VALUES
 ('mod02'),
 ('mod03');
 
+
+-- Verifier l'heure
+ALTER TABLE Reserver
+ADD CONSTRAINT chk_heure
+CHECK (heure_debut < heure_fin);
+
+
+-- verifier la date
+ALTER TABLE Reserver
+ADD CONSTRAINT chk_date_futur
+CHECK (date >= CURRENT_DATE());
+
+
+-- verifier l'age
+ALTER TABLE Utilisateurs
+ADD CONSTRAINT chk_age_minimum
+CHECK (
+  date_de_naissance <= DATE_SUB(CURRENT_DATE(), INTERVAL 18 YEAR)
+  OR date_de_naissance IS NULL
+);
+
+-- trigger pour eviter les double reservations 
+DELIMITER $$
+CREATE TRIGGER trig_prevent_double_booking
+BEFORE INSERT ON Reserver
+FOR EACH ROW
+BEGIN
+    IF NEW.heure_debut >= NEW.heure_fin THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Heure de début doit être strictement inférieure à heure de fin.';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Reserver
+        WHERE date = NEW.date
+          AND (
+               username_conseiller = NEW.username_conseiller
+               OR username_etudiant = NEW.username_etudiant
+              )
+        
+          AND (NEW.heure_debut < heure_fin AND NEW.heure_fin > heure_debut)
+    )
+    THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l\'étudiant a déjà un rendez-vous sur ce créneau.';
+    END IF;
+END$$
+DELIMITER ;
+
