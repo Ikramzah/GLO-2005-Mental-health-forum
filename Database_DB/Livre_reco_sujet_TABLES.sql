@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Recommander (
     FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
 );
 
--- Table Sujets (liée à Utilisateurs)
+-- Table Sujets (liée à Utilisateurs).
 CREATE TABLE IF NOT EXISTS Sujets (
     id_sujet INT PRIMARY KEY AUTO_INCREMENT,
     nom VARCHAR(100) UNIQUE NOT NULL,
