@@ -13,6 +13,7 @@ CREATE TABLE Reagir_publication (
     id_reaction INT AUTO_INCREMENT PRIMARY KEY,
     id_publication INT NOT NULL,   
     id_utilisateur VARCHAR(50) NOT NULL,  
+    type_reaction ENUM('LIKE', 'DISLIKE', 'LOVE', 'SAD', 'ANGRY') NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     raison TEXT NULL,              
     FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE,
