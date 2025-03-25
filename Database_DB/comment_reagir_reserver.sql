@@ -3,6 +3,7 @@ CREATE TABLE Commentaires (
     username VARCHAR(50) NOT NULL,
     id_publication INT NOT NULL,
     id_parent_commentaire INT NULL,
+    status_suppression BOOLEAN DEFAULT FALSE,
     contenu TEXT NOT NULL,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     nb_reactions INT DEFAULT 0,
@@ -109,7 +110,7 @@ BEGIN
     )
     THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l\'étudiant a déjà un rendez-vous sur ce créneau.';
+            SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l''étudiant a déjà un rendez-vous sur ce créneau.';
     END IF;
 END$$
 DELIMITER ;
