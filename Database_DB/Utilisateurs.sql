@@ -31,20 +31,6 @@ CREATE TABLE Moderateur (
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
 
--- Table Reserver
-CREATE TABLE Reserver (
-    id_rdv INT AUTO_INCREMENT PRIMARY KEY,
-    username_conseiller VARCHAR(50),
-    username_etudiant VARCHAR(50),
-    date DATE NOT NULL,
-    heure_debut TIME NOT NULL,
-    heure_fin TIME NOT NULL,
-    statut ENUM('confirme', 'annule', 'en attente') DEFAULT 'en attente',
-    FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE,
-    FOREIGN KEY (username_etudiant) REFERENCES Etudiants(username) ON DELETE CASCADE
-);
-
-
 
 -- INSERT des 30 étudiants
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
@@ -144,19 +130,6 @@ VALUES
 ('mod02'),
 ('mod03');
 
-
--- Verifier l'heure
-ALTER TABLE Reserver
-ADD CONSTRAINT chk_heure
-CHECK (heure_debut < heure_fin);
-
-
--- verifier la date
-ALTER TABLE Reserver
-ADD CONSTRAINT chk_date_futur
-CHECK (date >= CURRENT_DATE());
-
-
 -- verifier l'age
 ALTER TABLE Utilisateurs
 ADD CONSTRAINT chk_age_minimum
@@ -165,32 +138,5 @@ CHECK (
   OR date_de_naissance IS NULL
 );
 
--- trigger pour eviter les double reservations 
-DELIMITER $$
-CREATE TRIGGER trig_prevent_double_booking
-BEFORE INSERT ON Reserver
-FOR EACH ROW
-BEGIN
-    IF NEW.heure_debut >= NEW.heure_fin THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Heure de début doit être strictement inférieure à heure de fin.';
-    END IF;
 
-    IF EXISTS (
-        SELECT 1
-        FROM Reserver
-        WHERE date = NEW.date
-          AND (
-               username_conseiller = NEW.username_conseiller
-               OR username_etudiant = NEW.username_etudiant
-              )
-        
-          AND (NEW.heure_debut < heure_fin AND NEW.heure_fin > heure_debut)
-    )
-    THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l\'étudiant a déjà un rendez-vous sur ce créneau.';
-    END IF;
-END$$
-DELIMITER ;
 
