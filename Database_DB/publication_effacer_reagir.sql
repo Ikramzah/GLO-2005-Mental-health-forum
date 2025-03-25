@@ -7,7 +7,7 @@ CREATE TABLE Publications (
     statut ENUM('anonyme', 'public') DEFAULT 'public',
     nb_reponses INT DEFAULT 0,                        
     nb_reaction INT DEFAULT 0,   
-    status_de_suppression BOOL DEFAULT 0,
+    
     images LONGBLOB,      
 );
 CREATE TABLE Reagir_publication (
