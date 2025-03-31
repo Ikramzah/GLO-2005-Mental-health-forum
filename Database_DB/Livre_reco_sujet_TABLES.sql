@@ -103,3 +103,4 @@ VALUES
 ('Trouver un équilibre études/vie perso', 'PUB003', 'studen013'),
 ('Soutien émotionnel pour étudiants internationaux', 'PUB004', 'studen027'),
 ('Surmonter la solitude en résidence', 'PUB005', 'studen022');
+
