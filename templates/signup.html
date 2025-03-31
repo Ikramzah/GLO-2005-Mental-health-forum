@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h2>Créer un compte</h2>
+
+  <form method="POST">
+    <label for="prenom">Prénom</label><br>
+    <input type="text" id="prenom" name="prenom" required><br><br>
+
+    <label for="nom">Nom</label><br>
+    <input type="text" id="nom" name="nom" required><br><br>
+
+    <label for="email">Courriel de l’université (ou personnel)</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="mot_de_passe">Entrer un mot de passe</label><br>
+    <input type="password" id="mot_de_passe" name="mot_de_passe" required><br><br>
+
+    <label for="confirmer_mot_de_passe">Confirmation du mot de passe</label><br>
+    <input type="password" id="confirmer_mot_de_passe" name="confirmer_mot_de_passe" required><br><br>
+
+    <button type="submit">S'inscrire</button>
+  </form>
+
+  <p style="color:red;">{{ msg }}</p>
+  <p>Déjà inscrit ? <a href="{{ url_for('login') }}">Se connecter</a></p>
+
+</body>
+</html>

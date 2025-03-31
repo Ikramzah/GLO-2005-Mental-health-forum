@@ -1,0 +1,102 @@
+/* 🎨 Palette de couleurs selon ta maquette */
+:root {
+  --primary: #6F2DBD;
+  --secondary: #A663CC;
+  --light-purple: #B298DC;
+  --light-blue: #B8D0EB;
+  --light-cyan: #B9FAF8;
+  --ulaval-blue: #006AFF;
+  --ulaval-blue-hover: #0051cc;
+}
+
+/* 🌍 Fond général */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  padding: 40px;
+  margin: 0;
+  background-image: url("/static/background.jpg"); /* optionnel */
+  background-size: cover;
+}
+
+/* 🧾 Formulaire centré avec fond blanc */
+form {
+  max-width: 500px;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 12px;
+}
+
+/* 🔠 Titres */
+h2 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+/* 🏷️ Labels et champs */
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* ✅ Bouton principal */
+button {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--ulaval-blue);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--ulaval-blue-hover);
+}
+
+/* 🔗 Liens */
+a {
+  color: var(--light-purple);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 📢 Messages */
+p {
+  text-align: center;
+  font-size: 14px;
+}
+.success {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}

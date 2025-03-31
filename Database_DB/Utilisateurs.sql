@@ -30,7 +30,13 @@ CREATE TABLE Moderateur (
     username VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
-
+CREATE TABLE Utilisateurs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(100)
+);
 
 -- INSERT des 30 étudiants
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
