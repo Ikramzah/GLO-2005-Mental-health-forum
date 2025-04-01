@@ -7,12 +7,12 @@ app = Flask(__name__)
 app.secret_key = 'secret123'
 init_app(app)
 
-
+# 🔵 Page d'accueil (home.html)
 @app.route('/')
-def home():
-    return redirect('/login')
+def accueil():
+    return render_template('home.html')
 
-
+# 🔐 Connexion
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
@@ -38,7 +38,7 @@ def login():
 
     return render_template('login.html', msg=msg, msg_type=msg_type)
 
-
+# 📝 Inscription
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     msg = ''
@@ -77,14 +77,14 @@ def signup():
 
     return render_template('signup.html', msg=msg, msg_type=msg_type)
 
-
+# 👤 Tableau de bord
 @app.route('/dashboard')
 def dashboard():
     if 'loggedin' in session:
         return render_template('dashboard.html')
     return redirect('/login')
 
-
+# 🚪 Déconnexion
 @app.route('/logout')
 def logout():
     session.clear()

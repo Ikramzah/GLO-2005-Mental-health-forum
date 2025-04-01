@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil | Forum Bien-Être</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h2>Bienvenue sur le forum bien-être de l’Université Laval 🌿</h2>
+
+  <div style="max-width: 600px; margin: auto; background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px;">
+    <ul>
+      <li><strong>Infos sur le site :</strong> Ce forum permet aux étudiants de partager leurs expériences, poser des questions, et recevoir du soutien.</li>
+      <li><strong>Connexion :</strong> <a href="{{ url_for('login') }}">Accéder à la page de login</a></li>
+      <li><strong>Contact :</strong> Pour toute question, contactez-nous à <a href="mailto:contact@ulavalforum.ca">contact@ulavalforum.ca</a></li>
+    </ul>
+  </div>
+
+</body>
+</html>
