@@ -1,3 +1,6 @@
+USE MENTALHEALTH_DB;
+
+-- Création de la table Utilisateurs
 CREATE TABLE Utilisateurs (
     username VARCHAR(50)  PRIMARY KEY,
     nom VARCHAR(50) NOT NULL,
@@ -10,35 +13,28 @@ CREATE TABLE Utilisateurs (
     lieu_de_residence VARCHAR(100)
 );
 
--- Table Conseillers 
+-- Table Conseillers
 CREATE TABLE Conseillers (
     username VARCHAR(50) PRIMARY KEY,
     specialisation VARCHAR(100),
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
 
--- Table Etudiants 
+-- Table Etudiants
 CREATE TABLE Etudiants (
     username VARCHAR(50) PRIMARY KEY,
-    statut_etudiant Enum('international', 'en echange', 'citoyen', 'resident permanent') NOT NULL,
+    statut_etudiant ENUM('international', 'en echange', 'citoyen', 'resident permanent') NOT NULL,
     niveau_anonymat ENUM('anonyme', 'pseudo', 'public') DEFAULT 'pseudo',
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
 
--- Table Moderateur 
+-- Table Moderateur
 CREATE TABLE Moderateur (
     username VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
-CREATE TABLE Utilisateurs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    email VARCHAR(100) UNIQUE,
-    password VARCHAR(100)
-);
 
--- INSERT des 30 étudiants
+-- Insertion des 30 étudiants
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
 ('studen001', 'Martin', 'Olivier', 'olivier.martin@example.com', 'mdp123', '2025-01-05', '2002-03-14', 'Montréal'),
@@ -72,41 +68,41 @@ VALUES
 ('studen029', 'Chevalier', 'Jonathan', 'jonathan.chevalier@example.com', 'mdp123', '2025-01-22', '2001-03-13', 'Trois-Rivières'),
 ('studen030', 'Langlois', 'Karine', 'karine.langlois@example.com', 'mdp123', '2025-01-22', '2002-11-04', 'Québec');
 
--- Table Etudiants
+-- Insertion des étudiants
 INSERT INTO Etudiants (username, statut_etudiant, niveau_anonymat)
 VALUES
 ('studen001', 'citoyen', 'public'),
 ('studen002', 'international', 'pseudo'),
-('studen003', 'en échange', 'anonyme'),
+('studen003', 'en echange', 'anonyme'),
 ('studen004', 'citoyen', 'public'),
-('studen005', 'résident permanent', 'pseudo'),
+('studen005', 'resident permanent', 'pseudo'),
 ('studen006', 'international', 'anonyme'),
 ('studen007', 'citoyen', 'pseudo'),
-('studen008', 'en échange', 'public'),
+('studen008', 'en echange', 'public'),
 ('studen009', 'citoyen', 'pseudo'),
-('studen010', 'résident permanent', 'public'),
+('studen010', 'resident permanent', 'public'),
 ('studen011', 'citoyen', 'anonyme'),
 ('studen012', 'international', 'public'),
-('studen013', 'en échange', 'pseudo'),
+('studen013', 'en echange', 'pseudo'),
 ('studen014', 'citoyen', 'public'),
-('studen015', 'résident permanent', 'anonyme'),
+('studen015', 'resident permanent', 'anonyme'),
 ('studen016', 'citoyen', 'pseudo'),
 ('studen017', 'international', 'public'),
-('studen018', 'en échange', 'anonyme'),
+('studen018', 'en echange', 'anonyme'),
 ('studen019', 'citoyen', 'public'),
-('studen020', 'résident permanent', 'pseudo'),
+('studen020', 'resident permanent', 'pseudo'),
 ('studen021', 'international', 'anonyme'),
 ('studen022', 'citoyen', 'public'),
-('studen023', 'en échange', 'pseudo'),
+('studen023', 'en echange', 'pseudo'),
 ('studen024', 'citoyen', 'public'),
-('studen025', 'résident permanent', 'anonyme'),
+('studen025', 'resident permanent', 'anonyme'),
 ('studen026', 'citoyen', 'pseudo'),
 ('studen027', 'international', 'public'),
-('studen028', 'en échange', 'anonyme'),
+('studen028', 'en echange', 'anonyme'),
 ('studen029', 'citoyen', 'pseudo'),
-('studen030', 'résident permanent', 'public');
+('studen030', 'resident permanent', 'public');
 
--- INSERT des 5 conseillers
+-- Insertion des conseillers
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
 ('conseil01', 'Arsenault', 'Daniel', 'daniel.arsenault@example.com', 'mdp456', '2025-02-01', '1985-04-12', 'Montréal'),
@@ -123,7 +119,7 @@ VALUES
 ('conseil04', 'Mobilité internationale'),
 ('conseil05', 'Conseil psychologique');
 
--- INSERT des 3 modérateurs
+-- Insertion des modérateurs
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
 ('mod01', 'Lévesque', 'Stéphane', 'stephane.levesque@example.com', 'mdp789', '2025-03-01', '1975-12-06', 'Montréal'),
@@ -136,7 +132,7 @@ VALUES
 ('mod02'),
 ('mod03');
 
--- verifier l'age
+-- Vérification de l'âge minimum
 ALTER TABLE Utilisateurs
 ADD CONSTRAINT chk_age_minimum
 CHECK (
@@ -144,10 +140,7 @@ CHECK (
   OR date_de_naissance IS NULL
 );
 
-
-
-
--- Indexation pour optimisation du système
+-- Indexation pour optimisation
 CREATE INDEX idx_utilisateurs_email ON Utilisateurs(email);
 CREATE INDEX idx_reserver_conseiller_date ON Reserver(username_conseiller, date);
 CREATE INDEX idx_reserver_etudiant_date ON Reserver(username_etudiant, date);

@@ -67,8 +67,8 @@ def signup():
         else:
             username = (prenom[:3] + nom[:3] + email[:3]).lower()
             cursor.execute('''
-                INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription)
-                VALUES (%s, %s, %s, %s, %s, CURDATE())
+            INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription)
+            VALUES (%s, %s, %s, %s, %s, CURDATE())
             ''', (username, nom, prenom, email, mot_de_passe_hash))
             mysql.connection.commit()
             msg = 'Inscription réussie ! Vous pouvez vous connecter.'

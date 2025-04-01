@@ -1,3 +1,5 @@
+USE MENTALHEALTH_DB;
+
 CREATE TABLE Commentaires (
     id_commentaire INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -20,7 +22,7 @@ CREATE TABLE Reagir_commentaire (
     date_reaction TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_reaction_utilisateur FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE,
     CONSTRAINT fk_reaction_commentaire FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE,
-    CONSTRAINT unique_reaction UNIQUE (username, id_commentaire) 
+    CONSTRAINT unique_reaction UNIQUE (username, id_commentaire)
 );
 
 CREATE TABLE Reserver (
@@ -34,18 +36,19 @@ CREATE TABLE Reserver (
     raison TEXT,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_reserver_etudiant FOREIGN KEY (username_etudiant) REFERENCES Etudiants(username) ON DELETE CASCADE,
-    CONSTRAINT fk_reserver_conseiller FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE,
+    CONSTRAINT fk_reserver_conseiller FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
 );
 
+-- Contraintes supplémentaires
 ALTER TABLE Reserver
 ADD CONSTRAINT chk_heure
 CHECK (heure_debut < heure_fin);
-
 
 ALTER TABLE Reserver
 ADD CONSTRAINT chk_date_futur
 CHECK (date >= CURRENT_DATE());
 
+-- Données pour Commentaires
 INSERT INTO Commentaires (username, id_publication, id_parent_commentaire, contenu, date_creation) VALUES
 ('studen011', 1, NULL, 'J''utilise la technique Pomodoro pour gérer mon temps d''étude, ça m''aide beaucoup!', '2025-03-01 15:45:00'),
 ('studen012', 1, NULL, 'N''hésite pas à faire des pauses et à bouger un peu, ça aide à décompresser.', '2025-03-01 16:20:00'),
@@ -58,6 +61,7 @@ INSERT INTO Commentaires (username, id_publication, id_parent_commentaire, conte
 ('studen017', 5, NULL, 'C''est tout à fait normal, j''ai ressenti la même chose pendant mes 2 premières années.', '2025-03-05 12:20:00'),
 ('conseil05', 5, NULL, 'L''anxiété de performance est courante. N''hésite pas à prendre rendez-vous si tu veux en parler.', '2025-03-05 14:00:00');
 
+-- Données pour Reagir_commentaire
 INSERT INTO Reagir_commentaire (username, id_commentaire, type_reaction) VALUES
 ('studen018', 1, 'LIKE'),
 ('studen019', 1, 'LOVE'),
@@ -75,6 +79,7 @@ INSERT INTO Reagir_commentaire (username, id_commentaire, type_reaction) VALUES
 ('conseil02', 3, 'LIKE'),
 ('conseil03', 4, 'LOVE');
 
+-- Données pour Reserver
 INSERT INTO Reserver (username_etudiant, username_conseiller, date, heure_debut, heure_fin, statut, raison) VALUES
 ('studen001', 'conseil05', '2025-03-15', '10:00:00', '10:45:00', 'Confirmé', 'Crise d''angoisse récurrente'),
 ('studen002', 'conseil01', '2025-03-16', '14:00:00', '14:30:00', 'Confirmé', 'Épisode dépressif persistant'),
@@ -87,6 +92,7 @@ INSERT INTO Reserver (username_etudiant, username_conseiller, date, heure_debut,
 ('studen009', 'conseil05', '2025-03-23', '11:30:00', '12:15:00', 'En attente', 'Pensées négatives intrusives'),
 ('studen010', 'conseil03', '2025-03-24', '16:00:00', '16:45:00', 'Confirmé', 'Crise existentielle et perte de motivation');
 
+-- Triggers
 DELIMITER $$
 CREATE TRIGGER trig_prevent_double_booking
 BEFORE INSERT ON Reserver
@@ -94,7 +100,7 @@ FOR EACH ROW
 BEGIN
     IF NEW.heure_debut >= NEW.heure_fin THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Heure de début doit être strictement inférieure à heure de fin.';
+        SET MESSAGE_TEXT = 'Heure de début doit être strictement inférieure à heure de fin.';
     END IF;
 
     IF EXISTS (
@@ -105,22 +111,22 @@ BEGIN
                username_conseiller = NEW.username_conseiller
                OR username_etudiant = NEW.username_etudiant
               )
-        
           AND (NEW.heure_debut < heure_fin AND NEW.heure_fin > heure_debut)
     )
     THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l''étudiant a déjà un rendez-vous sur ce créneau.';
+        SET MESSAGE_TEXT = 'Chevauchement détecté : le conseiller ou l''étudiant a déjà un rendez-vous sur ce créneau.';
     END IF;
 END$$
 DELIMITER ;
 
+-- Triggers de mise à jour des réactions
 DELIMITER $$
 CREATE TRIGGER trig_update_reaction_count
 AFTER INSERT ON Reagir_commentaire
 FOR EACH ROW
 BEGIN
-    UPDATE Commentaires 
+    UPDATE Commentaires
     SET nb_reactions = nb_reactions + 1
     WHERE id_commentaire = NEW.id_commentaire;
 END$$
@@ -131,12 +137,13 @@ CREATE TRIGGER trig_update_reaction_count_delete
 AFTER DELETE ON Reagir_commentaire
 FOR EACH ROW
 BEGIN
-    UPDATE Commentaires 
+    UPDATE Commentaires
     SET nb_reactions = nb_reactions - 1
     WHERE id_commentaire = OLD.id_commentaire;
 END$$
 DELIMITER ;
 
+-- Procédure pour annuler un rendez-vous
 DELIMITER $$
 CREATE PROCEDURE annuler_rendezvous(IN p_id_rdv INT, IN p_raison_annulation TEXT)
 BEGIN
@@ -145,6 +152,3 @@ BEGIN
     WHERE id_rdv = p_id_rdv;
 END$$
 DELIMITER ;
-
-
-
