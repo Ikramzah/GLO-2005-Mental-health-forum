@@ -5,6 +5,6 @@ mysql = MySQL()
 def init_app(app):
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
-    app.config['MYSQL_PASSWORD'] = 'Mamafirst1'
+    app.config['MYSQL_PASSWORD'] = 'xxxx'
     app.config['MYSQL_DB'] = 'MENTALHEALTH_DB'
     mysql.init_app(app)
