@@ -37,36 +37,36 @@ CREATE TABLE Moderateur (
 -- Insertion des 30 étudiants
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
-('studen001', 'Martin', 'Olivier', 'olivier.martin@example.com', 'mdp123', '2025-01-05', '2002-03-14', 'Montréal'),
-('studen002', 'Tremblay', 'Marie', 'marie.tremblay@example.com', 'mdp123', '2025-01-06', '1999-07-22', 'Québec'),
-('studen003', 'Gagnon', 'Luc', 'luc.gagnon@example.com', 'mdp123', '2025-01-07', '2001-11-10', 'Laval'),
-('studen004', 'Roy', 'Julie', 'julie.roy@example.com', 'mdp123', '2025-01-08', '2003-04-19', 'Gatineau'),
-('studen005', 'Bouchard', 'Samuel', 'samuel.bouchard@example.com', 'mdp123', '2025-01-09', '2002-02-28', 'Montréal'),
-('studen006', 'Ouellet', 'Chloé', 'chloe.ouellet@example.com', 'mdp123', '2025-01-10', '2000-12-05', 'Sherbrooke'),
-('studen007', 'Fortin', 'Antoine', 'antoine.fortin@example.com', 'mdp123', '2025-01-10', '2001-06-15', 'Trois-Rivières'),
-('studen008', 'Lapointe', 'Emma', 'emma.lapointe@example.com', 'mdp123', '2025-01-11', '2002-10-02', 'Montréal'),
-('studen009', 'Côté', 'Jérôme', 'jerome.cote@example.com', 'mdp123', '2025-01-11', '2001-09-12', 'Chicoutimi'),
-('studen010', 'Pelletier', 'Anne', 'anne.pelletier@example.com', 'mdp123', '2025-01-12', '1998-05-23', 'Montréal'),
-('studen011', 'Gauthier', 'Éric', 'eric.gauthier@example.com', 'mdp123', '2025-01-12', '2003-03-03', 'Ottawa'),
-('studen012', 'Morin', 'Isabelle', 'isabelle.morin@example.com', 'mdp123', '2025-01-13', '2002-07-17', 'Saint-Jérôme'),
-('studen013', 'Lavoie', 'Maxime', 'maxime.lavoie@example.com', 'mdp123', '2025-01-13', '2001-08-24', 'Montréal'),
-('studen014', 'Campeau', 'Sophie', 'sophie.campeau@example.com', 'mdp123', '2025-01-14', '1999-10-01', 'Drummondville'),
-('studen015', 'Leclerc', 'Thomas', 'thomas.leclerc@example.com', 'mdp123', '2025-01-15', '1998-01-30', 'Brossard'),
-('studen016', 'Paquet', 'Jeanne', 'jeanne.paquet@example.com', 'mdp123', '2025-01-15', '2000-02-12', 'Montréal'),
-('studen017', 'Giroux', 'Alexandre', 'alex.giroux@example.com', 'mdp123', '2025-01-16', '2001-08-08', 'Gatineau'),
-('studen018', 'Fournier', 'Camille', 'camille.fournier@example.com', 'mdp123', '2025-01-16', '2002-11-20', 'Québec'),
-('studen019', 'Gravel', 'David', 'david.gravel@example.com', 'mdp123', '2025-01-17', '2003-01-17', 'Montréal'),
-('studen020', 'Beaulieu', 'Sarah', 'sarah.beaulieu@example.com', 'mdp123', '2025-01-17', '1999-04-21', 'Longueuil'),
-('studen021', 'Mercier', 'Sébastien', 'sebastien.mercier@example.com', 'mdp123', '2025-01-18', '2001-05-14', 'Châteauguay'),
-('studen022', 'Simard', 'Audrey', 'audrey.simard@example.com', 'mdp123', '2025-01-18', '2003-02-02', 'Montréal'),
-('studen023', 'Bélanger', 'François', 'francois.belanger@example.com', 'mdp123', '2025-01-19', '2000-08-25', 'Montréal'),
-('studen024', 'Bergeron', 'Catherine', 'catherine.bergeron@example.com', 'mdp123', '2025-01-19', '1998-09-27', 'Lévis'),
-('studen025', 'Leblanc', 'Nicolas', 'nicolas.leblanc@example.com', 'mdp123', '2025-01-20', '2002-03-01', 'Saint-Hyacinthe'),
-('studen026', 'Cyr', 'Valérie', 'valerie.cyr@example.com', 'mdp123', '2025-01-20', '1997-12-11', 'Terrebonne'),
-('studen027', 'Dufour', 'Kevin', 'kevin.dufour@example.com', 'mdp123', '2025-01-21', '2000-10-09', 'Montréal'),
-('studen028', 'Boisvert', 'Annie', 'annie.boisvert@example.com', 'mdp123', '2025-01-21', '1999-07-30', 'Sherbrooke'),
-('studen029', 'Chevalier', 'Jonathan', 'jonathan.chevalier@example.com', 'mdp123', '2025-01-22', '2001-03-13', 'Trois-Rivières'),
-('studen030', 'Langlois', 'Karine', 'karine.langlois@example.com', 'mdp123', '2025-01-22', '2002-11-04', 'Québec');
+('studen001', 'Martin', 'Olivier', 'olivier.martin@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-05', '2002-03-14', 'Montréal'),
+('studen002', 'Tremblay', 'Marie', 'marie.tremblay@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-06', '1999-07-22', 'Québec'),
+('studen003', 'Gagnon', 'Luc', 'luc.gagnon@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-07', '2001-11-10', 'Laval'),
+('studen004', 'Roy', 'Julie', 'julie.roy@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-08', '2003-04-19', 'Gatineau'),
+('studen005', 'Bouchard', 'Samuel', 'samuel.bouchard@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-09', '2002-02-28', 'Montréal'),
+('studen006', 'Ouellet', 'Chloé', 'chloe.ouellet@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-10', '2000-12-05', 'Sherbrooke'),
+('studen007', 'Fortin', 'Antoine', 'antoine.fortin@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-10', '2001-06-15', 'Trois-Rivières'),
+('studen008', 'Lapointe', 'Emma', 'emma.lapointe@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-11', '2002-10-02', 'Montréal'),
+('studen009', 'Côté', 'Jérôme', 'jerome.cote@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-11', '2001-09-12', 'Chicoutimi'),
+('studen010', 'Pelletier', 'Anne', 'anne.pelletier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-12', '1998-05-23', 'Montréal'),
+('studen011', 'Gauthier', 'Éric', 'eric.gauthier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-12', '2003-03-03', 'Ottawa'),
+('studen012', 'Morin', 'Isabelle', 'isabelle.morin@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-13', '2002-07-17', 'Saint-Jérôme'),
+('studen013', 'Lavoie', 'Maxime', 'maxime.lavoie@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-13', '2001-08-24', 'Montréal'),
+('studen014', 'Campeau', 'Sophie', 'sophie.campeau@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-14', '1999-10-01', 'Drummondville'),
+('studen015', 'Leclerc', 'Thomas', 'thomas.leclerc@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-15', '1998-01-30', 'Brossard'),
+('studen016', 'Paquet', 'Jeanne', 'jeanne.paquet@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-15', '2000-02-12', 'Montréal'),
+('studen017', 'Giroux', 'Alexandre', 'alex.giroux@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-16', '2001-08-08', 'Gatineau'),
+('studen018', 'Fournier', 'Camille', 'camille.fournier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-16', '2002-11-20', 'Québec'),
+('studen019', 'Gravel', 'David', 'david.gravel@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-17', '2003-01-17', 'Montréal'),
+('studen020', 'Beaulieu', 'Sarah', 'sarah.beaulieu@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-17', '1999-04-21', 'Longueuil'),
+('studen021', 'Mercier', 'Sébastien', 'sebastien.mercier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-18', '2001-05-14', 'Châteauguay'),
+('studen022', 'Simard', 'Audrey', 'audrey.simard@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-18', '2003-02-02', 'Montréal'),
+('studen023', 'Bélanger', 'François', 'francois.belanger@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-19', '2000-08-25', 'Montréal'),
+('studen024', 'Bergeron', 'Catherine', 'catherine.bergeron@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-19', '1998-09-27', 'Lévis'),
+('studen025', 'Leblanc', 'Nicolas', 'nicolas.leblanc@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-20', '2002-03-01', 'Saint-Hyacinthe'),
+('studen026', 'Cyr', 'Valérie', 'valerie.cyr@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-20', '1997-12-11', 'Terrebonne'),
+('studen027', 'Dufour', 'Kevin', 'kevin.dufour@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-21', '2000-10-09', 'Montréal'),
+('studen028', 'Boisvert', 'Annie', 'annie.boisvert@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-21', '1999-07-30', 'Sherbrooke'),
+('studen029', 'Chevalier', 'Jonathan', 'jonathan.chevalier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-22', '2001-03-13', 'Trois-Rivières'),
+('studen030', 'Langlois', 'Karine', 'karine.langlois@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-22', '2002-11-04', 'Québec');
 
 -- Insertion des étudiants
 INSERT INTO Etudiants (username, statut_etudiant, niveau_anonymat)
@@ -105,11 +105,11 @@ VALUES
 -- Insertion des conseillers
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
-('conseil01', 'Arsenault', 'Daniel', 'daniel.arsenault@example.com', 'mdp456', '2025-02-01', '1985-04-12', 'Montréal'),
-('conseil02', 'Robert', 'Patricia', 'patricia.robert@example.com', 'mdp456', '2025-02-02', '1979-09-08', 'Québec'),
-('conseil03', 'Lefebvre', 'Monique', 'monique.lefebvre@example.com', 'mdp456', '2025-02-03', '1988-11-23', 'Longueuil'),
-('conseil04', 'Carpentier', 'Yves', 'yves.carpentier@example.com', 'mdp456', '2025-02-04', '1990-01-15', 'Sherbrooke'),
-('conseil05', 'Deschamps', 'Amélie', 'amelie.deschamps@example.com', 'mdp456', '2025-02-05', '1982-03-29', 'Gatineau');
+('conseil01', 'Arsenault', 'Daniel', 'daniel.arsenault@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-01', '1985-04-12', 'Montréal'),
+('conseil02', 'Robert', 'Patricia', 'patricia.robert@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-02', '1979-09-08', 'Québec'),
+('conseil03', 'Lefebvre', 'Monique', 'monique.lefebvre@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-03', '1988-11-23', 'Longueuil'),
+('conseil04', 'Carpentier', 'Yves', 'yves.carpentier@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-04', '1990-01-15', 'Sherbrooke'),
+('conseil05', 'Deschamps', 'Amélie', 'amelie.deschamps@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-05', '1982-03-29', 'Gatineau');
 
 INSERT INTO Conseillers (username, specialisation)
 VALUES
@@ -122,9 +122,9 @@ VALUES
 -- Insertion des modérateurs
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)
 VALUES
-('mod01', 'Lévesque', 'Stéphane', 'stephane.levesque@example.com', 'mdp789', '2025-03-01', '1975-12-06', 'Montréal'),
-('mod02', 'Desjardins', 'Carole', 'carole.desjardins@example.com', 'mdp789', '2025-03-02', '1980-07-19', 'Québec'),
-('mod03', 'Dubois', 'Frédéric', 'frederic.dubois@example.com', 'mdp789', '2025-03-03', '1972-05-11', 'Sherbrooke');
+('mod01', 'Lévesque', 'Stéphane', 'stephane.levesque@example.com', 'scrypt:32768:8:1$ez6BjYEp3MoKHSaw$a4e5f50d7c035a47535ed481b6e9f635c9702a6cecf1d5afcd69ba7a182cf03483a17223bf5250daf31e2dbe2d6e937ee9c628c7459178c5829058baaad9ce3c', '2025-03-01', '1975-12-06', 'Montréal'),
+('mod02', 'Desjardins', 'Carole', 'carole.desjardins@example.com', 'scrypt:32768:8:1$ez6BjYEp3MoKHSaw$a4e5f50d7c035a47535ed481b6e9f635c9702a6cecf1d5afcd69ba7a182cf03483a17223bf5250daf31e2dbe2d6e937ee9c628c7459178c5829058baaad9ce3c', '2025-03-02', '1980-07-19', 'Québec'),
+('mod03', 'Dubois', 'Frédéric', 'frederic.dubois@example.com', 'scrypt:32768:8:1$ez6BjYEp3MoKHSaw$a4e5f50d7c035a47535ed481b6e9f635c9702a6cecf1d5afcd69ba7a182cf03483a17223bf5250daf31e2dbe2d6e937ee9c628c7459178c5829058baaad9ce3c', '2025-03-03', '1972-05-11', 'Sherbrooke');
 
 INSERT INTO Moderateur (username)
 VALUES
