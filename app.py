@@ -1,13 +1,11 @@
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import MySQLdb.cursors
-from Database_DB.db_config import mysql, init_app
+from Database_DB.db_config import get_connection
 
 app = Flask(__name__)
 app.secret_key = 'secret123'
-init_app(app)
 
-# 🔵 Page d'accueil (home.html)
+# 🔵 Page d'accueil
 @app.route('/')
 def accueil():
     return render_template('home.html')
@@ -21,9 +19,11 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Utilisateurs WHERE email = %s', (email,))
-        user = cursor.fetchone()
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT * FROM Utilisateurs WHERE email = %s', (email,))
+            user = cursor.fetchone()
+        conn.close()
 
         if user and check_password_hash(user['mot_de_passe'], password):
             session['loggedin'] = True
@@ -57,23 +57,25 @@ def signup():
 
         mot_de_passe_hash = generate_password_hash(mot_de_passe)
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Utilisateurs WHERE email = %s', (email,))
-        compte = cursor.fetchone()
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT * FROM Utilisateurs WHERE email = %s', (email,))
+            compte = cursor.fetchone()
 
-        if compte:
-            msg = 'Ce courriel est déjà utilisé.'
-            msg_type = 'error'
-        else:
-            username = (prenom[:3] + nom[:3] + email[:3]).lower()
-            cursor.execute('''
-            INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription)
-            VALUES (%s, %s, %s, %s, %s, CURDATE())
-            ''', (username, nom, prenom, email, mot_de_passe_hash))
-            mysql.connection.commit()
-            msg = 'Inscription réussie ! Vous pouvez vous connecter.'
-            msg_type = 'success'
-            return redirect('/login')
+            if compte:
+                msg = 'Ce courriel est déjà utilisé.'
+                msg_type = 'error'
+            else:
+                username = (prenom[:3] + nom[:3] + email[:3]).lower()
+                cursor.execute('''
+                INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription)
+                VALUES (%s, %s, %s, %s, %s, CURDATE())
+                ''', (username, nom, prenom, email, mot_de_passe_hash))
+                conn.commit()
+                msg = 'Inscription réussie ! Vous pouvez vous connecter.'
+                msg_type = 'success'
+                return redirect('/login')
+        conn.close()
 
     return render_template('signup.html', msg=msg, msg_type=msg_type)
 
@@ -89,7 +91,6 @@ def dashboard():
 def logout():
     session.clear()
     return redirect('/login')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
