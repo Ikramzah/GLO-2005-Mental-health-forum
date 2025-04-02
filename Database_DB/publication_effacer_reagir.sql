@@ -7,12 +7,14 @@ CREATE TABLE Publications (
     p_titre TEXT NOT NULL,
     texte TEXT NOT NULL,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    statut ENUM('anonyme', 'public') DEFAULT 'public',
-    nb_reponses INT DEFAULT 0,
-    nb_reaction INT DEFAULT 0,
+    statut ENUM('anonyme', 'public') NOT NULL DEFAULT 'public',
+    nb_reponses INT DEFAULT 0 CHECK (nb_reponses >= 0),
+    nb_reaction INT DEFAULT 0 CHECK (nb_reaction >= 0),
     images LONGBLOB,
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 -- Table Reagir_publication
 CREATE TABLE Reagir_publication (
@@ -21,10 +23,13 @@ CREATE TABLE Reagir_publication (
     username VARCHAR(50) NOT NULL,
     type_reaction ENUM('LIKE', 'DISLIKE', 'LOVE', 'SAD', 'ANGRY') NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    raison TEXT NULL,
-    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE,
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT unique_reaction UNIQUE (id_publication, username)
 );
+
 
 -- Table Effacer
 CREATE TABLE Effacer (
@@ -34,9 +39,17 @@ CREATE TABLE Effacer (
     username VARCHAR(50) NOT NULL,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     raison TEXT NOT NULL,
-    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE,
-    FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE,
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    type_effacement ENUM('utilisateur', 'modérateur') NOT NULL,
+    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT check_effacement CHECK (
+        (id_publication IS NOT NULL AND id_commentaire IS NULL)
+        OR (id_publication IS NULL AND id_commentaire IS NOT NULL)
+    )
 );
 
 -- Insertion des publications
@@ -51,6 +64,21 @@ INSERT INTO Publications (username, p_titre, texte, statut, date) VALUES
 ('studen008', 'Problèmes financiers', 'Je peine à joindre les deux bouts. Des ressources pour les étudiants dans le besoin?', 'anonyme', '2025-03-08 20:15:00'),
 ('studen009', 'Concentration en cours', 'J''ai du mal à rester concentré pendant les longs cours. Des techniques qui fonctionnent?', 'public', '2025-03-09 10:05:00'),
 ('studen010', 'Équilibre travail-études', 'Mon emploi à temps partiel empiète sur mes études. Comment mieux organiser mon temps?', 'public', '2025-03-10 15:40:00');
+
+-- Insertion des réactions aux publications
+INSERT INTO Reagir_publication (id_publication, username, type_reaction)
+VALUES
+(1, 'emilie_gagnon', 'LIKE'),
+(1, 'marc_leclerc', 'LOVE'),
+(2, 'luc_tremblay', 'SAD'),
+(3, 'alice_dubois', 'DISLIKE'),
+(4, 'sophie_larose', 'ANGRY'),
+(5, 'emilie_gagnon', 'LIKE'),
+(6, 'marc_leclerc', 'LOVE'),
+(7, 'luc_tremblay', 'SAD'),
+(8, 'alice_dubois', 'LIKE'),
+(9, 'sophie_larose', 'DISLIKE'),
+(10, 'emilie_gagnon', 'LOVE');
 
 -- Insertion des effacements
 INSERT INTO Effacer (id_publication, id_commentaire, username, date, raison)
@@ -72,3 +100,34 @@ VALUES
 (NULL, 8, 'sophie_larose', '2025-03-28 17:50:00', 'Commentaire répétitif'),
 (NULL, 9, 'luc_tremblay', '2025-03-28 18:30:00', 'Harcèlement verbal'),
 (NULL, 10, 'marc_leclerc', '2025-03-28 19:45:00', 'Propos discriminatoires');
+
+-- mis à jour des réactions
+DELIMITER //
+CREATE TRIGGER trg_update_nb_reactions
+AFTER INSERT ON Reagir_publication
+FOR EACH ROW
+BEGIN
+  UPDATE Publications
+  SET nb_reaction = nb_reaction + 1
+  WHERE id_publication = NEW.id_publication;
+END;
+//
+DELIMITER ;
+
+-- engagement
+DELIMITER //
+CREATE FUNCTION ScoreEngagement(p_username VARCHAR(50))
+RETURNS INT
+DETERMINISTIC
+BEGIN
+  DECLARE score INT;
+
+  SELECT 
+    (SELECT COUNT(*) FROM Reagir_publication WHERE username = p_username)
+    + (SELECT COUNT(*) FROM Commentaires WHERE username = p_username)
+    INTO score;
+
+  RETURN score;
+END;
+//
+DELIMITER ;
