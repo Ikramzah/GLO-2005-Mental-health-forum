@@ -4,12 +4,20 @@
   <meta charset="UTF-8">
   <title>Inscription</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    select {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-
   <h2>Créer un compte</h2>
 
   <form method="POST">
+    <label for="username">Nom d'utilisateur</label><br>
+    <input type="text" id="username" name="username" required><br><br>
+
     <label for="prenom">Prénom</label><br>
     <input type="text" id="prenom" name="prenom" required><br><br>
 
@@ -18,6 +26,26 @@
 
     <label for="email">Courriel de l’université (ou personnel)</label><br>
     <input type="email" id="email" name="email" required><br><br>
+
+    <label for="date_naissance">Date de naissance</label><br>
+    <input type="date" id="date_naissance" name="date_naissance"><br><br>
+
+    <label for="pays">Pays de résidence</label><br>
+    <select name="pays" id="pays" required>
+      <option value="">-- Sélectionnez un pays --</option>
+      {% for country in countries %}
+        <option value="{{ country }}">{{ country }}</option>
+      {% endfor %}
+    </select><br><br>
+
+    <label for="statut">Vous êtes ?</label><br>
+    <select name="statut" id="statut" required>
+      <option value="">-- Choisir un statut --</option>
+      <option value="etudiant">Étudiant</option>
+      <option value="conseiller">Conseiller</option>
+      <option value="etudiant-conseiller">Étudiant-Conseiller</option>
+      <option value="invite">Invité</option>
+    </select><br><br>
 
     <label for="mot_de_passe">Entrer un mot de passe</label><br>
     <input type="password" id="mot_de_passe" name="mot_de_passe" required><br><br>
@@ -30,6 +58,5 @@
 
   <p style="color:red;">{{ msg }}</p>
   <p>Déjà inscrit ? <a href="{{ url_for('login') }}">Se connecter</a></p>
-
 </body>
 </html>
