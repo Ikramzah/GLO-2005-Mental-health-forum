@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS Recommander (
     id_livre INT,
     username_conseiller VARCHAR(50),
     PRIMARY KEY (id_livre, username_conseiller),
-    FOREIGN KEY (id_livre) REFERENCES Livre(id_livre) ON DELETE CASCADE,
-    FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
+    FOREIGN KEY (id_livre) REFERENCES Livre(id_livre) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table Sujets (liée à Utilisateurs).
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Sujets (
     nom VARCHAR(100) UNIQUE NOT NULL,
     id_publication VARCHAR(45),
     username VARCHAR(50),
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- ========================

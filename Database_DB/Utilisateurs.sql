@@ -17,7 +17,7 @@ CREATE TABLE Utilisateurs (
 CREATE TABLE Conseillers (
     username VARCHAR(50) PRIMARY KEY,
     specialisation VARCHAR(100),
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table Etudiants
@@ -25,13 +25,13 @@ CREATE TABLE Etudiants (
     username VARCHAR(50) PRIMARY KEY,
     statut_etudiant ENUM('international', 'en echange', 'citoyen', 'resident permanent') NOT NULL,
     niveau_anonymat ENUM('anonyme', 'pseudo', 'public') DEFAULT 'pseudo',
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table Moderateur
 CREATE TABLE Moderateur (
     username VARCHAR(50) PRIMARY KEY,
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Insertion des 30 étudiants
@@ -67,6 +67,7 @@ VALUES
 ('studen028', 'Boisvert', 'Annie', 'annie.boisvert@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-21', '1999-07-30', 'Sherbrooke'),
 ('studen029', 'Chevalier', 'Jonathan', 'jonathan.chevalier@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-22', '2001-03-13', 'Trois-Rivières'),
 ('studen030', 'Langlois', 'Karine', 'karine.langlois@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2025-01-22', '2002-11-04', 'Québec');
+('studen031', 'Boisvert', 'Jonathan', 'jonathan.boisvert@example.com', 'scrypt:32768:8:1$AtEfviaDnW6jD84z$79ab4c9ae28040b0205f2897ea3a8cfdc72d5f2cad1d382e646bdc21a79130853c2847d93e0db5477b5c460fd492e38e26eedfdff918d22114da45bb5ba2aca7', '2024-09-28', '2003-03-13', 'Trois-Rivières'),
 
 -- Insertion des étudiants
 INSERT INTO Etudiants (username, statut_etudiant, niveau_anonymat)
@@ -100,7 +101,8 @@ VALUES
 ('studen027', 'international', 'public'),
 ('studen028', 'en echange', 'anonyme'),
 ('studen029', 'citoyen', 'pseudo'),
-('studen030', 'resident permanent', 'public');
+('studen030', 'resident permanent', 'public')
+('studen031', 'citoyen', 'public');
 
 -- Insertion des conseillers
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence)

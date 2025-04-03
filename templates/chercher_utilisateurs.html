@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Recherche d'utilisateur</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #B8D0EB;
+    }
+    .search-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .search-container h1 {
+      text-align: center;
+      color: #6F2DBD;
+      margin-bottom: 20px;
+    }
+    .search-container form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .search-container input[type="text"] {
+      padding: 10px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .search-container button {
+      padding: 10px 20px;
+      background-color: #A663CC;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .search-container button:hover {
+      background-color: #6F2DBD;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    thead {
+      background-color: #6F2DBD;
+      color: #B9FAF8;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="search-container">
+    <h1>Recherche d'utilisateur</h1>
+    <form method="GET" action="{{ url_for('chercher_utilisateurs') }}">
+      <input type="text" name="q" placeholder="Rechercher par nom, prénom, email ou username" value="{{ query }}">
+      <button type="submit">Rechercher</button>
+    </form>
+
+    {% if query and users|length == 0 %}
+      <p style="text-align:center; color:#666;">Aucun utilisateur trouvé pour « {{ query }} ».</p>
+    {% endif %}
+
+    {% if users|length > 0 %}
+      <table>
+        <thead>
+          <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Courriel</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            {% if user.niveau_anonymat is defined and user.niveau_anonymat == 'anonyme' %}
+              
+            {% else %}
+              <td>{{ user.username }}</td>
+              <td>{{ user.prenom }}</td>
+              <td>{{ user.nom }}</td>
+              <td>{{ user.email }}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -137,23 +137,24 @@ def publications():
     conn.close()
     return render_template('publications.html', publications=publications)
 
-@app.route('/publication/<int:id>')
-def detail_publication(id):
-    conn = get_connection()
-    with conn.cursor() as cursor:
-        # Récupérer la publication sélectionnée par son id
-        cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id,))
-        publication = cursor.fetchone()
-        # Si tu disposes d'une table pour les commentaires, tu pourrais la récupérer ici, par exemple :
-        # cursor.execute("SELECT * FROM Comments WHERE id_publication = %s ORDER BY DateCommentaire ASC", (id,))
-        # commentaires = cursor.fetchall()
-    conn.close()
-
-    if publication:
-        # Passe éventuellement aussi les commentaires au template
-        return render_template('publication_detail.html', publication=publication)  # , commentaires=commentaires
-    else:
-        return redirect('/publications')
+@app.route('/chercher_utilisateurs', methods=['GET'])
+def chercher_utilisateurs():
+    query = request.args.get('q', '')
+    users = []
+    if query:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            sql = """
+                SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email
+                FROM Utilisateurs U
+                INNER JOIN Etudiants E ON U.username = E.username
+                WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom OR U.email LIKE %s
+            """
+            wildcard = '%' + query + '%'
+            cursor.execute(sql, (wildcard, wildcard, wildcard))
+            users = cursor.fetchall()
+        conn.close()
+    return render_template('chercher_utilisateurs.html', users=users, query=query)
 
 
 if __name__ == '__main__':

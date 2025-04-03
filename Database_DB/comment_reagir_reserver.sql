@@ -9,9 +9,9 @@ CREATE TABLE Commentaires (
     contenu TEXT NOT NULL,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     nb_reactions INT DEFAULT 0,
-    CONSTRAINT fk_commentaire_utilisateur FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE,
-    CONSTRAINT fk_commentaire_publication FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE,
-    CONSTRAINT fk_commentaire_parent FOREIGN KEY (id_parent_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE
+    CONSTRAINT fk_commentaire_utilisateur FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_commentaire_publication FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_commentaire_parent FOREIGN KEY (id_parent_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Reagir_commentaire (
@@ -20,8 +20,8 @@ CREATE TABLE Reagir_commentaire (
     id_commentaire INT NOT NULL,
     type_reaction ENUM('LIKE', 'DISLIKE', 'LOVE', 'SAD', 'ANGRY') NOT NULL,
     date_reaction TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_reaction_utilisateur FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE,
-    CONSTRAINT fk_reaction_commentaire FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE,
+    CONSTRAINT fk_reaction_utilisateur FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_reaction_commentaire FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT unique_reaction UNIQUE (username, id_commentaire)
 );
 
@@ -35,8 +35,8 @@ CREATE TABLE Reserver (
     statut ENUM('En attente', 'Confirmé', 'Annulé') DEFAULT 'En attente',
     raison TEXT,
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_reserver_etudiant FOREIGN KEY (username_etudiant) REFERENCES Etudiants(username) ON DELETE CASCADE,
-    CONSTRAINT fk_reserver_conseiller FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
+    CONSTRAINT fk_reserver_etudiant FOREIGN KEY (username_etudiant) REFERENCES Etudiants(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_reserver_conseiller FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Contraintes supplémentaires
