@@ -21,7 +21,6 @@ CREATE TABLE Reagir_publication (
     username VARCHAR(50) NOT NULL,
     type_reaction ENUM('LIKE', 'DISLIKE', 'LOVE', 'SAD', 'ANGRY') NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    raison TEXT NULL,
     FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE
 );
@@ -72,3 +71,52 @@ VALUES
 (NULL, 8, 'sophie_larose', '2025-03-28 17:50:00', 'Commentaire répétitif'),
 (NULL, 9, 'luc_tremblay', '2025-03-28 18:30:00', 'Harcèlement verbal'),
 (NULL, 10, 'marc_leclerc', '2025-03-28 19:45:00', 'Propos discriminatoires');
+
+INSERT INTO Reagir_publication (id_publication, username, type_reaction, timestamp) VALUES
+(1, 'studen001', 'LIKE', '2025-04-01 10:30:00'),
+(1, 'studen002', 'LOVE', '2025-04-01 11:00:00'),
+(2, 'studen003', 'SAD', '2025-04-02 09:45:00'),
+(2, 'studen004', 'ANGRY', '2025-04-02 14:30:00'),
+(3, 'studen005', 'LIKE', '2025-04-03 16:15:00'),
+(3, 'studen006', 'LOVE', '2025-04-03 17:20:00'),
+(4, 'studen007', 'DISLIKE', '2025-04-04 13:10:00'),
+(5, 'studen008', 'LIKE', '2025-04-05 18:30:00'),
+(6, 'studen009', 'LOVE', '2025-04-06 12:50:00'),
+(7, 'studen010', 'SAD', '2025-04-07 08:00:00');
+
+-- Triggers de mise à jour des réactions
+DELIMITER $$
+CREATE TRIGGER trig_update_reaction_count
+AFTER INSERT ON Reagir_publication
+FOR EACH ROW
+BEGIN
+    UPDATE Publications
+    SET nb_reactions = nb_reactions + 1
+    WHERE id_publication = NEW.id_publication;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trig_update_reaction_count_delete
+AFTER DELETE ON Reagir_publication
+FOR EACH ROW
+BEGIN
+    UPDATE Publications
+    SET nb_reactions = nb_reactions - 1
+    WHERE id_publication = OLD.id_publication;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER trig_update_nb_reponses
+AFTER INSERT ON Commentaires
+FOR EACH ROW
+BEGIN
+    UPDATE Publications
+    SET nb_reponses = (SELECT COUNT(*) FROM Commentaires WHERE id_publication = NEW.id_publication)
+    WHERE id_publication = NEW.id_publication;
+END$$
+
+DELIMITER ;
+

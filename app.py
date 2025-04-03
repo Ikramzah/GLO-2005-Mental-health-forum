@@ -127,5 +127,34 @@ def logout():
     session.clear()
     return redirect('/login')
 
+@app.route('/publications')
+def publications():
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Récupérer toutes les publications par ordre décroissant de date
+        cursor.execute("SELECT * FROM Publications ORDER BY date DESC")
+        publications = cursor.fetchall()
+    conn.close()
+    return render_template('publications.html', publications=publications)
+
+@app.route('/publication/<int:id>')
+def detail_publication(id):
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Récupérer la publication sélectionnée par son id
+        cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id,))
+        publication = cursor.fetchone()
+        # Si tu disposes d'une table pour les commentaires, tu pourrais la récupérer ici, par exemple :
+        # cursor.execute("SELECT * FROM Comments WHERE id_publication = %s ORDER BY DateCommentaire ASC", (id,))
+        # commentaires = cursor.fetchall()
+    conn.close()
+
+    if publication:
+        # Passe éventuellement aussi les commentaires au template
+        return render_template('publication_detail.html', publication=publication)  # , commentaires=commentaires
+    else:
+        return redirect('/publications')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
