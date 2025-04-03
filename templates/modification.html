@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier une publication</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #bbb;
+      background: #fff;
+    }
+
+    input[type="file"] {
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #444;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Modifier votre publication</h2>
+
+    <form action="/modifier_publication/{{ publication.id_publication }}" method="POST" enctype="multipart/form-data">
+      
+      <label for="titre">Titre</label>
+      <input type="text" id="titre" name="titre" value="{{ publication.p_titre }}" required>
+
+      <label for="texte">Texte</label>
+      <textarea id="texte" name="texte" rows="6" required>{{ publication.texte }}</textarea>
+
+      <label for="image">Changer l'image (optionnel)</label>
+      <input type="file" id="image" name="image">
+
+      {% if publication.images %}
+        <p>Image actuelle :</p>
+        <img src="{{ publication.images }}" alt="Image actuelle" width="200">
+      {% endif %}
+
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+  </div>
+
+</body>
+</html>

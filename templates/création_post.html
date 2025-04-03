@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Nouvelle publication</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f2f2f2;
+      padding: 40px;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: auto;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 25px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #bbb;
+      background-color: #fff;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      width: 100%;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Créer une nouvelle publication</h2>
+
+    <form action="/creer_publication" method="POST" enctype="multipart/form-data">
+      
+      <label for="titre">Titre</label>
+      <input type="text" id="titre" name="titre" required>
+
+      <label for="texte">Texte</label>
+      <textarea id="texte" name="texte" rows="8" required></textarea>
+
+      <label for="statut">Visibilité</label>
+      <select id="statut" name="statut" required>
+        <option value="public">Public</option>
+        <option value="anonyme">Anonyme</option>
+      </select>
+
+      <label for="image">Ajouter une image (optionnel)</label>
+      <input type="file" id="image" name="image">
+
+      <button type="submit">Publier</button>
+    </form>
+  </div>
+
+</body>
+</html>
