@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nos conseillers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #cce0f9;
+            font-family: 'Segoe UI', sans-serif;
+
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .sidebar {
+            flex: 1;
+            text-align: center;
+        }
+
+        .sidebar img {
+            width: 260px;
+            border-radius: 40% 60% 55% 45% / 55% 45% 55% 45%;
+        }
+
+        .sidebar h2 {
+            font-size: 70px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-style: italic;
+            color: #8134af;
+            margin-top: 20px;
+        }
+
+        .cards {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding-left: 40px;
+        }
+
+        .card {
+            background-color: #d6aeea;
+            color: #fff6e9;
+            border-radius: 20px;
+            padding: 30px 20px;
+            position: relative;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 130px;
+        }
+
+        .card .plus {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: #fff6e9;
+            color: #a187e2;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Variantes de couleur */
+        .rose { background-color: #d9aacd; }
+        .mauve { background-color: #bda7f2; }
+        .violet { background-color: #b668d1; }
+        .pourpre { background-color: #762bc4; }
+        .bleu-clair {
+            background-color: #e3f0fd;
+            color: #d6aeea;
+        }
+
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<div class="container">
+    <div class="sidebar">
+        <img src="../images/Image-rdv1.svg" alt="Livre">
+        <h2>Nos<br>conseillers</h2>
+    </div>
+
+    <div class="cards">
+        <div class="card rose">
+            <div class="plus">+</div>
+            Arsenault<br>Daniel
+        </div>
+        <div class="card mauve">
+            <div class="plus">+</div>
+            Robert<br>Patricia
+        </div>
+        <div class="card violet">
+            <div class="plus">+</div>
+            Lefebvre<br>Monique
+        </div>
+        <div class="card pourpre">
+            <div class="plus">+</div>
+            Carpentier<br>Yves
+        </div>
+        <div class="card bleu-clair">
+            <div class="plus">+</div>
+            Deschamps<br>Amélie
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
