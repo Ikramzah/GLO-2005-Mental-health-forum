@@ -4,17 +4,96 @@
   <meta charset="UTF-8">
   <title>Accueil | Forum Bien-Être</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3e8ff;
+      background-image: linear-gradient(145deg, #e5d4fa, #f3e8ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .welcome-container {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 700px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #6F2DBD;
+      margin-bottom: 25px;
+      opacity: 0;
+      animation: slideDown 1.2s ease forwards;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 1.1em;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    li {
+      margin-bottom: 15px;
+    }
+
+    .btn-login {
+      background-color: #B9FAF8;
+      color: #333;
+      padding: 12px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 16px rgba(0,0,0,0.2);
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <h2>Bienvenue sur le forum bien-être de l’Université Laval 🌿</h2>
-
-  <div style="max-width: 600px; margin: auto; background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px;">
+  <div class="welcome-container">
+    <h2>Bienvenue sur le forum bien-être de l’Université Laval 🌿</h2>
     <ul>
       <li><strong>Infos sur le site :</strong> Ce forum permet aux étudiants de partager leurs expériences, poser des questions, et recevoir du soutien.</li>
-      <li><strong>Connexion :</strong> <a href="{{ url_for('login') }}">Accéder à la page de login</a></li>
       <li><strong>Contact :</strong> Pour toute question, contactez-nous à <a href="mailto:contact@ulavalforum.ca">contact@ulavalforum.ca</a></li>
     </ul>
+    <a href="{{ url_for('login') }}" class="btn-login">Accéder à la page de login</a>
   </div>
 
 </body>
