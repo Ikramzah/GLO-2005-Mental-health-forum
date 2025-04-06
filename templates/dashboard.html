@@ -4,16 +4,111 @@
   <meta charset="UTF-8">
   <title>Tableau de bord</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    header {
+      background-color: rgba(111, 45, 189, 0.95);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: #B9FAF8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main-container {
+      max-width: 800px;
+      margin: 60px auto;
+      text-align: center;
+      background: rgba(190, 255, 200, 0.3);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .action-buttons a {
+      padding: 20px 30px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 160px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .action-buttons a:hover {
+      transform: translateY(-5px);
+    }
+
+    .pub-btn { background-color: #B298DC; }
+    .util-btn { background-color: #B9FAF8; color: #333; }
+    .livres-btn { background-color: #A663CC; }
+  </style>
 </head>
 <body>
-  {% include 'header.html' %}
 
-  <h2>Bienvenue {{ session['prenom'] }} {{ session['nom'] }} 👋</h2>
+  <!-- Header -->
+  <header>
+    <nav>
+      <a href="{{ url_for('dashboard') }}" class="nav-link">Accueil</a>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 30px;">
+      <a href="{{ url_for('accueil') }}" title="Profil">
+        <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
+      </a>
+      <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
+    </div>
+  </header>
 
-  <div style="max-width: 500px; margin: auto; text-align: center;">
-    <p>Tu es maintenant connecté(e) avec l'adresse : <strong>{{ session['email'] }}</strong></p>
+  <!-- Contenu principal -->
+  <div class="main-container">
+    <h2>Bienvenue {{ session['prenom']}}{{session['nom']}} 👋</h2>
+    <p>Tu es connecté(e) avec l'adresse : <strong>{{ session['email'] }}</strong></p>
     <p>Ravie de te revoir sur le forum bien-être ULaval 🌿</p>
-    <a href="{{ url_for('logout') }}">Se déconnecter</a>
+
+    <hr style="margin: 30px 0;">
+
+    <div class="action-buttons">
+      <a href="{{ url_for('publications') }}" class="pub-btn">📝 Publications</a>
+      <a href="{{ url_for('chercher_utilisateurs') }}" class="util-btn">👥 Utilisateurs</a>
+      <a href="{{ url_for('livres') }}" class="livres-btn">📚 Livres</a>
+    </div>
   </div>
 
 </body>

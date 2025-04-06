@@ -3,60 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <title>Inscription</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
+    :root {
+      --primary: #6F2DBD;
+      --secondary: #A663CC;
+      --light-purple: #B298DC;
+      --light-blue: #B8D0EB;
+      --light-cyan: #B9FAF8;
+      --ulaval-blue: #006AFF;
+      --ulaval-blue-hover: #0051cc;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      padding: 40px;
+      margin: 0;
+      background-image: url("/static/background.jpg");
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: var(--ulaval-blue);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--ulaval-blue-hover);
+    }
+
+    a {
+      color: var(--light-purple);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    p {
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--ulaval-blue);
+    }
+
+    .back-link:hover {
+      color: var(--ulaval-blue-hover);
+    }
+
     select {
       max-height: 200px;
       overflow-y: auto;
+      display: block;
+      appearance: none;
     }
   </style>
 </head>
 <body>
+
   <h2>Créer un compte</h2>
 
   <form method="POST">
-    <label for="username">Nom d'utilisateur</label><br>
-    <input type="text" id="username" name="username" required><br><br>
+    <label for="username">Nom d'utilisateur</label>
+    <input type="text" id="username" name="username" required>
 
-    <label for="prenom">Prénom</label><br>
-    <input type="text" id="prenom" name="prenom" required><br><br>
+    <label for="prenom">Prénom</label>
+    <input type="text" id="prenom" name="prenom" required>
 
-    <label for="nom">Nom</label><br>
-    <input type="text" id="nom" name="nom" required><br><br>
+    <label for="nom">Nom</label>
+    <input type="text" id="nom" name="nom" required>
 
-    <label for="email">Courriel de l’université (ou personnel)</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+    <label for="email">Courriel de l’université (ou personnel)</label>
+    <input type="email" id="email" name="email" required>
 
-    <label for="date_naissance">Date de naissance</label><br>
-    <input type="date" id="date_naissance" name="date_naissance"><br><br>
+    <label for="date_naissance">Date de naissance</label>
+    <input type="date" id="date_naissance" name="date_de_naissance">
 
-    <label for="pays">Pays de résidence</label><br>
+    <label for="pays">Pays de résidence</label>
     <select name="pays" id="pays" required>
       <option value="">-- Sélectionnez un pays --</option>
       {% for country in countries %}
         <option value="{{ country }}">{{ country }}</option>
       {% endfor %}
-    </select><br><br>
+    </select>
 
-    <label for="statut">Vous êtes ?</label><br>
+    <label for="statut">Vous êtes ?</label>
     <select name="statut" id="statut" required>
       <option value="">-- Choisir un statut --</option>
       <option value="etudiant">Étudiant</option>
       <option value="conseiller">Conseiller</option>
       <option value="etudiant-conseiller">Étudiant-Conseiller</option>
       <option value="invite">Invité</option>
-    </select><br><br>
+    </select>
 
-    <label for="mot_de_passe">Entrer un mot de passe</label><br>
-    <input type="password" id="mot_de_passe" name="mot_de_passe" required><br><br>
+    <label for="mot_de_passe">Entrer un mot de passe</label>
+    <input type="password" id="mot_de_passe" name="mot_de_passe" required>
 
-    <label for="confirmer_mot_de_passe">Confirmation du mot de passe</label><br>
-    <input type="password" id="confirmer_mot_de_passe" name="confirmer_mot_de_passe" required><br><br>
+    <label for="confirmer_mot_de_passe">Confirmation du mot de passe</label>
+    <input type="password" id="confirmer_mot_de_passe" name="confirmer_mot_de_passe" required>
 
     <button type="submit">S'inscrire</button>
   </form>
 
-  <p style="color:red;">{{ msg }}</p>
+  <p class="{{ msg_type }}">{{ msg }}</p>
   <p>Déjà inscrit ? <a href="{{ url_for('login') }}">Se connecter</a></p>
+
 </body>
 </html>
