@@ -5,25 +5,28 @@
     <title>Nos conseillers</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
 
-
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: #cce0f9;
             font-family: 'Segoe UI', sans-serif;
-
         }
 
         .container {
             display: flex;
-            align-items: center;
+            align-items: center;           /* Centre verticalement */
+            justify-content: center;       /* Centre horizontalement */
+            gap: 40px;
             padding: 40px;
+            min-height: 100vh;             /* Hauteur min = hauteur écran */
         }
 
         .sidebar {
-            flex: 1;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: fit-content;
         }
 
         .sidebar img {
@@ -38,14 +41,15 @@
             font-style: italic;
             color: #8134af;
             margin-top: 20px;
+            text-align: center;
         }
 
-        .cards {
-            flex: 3;
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            padding-left: 40px;
+            max-width: 960px;
+            justify-content: center; /* Centre les cartes même si moins de 3 */
         }
 
         .card {
@@ -53,14 +57,12 @@
             color: #fff6e9;
             border-radius: 20px;
             padding: 30px 20px;
-            position: relative;
             font-weight: bold;
             font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            text-align: center;
+            width: 180px;
             min-height: 130px;
+            position: relative;
         }
 
         .card .plus {
@@ -70,6 +72,7 @@
             background-color: #fff6e9;
             color: #a187e2;
             border-radius: 50%;
+            border-color: white;
             width: 24px;
             height: 24px;
             font-size: 18px;
@@ -79,7 +82,7 @@
             justify-content: center;
         }
 
-        /* Variantes de couleur */
+        /* Variantes de couleur (si utilisées dynamiquement plus tard) */
         .rose { background-color: #d9aacd; }
         .mauve { background-color: #bda7f2; }
         .violet { background-color: #b668d1; }
@@ -88,40 +91,25 @@
             background-color: #e3f0fd;
             color: #d6aeea;
         }
-
     </style>
 </head>
 <body>
 {% include 'header.html' %}
+
 <div class="container">
     <div class="sidebar">
-        <img src="../images/Image-rdv1.svg" alt="Livre">
+        <img src="{{ url_for('static', filename='images/Image-rdv1.svg') }}" alt="Livre">
         <h2>Nos<br>conseillers</h2>
     </div>
 
-    <div class="cards">
-        <div class="card rose">
-            <div class="plus">+</div>
-            Arsenault<br>Daniel
+    <div class="grid">
+        {% for conseiller in conseillers %}
+        <div class="card">
+            <div><button class = "plus">+</button></div>
+            {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
         </div>
-        <div class="card mauve">
-            <div class="plus">+</div>
-            Robert<br>Patricia
-        </div>
-        <div class="card violet">
-            <div class="plus">+</div>
-            Lefebvre<br>Monique
-        </div>
-        <div class="card pourpre">
-            <div class="plus">+</div>
-            Carpentier<br>Yves
-        </div>
-        <div class="card bleu-clair">
-            <div class="plus">+</div>
-            Deschamps<br>Amélie
-        </div>
+        {% endfor %}
     </div>
 </div>
-
 </body>
 </html>

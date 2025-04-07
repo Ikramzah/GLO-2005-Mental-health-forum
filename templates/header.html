@@ -1,11 +1,15 @@
-<!-- header.html corrigé : une seule section "Livres" -->
+<!-- header.html -->
 <header style="background-color: #6F2DBD; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-  <nav style="display: flex; gap: 20px;">
-    <a href="{{ url_for('dashboard') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Accueil</a>
-    <a href="{{ url_for('publications') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Publications</a>
-    <a href="{{ url_for('chercher_utilisateurs') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Utilisateurs</a>
-    <a href="{{ url_for('livres') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Livres</a>
-  </nav>
+    <nav>
+      <a href="{{ url_for('dashboard') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Accueil</a>
+      <a href="{{ url_for('publications') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Publications</a>
+      <a href="{{ url_for('chercher_utilisateurs') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Utilisateurs</a>
+      <a href="{{ url_for('Livres') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Livres</a>
+      <a href="{{ url_for('rendezvous') }}" style="color: #B9FAF8; text-decoration: none;  margin-right: 20px font-weight: bold;">Rendez-vous</a>
+    </nav>
+    
+    <div>
+        <a href="{{ url_for('accueil') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Profile</a>
 
   <div style="display: flex; gap: 20px;">
     <a href="{{ url_for('accueil') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Profil</a>

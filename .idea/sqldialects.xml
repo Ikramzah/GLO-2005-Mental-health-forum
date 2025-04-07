@@ -4,5 +4,7 @@
     <file url="file://$PROJECT_DIR$/Database_DB/DATABASE_CREATION.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/Database_DB/Livre_reco_sujet_TABLES.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/Database_DB/comment_reagir_reserver.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/app.py" dialect="MySQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>
