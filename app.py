@@ -6,32 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'secret123'
 
 # Liste des pays
-countries = [
-    "-- Sélectionnez un pays --",
-    "Afghanistan", "Afrique du Sud", "Albanie", "Algérie", "Allemagne", "Andorre", "Angola",
-    "Arabie Saoudite", "Argentine", "Arménie", "Australie", "Autriche", "Azerbaïdjan", "Bahamas",
-    "Bahreïn", "Bangladesh", "Barbade", "Belgique", "Belize", "Bénin", "Bhoutan", "Biélorussie",
-    "Birmanie", "Bolivie", "Bosnie-Herzégovine", "Botswana", "Brésil", "Brunei", "Bulgarie",
-    "Burkina Faso", "Burundi", "Cambodge", "Cameroun", "Canada", "Cap-Vert", "Chili", "Chine",
-    "Chypre", "Colombie", "Comores", "Congo", "Corée du Nord", "Corée du Sud", "Costa Rica",
-    "Côte d'Ivoire", "Croatie", "Cuba", "Danemark", "Djibouti", "Dominique", "Egypte", "El Salvador",
-    "Emirats Arabes Unis", "Equateur", "Erythrée", "Espagne", "Estonie", "Etats-Unis", "Ethiopie",
-    "Fidji", "Finlande", "France", "Gabon", "Gambie", "Géorgie", "Ghana", "Grèce", "Guatemala",
-    "Guinée", "Guinée-Bissau", "Haïti", "Honduras", "Hongrie", "Inde", "Indonésie", "Irak",
-    "Iran", "Irlande", "Islande", "Israël", "Italie", "Jamaïque", "Japon", "Jordanie", "Kazakhstan",
-    "Kenya", "Koweït", "Laos", "Lettonie", "Liban", "Liberia", "Libye", "Lituanie", "Luxembourg",
-    "Madagascar", "Malaisie", "Malawi", "Maldives", "Mali", "Malte", "Maroc", "Maurice",
-    "Mauritanie", "Mexique", "Moldavie", "Monaco", "Mongolie", "Monténégro", "Mozambique",
-    "Namibie", "Népal", "Nicaragua", "Niger", "Nigéria", "Norvège", "Nouvelle-Zélande", "Oman",
-    "Ouganda", "Ouzbékistan", "Pakistan", "Panama", "Paraguay", "Pays-Bas", "Pérou", "Philippines",
-    "Pologne", "Portugal", "Qatar", "République Centrafricaine", "République Dominicaine",
-    "Roumanie", "Royaume-Uni", "Russie", "Rwanda", "São Tomé-et-Príncipe", "Sénégal",
-    "Serbie", "Seychelles", "Sierra Leone", "Singapour", "Slovaquie", "Slovénie", "Somalie",
-    "Soudan", "Sri Lanka", "Suède", "Suisse", "Suriname", "Syrie", "Tadjikistan", "Taïwan",
-    "Tanzanie", "Tchad", "Thaïlande", "Timor oriental", "Togo", "Tunisie", "Turkménistan",
-    "Turquie", "Ukraine", "Uruguay", "Vanuatu", "Vatican", "Venezuela", "Vietnam", "Yémen",
-    "Zambie", "Zimbabwe"
-]
+countries = [ "-- Sélectionnez un pays --", "Afghanistan", "Algérie", "France", "Canada", "Maroc", "Tunisie", "Sénégal", "Côte d'Ivoire", "Autres..." ]  # 🔄 raccourcie pour la clarté
 
 @app.route('/')
 def accueil():
@@ -109,7 +84,7 @@ def login():
             session['email'] = user['email']
             session['nom'] = user['nom']
             session['prenom'] = user['prenom']
-            return redirect('/dashboard')
+            return redirect('/dashboard')  # ✅ redirection vers le bon dashboard
         else:
             msg = 'Identifiants incorrects.'
             msg_type = 'error'
@@ -122,6 +97,7 @@ def dashboard():
         return render_template('dashboard.html')
     return redirect('/login')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -131,7 +107,6 @@ def logout():
 def publications():
     conn = get_connection()
     with conn.cursor() as cursor:
-        # Récupérer toutes les publications par ordre décroissant de date
         cursor.execute("SELECT * FROM Publications ORDER BY date DESC")
         publications = cursor.fetchall()
     conn.close()
@@ -148,13 +123,28 @@ def chercher_utilisateurs():
                 SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email
                 FROM Utilisateurs U
                 INNER JOIN Etudiants E ON U.username = E.username
-                WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom OR U.email LIKE %s
+                WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom LIKE %s OR U.email LIKE %s
             """
-            wildcard = '%' + query + '%'
-            cursor.execute(sql, (wildcard, wildcard, wildcard))
+            wildcard = f"%{query}%"
+            cursor.execute(sql, (wildcard, wildcard, wildcard, wildcard))
             users = cursor.fetchall()
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
+@app.route('/livres')
+def livres():
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT L.*, C.username AS Conseiller
+            FROM Livre L
+            JOIN Recommander R ON L.id_livre = R.id_livre
+            JOIN Conseillers C ON R.username_conseiller = C.username
+        """)
+        livres = cursor.fetchall()
+    conn.close()
+    return render_template('livres.html', livres=livres)
+
+
 
 
 if __name__ == '__main__':
