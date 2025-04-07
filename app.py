@@ -155,6 +155,21 @@ def chercher_utilisateurs():
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
 
+@app.route('/livres')
+def livres():
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+             SELECT L.*, C.username AS Conseiller
+             FROM Livre L
+             JOIN Recommander R ON L.id_livre = R.id_livre
+             JOIN Conseillers C ON R.username_conseiller = C.username
+         """)
+        livres = cursor.fetchall()
+    conn.close()
+    return render_template('livres.html', livres=livres)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
