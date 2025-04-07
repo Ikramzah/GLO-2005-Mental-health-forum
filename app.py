@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from Database_DB.db_config import get_connection
 
+
 app = Flask(__name__)
 app.secret_key = 'secret123'
 
@@ -173,14 +174,30 @@ def livres():
 def conseillers():
     conn = get_connection()  # ta fonction DB dans db_config.py
     with conn.cursor() as cursor:
-        cursor.execute("SELECT nom, prenom, photo_de_profil FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
+        cursor.execute("SELECT nom, prenom, photo_de_profil, username FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
         conseillers_list = cursor.fetchall()
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
 
-@app.route('/rendezvous')
-def rendezvous():
-    return render_template('rendez_vous.html')
+from Database_DB.db_config import get_connection
+
+@app.route('/rendez_vous/<username>')
+def rendezvous(username):
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM Utilisateurs WHERE username = %s", (username,))
+            conseiller = cursor.fetchone()
+        connection.close()
+    except Exception as e:
+        print(f"Erreur : {e}")
+        return "Erreur serveur", 500
+
+    if conseiller:
+        return render_template('rendez_vous.html', conseiller=conseiller)
+    else:
+        return "Conseiller introuvable", 404
+
 
 
 if __name__ == '__main__':

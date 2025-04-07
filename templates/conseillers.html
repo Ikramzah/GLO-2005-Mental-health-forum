@@ -115,7 +115,7 @@
         {% for conseiller in conseillers %}
         {% set couleur = couleurs[loop.index0 % 5] %}
         <div class="card {{ couleur }}">
-            <button class="plus">+</button>
+            <a href="{{ url_for('rendezvous', username=conseiller['username']) }}" class="plus">+</a>
             <img src="{{ url_for('static', filename=conseiller['photo_de_profil']) }}" alt="Photo de {{ conseiller['prenom'] }}" class="photo-profil">
             {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
         </div>
