@@ -169,9 +169,18 @@ def livres():
     conn.close()
     return render_template('livres.html', livres=livres)
 
+@app.route('/conseillers')
+def conseillers():
+    conn = get_connection()  # ta fonction DB dans db_config.py
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT nom, prenom FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
+        conseillers_list = cursor.fetchall()
+    conn.close()
+    return render_template('conseillers.html', conseillers=conseillers_list)
+
 @app.route('/rendezvous')
 def rendezvous():
-    return render_template('rendezvous.html')
+    return render_template('rendez_vous.html')
 
 
 if __name__ == '__main__':

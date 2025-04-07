@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nos conseillers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #cce0f9;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;           /* Centre verticalement */
+            justify-content: center;       /* Centre horizontalement */
+            gap: 40px;
+            padding: 40px;
+            min-height: 100vh;             /* Hauteur min = hauteur écran */
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: fit-content;
+        }
+
+        .sidebar img {
+            width: 260px;
+            border-radius: 40% 60% 55% 45% / 55% 45% 55% 45%;
+        }
+
+        .sidebar h2 {
+            font-size: 70px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-style: italic;
+            color: #8134af;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 960px;
+            justify-content: center; /* Centre les cartes même si moins de 3 */
+        }
+
+        .card {
+            background-color: #d6aeea;
+            color: #fff6e9;
+            border-radius: 20px;
+            padding: 30px 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            width: 180px;
+            min-height: 130px;
+            position: relative;
+        }
+
+        .card .plus {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: #fff6e9;
+            color: #a187e2;
+            border-radius: 50%;
+            border-color: white;
+            width: 24px;
+            height: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Variantes de couleur (si utilisées dynamiquement plus tard) */
+        .rose { background-color: #d9aacd; }
+        .mauve { background-color: #bda7f2; }
+        .violet { background-color: #b668d1; }
+        .pourpre { background-color: #762bc4; }
+        .bleu-clair {
+            background-color: #e3f0fd;
+            color: #d6aeea;
+        }
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+
+<div class="container">
+    <div class="sidebar">
+        <img src="{{ url_for('static', filename='images/Image-rdv1.svg') }}" alt="Livre">
+        <h2>Nos<br>conseillers</h2>
+    </div>
+
+    <div class="grid">
+        {% for conseiller in conseillers %}
+        <div class="card">
+            <div><button class = "plus">+</button></div>
+            {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
