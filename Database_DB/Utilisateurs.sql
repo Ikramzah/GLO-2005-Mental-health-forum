@@ -107,11 +107,11 @@ VALUES
 -- Insertion des conseillers
 INSERT INTO Utilisateurs (username, nom, prenom, email, mot_de_passe, date_inscription, date_de_naissance, lieu_de_residence, photo_de_profil)
 VALUES
-('conseil01', 'Arsenault', 'Daniel', 'daniel.arsenault@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-01', '1985-04-12', 'Montréal','images/photo de profil defaut.png' ),
-('conseil02', 'Robert', 'Patricia', 'patricia.robert@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-02', '1979-09-08', 'Québec','images/photo de profil defaut.png'),
-('conseil03', 'Lefebvre', 'Monique', 'monique.lefebvre@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-03', '1988-11-23', 'Longueuil','images/photo de profil defaut.png'),
-('conseil04', 'Carpentier', 'Yves', 'yves.carpentier@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-04', '1990-01-15', 'Sherbrooke','images/photo de profil defaut.png'),
-('conseil05', 'Deschamps', 'Amélie', 'amelie.deschamps@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-05', '1982-03-29', 'Gatineau','images/photo de profil defaut.png');
+('conseil01', 'Arsenault', 'Daniel', 'daniel.arsenault@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-01', '1985-04-12', 'Montréal','images/Daniel.png' ),
+('conseil02', 'Robert', 'Patricia', 'patricia.robert@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-02', '1979-09-08', 'Québec','images/Patricia.png'),
+('conseil03', 'Lefebvre', 'Monique', 'monique.lefebvre@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-03', '1988-11-23', 'Longueuil','images/Monique.png'),
+('conseil04', 'Carpentier', 'Yves', 'yves.carpentier@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-04', '1990-01-15', 'Sherbrooke','images/Yves.png'),
+('conseil05', 'Deschamps', 'Amélie', 'amelie.deschamps@example.com', 'scrypt:32768:8:1$Z5nER6qcGcvoVV7w$05877e9962ac06e71c3c5318e7b0bc664258b59f60e1428b2efb8744f793a1fa82402b060c31983ef6cbbfb2e429244209e47b4509cc425372fa010a56e3ba35', '2025-02-05', '1982-03-29', 'Gatineau','images/Amelie.png');
 
 INSERT INTO Conseillers (username, specialisation)
 VALUES
