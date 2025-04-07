@@ -169,6 +169,9 @@ def livres():
     conn.close()
     return render_template('livres.html', livres=livres)
 
+@app.route('/rendezvous')
+def rendezvous():
+    return render_template('rendezvous.html')
 
 
 if __name__ == '__main__':
