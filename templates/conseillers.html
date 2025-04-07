@@ -15,11 +15,11 @@
 
         .container {
             display: flex;
-            align-items: center;           /* Centre verticalement */
-            justify-content: center;       /* Centre horizontalement */
+            align-items: center;
+            justify-content: center;
             gap: 40px;
             padding: 40px;
-            min-height: 100vh;             /* Hauteur min = hauteur écran */
+            min-height: 100vh;
         }
 
         .sidebar {
@@ -49,20 +49,21 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             max-width: 960px;
-            justify-content: center; /* Centre les cartes même si moins de 3 */
+            justify-content: center;
         }
 
         .card {
-            background-color: #d6aeea;
-            color: #fff6e9;
             border-radius: 20px;
             padding: 30px 20px;
             font-weight: bold;
             font-size: 18px;
             text-align: center;
             width: 180px;
-            min-height: 130px;
+            min-height: 200px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .card .plus {
@@ -72,7 +73,6 @@
             background-color: #fff6e9;
             color: #a187e2;
             border-radius: 50%;
-            border-color: white;
             width: 24px;
             height: 24px;
             font-size: 18px;
@@ -80,17 +80,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: none;
+            cursor: pointer;
         }
 
-        /* Variantes de couleur (si utilisées dynamiquement plus tard) */
-        .rose { background-color: #d9aacd; }
-        .mauve { background-color: #bda7f2; }
-        .violet { background-color: #b668d1; }
-        .pourpre { background-color: #762bc4; }
-        .bleu-clair {
-            background-color: #e3f0fd;
-            color: #d6aeea;
+        .photo-profil {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid white;
         }
+
+        /* Couleurs cycliques */
+        .couleur-1 { background-color: #6F2DBD; color: #fff; }
+        .couleur-2 { background-color: #A663CC; color: #fff; }
+        .couleur-3 { background-color: #B298DC; color: #fff; }
+        .couleur-4 { background-color: #B8D0EB; color: #333; }
+        .couleur-5 { background-color: #B9FAF8; color: #333; }
     </style>
 </head>
 <body>
@@ -103,9 +111,12 @@
     </div>
 
     <div class="grid">
+        {% set couleurs = ['couleur-1', 'couleur-2', 'couleur-3', 'couleur-4', 'couleur-5'] %}
         {% for conseiller in conseillers %}
-        <div class="card">
-            <div><button class = "plus">+</button></div>
+        {% set couleur = couleurs[loop.index0 % 5] %}
+        <div class="card {{ couleur }}">
+            <button class="plus">+</button>
+            <img src="{{ url_for('static', filename=conseiller['photo_de_profil']) }}" alt="Photo de {{ conseiller['prenom'] }}" class="photo-profil">
             {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
         </div>
         {% endfor %}

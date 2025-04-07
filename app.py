@@ -173,7 +173,7 @@ def livres():
 def conseillers():
     conn = get_connection()  # ta fonction DB dans db_config.py
     with conn.cursor() as cursor:
-        cursor.execute("SELECT nom, prenom FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
+        cursor.execute("SELECT nom, prenom, photo_de_profil FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
         conseillers_list = cursor.fetchall()
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
