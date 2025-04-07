@@ -9,7 +9,11 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #B8D0EB;
+      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
     }
     .search-container {
       max-width: 800px;
@@ -83,6 +87,7 @@
       <table>
         <thead>
           <tr>
+            <th>Photo de profil</th>
             <th>Nom d'utilisateur</th>
             <th>Prénom</th>
             <th>Nom</th>
@@ -95,6 +100,7 @@
             {% if user.niveau_anonymat is defined and user.niveau_anonymat == 'anonyme' %}
               
             {% else %}
+              <td><img src="{{ url_for('static', filename=user.photo_de_profil) }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%;"></td>
               <td>{{ user.username }}</td>
               <td>{{ user.prenom }}</td>
               <td>{{ user.nom }}</td>

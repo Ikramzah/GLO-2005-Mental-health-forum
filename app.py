@@ -132,11 +132,16 @@ def logout():
 def publications():
     conn = get_connection()
     with conn.cursor() as cursor:
-        # Récupérer toutes les publications par ordre décroissant de date
-        cursor.execute("SELECT * FROM Publications ORDER BY date DESC")
+        cursor.execute("""
+            SELECT P.*, U.username, U.photo_de_profil
+            FROM Publications P
+            JOIN Utilisateurs U ON P.username = U.username
+            ORDER BY P.date DESC
+        """)
         publications = cursor.fetchall()
     conn.close()
     return render_template('publications.html', publications=publications)
+
 @app.route('/chercher_utilisateurs', methods=['GET'])
 def chercher_utilisateurs():
     query = request.args.get('q', '')
@@ -145,7 +150,7 @@ def chercher_utilisateurs():
         conn = get_connection()
         with conn.cursor() as cursor:
             sql = """
-                SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email
+                SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email, U.photo_de_profil
                 FROM Utilisateurs U
                 INNER JOIN Etudiants E ON U.username = E.username
                 WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom OR U.email LIKE %s
