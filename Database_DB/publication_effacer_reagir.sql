@@ -54,7 +54,7 @@ CREATE TABLE Effacer (
 
 -- Insertion des publications
 INSERT INTO Publications (username, p_titre, texte, statut, date) VALUES
-('studen001', 'Stress avant les examens', 'Je me sens dépassé par la charge de travail, comment gérez-vous le stress avant les examens?', 'public', '2025-03-01 14:30:00'),
+('studen001', 'Stress avant les examens', ' Je me sens dépassé par la charge de travail, comment gérez-vous le stress avant les examens?', 'public', '2025-03-01 14:30:00'),
 ('studen002', 'Difficultés d''adaptation', 'Je suis nouveau à l''université et j''ai du mal à m''intégrer. Des conseils?', 'public', '2025-03-02 09:15:00'),
 ('studen003', 'Problèmes de sommeil', 'Depuis le début de la session, je dors très mal. Est-ce que d''autres vivent la même chose?', 'anonyme', '2025-03-03 22:45:00'),
 ('studen004', 'Gestion du temps', 'Comment faites-vous pour équilibrer études, travail et vie sociale?', 'public', '2025-03-04 16:20:00'),
