@@ -1,15 +1,47 @@
 <!-- header.html -->
-<header style="background-color: #6F2DBD; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-    <nav>
-      <a href="{{ url_for('dashboard') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Accueil</a>
-      <a href="{{ url_for('publications') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Publications</a>
-      <a href="{{ url_for('chercher_utilisateurs') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Utilisateurs</a>
-      <a href="{{ url_for('livres') }}" style="color: #B9FAF8; text-decoration: none; margin-right: 20px; font-weight: bold;">Livres</a>
-      <a href="{{ url_for('conseillers') }}" style="color: #B9FAF8; text-decoration: none;  margin-right: 20px; font-weight: bold;">Rendez-vous</a>
-    </nav>
+<style>
+  .nav-link {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+  }
 
-  <div style="display: flex; gap: 20px;">
-    <a href="{{ url_for('accueil') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Profil</a>
-    <a href="{{ url_for('logout') }}" style="color: #B9FAF8; text-decoration: none; font-weight: bold;">Se déconnecter</a>
+  .nav-link:hover {
+    transform: translateY(-3px);
+    color: #fff;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 0;
+    background-color: white;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+</style>
+
+<header style="background-color: rgba(111, 45, 189, 0.9); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+  <nav style="display: flex; gap: 25px; margin-left: 20px;">
+    <a href="{{ url_for('dashboard') }}" class="nav-link">Accueil</a>
+    <a href="{{ url_for('publications') }}" class="nav-link">Publications</a>
+    <a href="{{ url_for('chercher_utilisateurs') }}" class="nav-link">Utilisateurs</a>
+    <a href="{{ url_for('livres') }}" class="nav-link">Livres</a>
+    <a href="{{ url_for('conseillers') }}" class="nav-link">Rendez-vous</a>
+  </nav>
+
+  <div style="display: flex; gap: 20px; align-items: center; margin-right: 20px;">
+    <a href="{{ url_for('accueil') }}" title="Profil">
+      <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
+    </a>
+    <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
   </div>
 </header>
