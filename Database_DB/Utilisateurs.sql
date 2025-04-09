@@ -101,7 +101,7 @@ VALUES
 ('studen027', 'international', 'public'),
 ('studen028', 'en echange', 'anonyme'),
 ('studen029', 'citoyen', 'pseudo'),
-('studen030', 'resident permanent', 'public')
+('studen030', 'resident permanent', 'public'),
 ('studen031', 'citoyen', 'public');
 
 -- Insertion des conseillers
