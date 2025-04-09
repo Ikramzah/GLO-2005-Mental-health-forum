@@ -50,7 +50,7 @@ def signup():
         mot_de_passe = request.form['mot_de_passe']
         confirmer = request.form['confirmer_mot_de_passe']
         date_de_naissance = request.form['date_de_naissance']
-        lieu_de_residence = request.form['lieu_de_residence']
+        lieu_de_residence = request.form.get('pays')
         statut = request.form['statut']
         username = request.form['username']
 
@@ -292,6 +292,9 @@ def reserver(username, date, start_time):
         connection.close()
 
     return redirect(url_for('rendez_vous', username=username, date=date, start_time=start_time))
+@app.route('/apropos')
+def apropos():
+    return render_template('apropos.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

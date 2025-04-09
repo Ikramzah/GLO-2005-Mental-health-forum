@@ -142,7 +142,7 @@
     <input type="email" id="email" name="email" required>
 
     <label for="date_naissance">Date de naissance</label>
-    <input type="date" id="date_naissance" name="date_de_naissance">
+    <input type="date" id="date_naissance" name="date_naissance">
 
     <label for="pays">Pays de résidence</label>
     <select name="pays" id="pays" required>
@@ -170,7 +170,10 @@
     <button type="submit">S'inscrire</button>
   </form>
 
+  {% if msg %}
   <p class="{{ msg_type }}">{{ msg }}</p>
+  {% endif %}
+
   <p>Déjà inscrit ? <a href="{{ url_for('login') }}">Se connecter</a></p>
 
 </body>
