@@ -1,89 +1,107 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Recherche d'utilisateur</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-    }
-    .search-container {
-      max-width: 800px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .search-container h1 {
-      text-align: center;
-      color: #6F2DBD;
-      margin-bottom: 20px;
-    }
-    .search-container form {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .search-container input[type="text"] {
-      padding: 10px;
-      width: 60%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .search-container button {
-      padding: 10px 20px;
-      background-color: #A663CC;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      margin-left: 10px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .search-container button:hover {
-      background-color: #6F2DBD;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    thead {
-      background-color: #6F2DBD;
-      color: #B9FAF8;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border: 1px solid #ddd;
-    }
-    tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-  </style>
-</head>
-<body>
-  {% include 'header.html' %}
-  <div class="search-container">
-    <h1>Recherche d'utilisateur</h1>
-    <form method="GET" action="{{ url_for('chercher_utilisateurs') }}">
-      <input type="text" name="q" placeholder="Rechercher par nom, prénom, email ou username" value="{{ query }}">
-      <button type="submit">Rechercher</button>
-    </form>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Recherche d'utilisateur</title>
+    <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+          }
+          .search-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+          .search-container h1 {
+            text-align: center;
+            color: #6f2dbd;
+            margin-bottom: 20px;
+          }
+          .search-container form {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .search-container input[type="text"] {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+          }
+          .search-container button {
+            padding: 10px 20px;
+            background-color: #a663cc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+          }
+          .search-container button:hover {
+            background-color: #6f2dbd;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          }
+          thead {
+            background-color: #6f2dbd;
+            color: #b9faf8;
+          }
+          th,
+          td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+          }
+          tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+          }
 
-    {% if query and users|length == 0 %}
-      <p style="text-align:center; color:#666;">Aucun utilisateur trouvé pour « {{ query }} ».</p>
-    {% endif %}
+          .clickable-row:hover {
+            background-color: #e8dcfa; /* teinte douce qui respecte la palette */
+          }
+          function handleKeyPress(event, url) {
+            if (event.key === "Enter") {
+             window.location = url;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    {% include 'header.html' %}
+    <div class="search-container">
+      <h1>Recherche d'utilisateur</h1>
+      <form method="GET" action="{{ url_for('chercher_utilisateurs') }}">
+        <input
+          type="text"
+          name="q"
+          placeholder="Rechercher par nom, prénom, email ou username"
+          value="{{ query }}"
+        />
+        <button type="submit">Rechercher</button>
+      </form>
 
-    {% if users|length > 0 %}
+      {% if query and users|length == 0 %}
+      <p style="text-align: center; color: #666">
+        Aucun utilisateur trouvé pour « {{ query }} ».
+      </p>
+      {% endif %} {% if users|length > 0 %}
       <table>
         <thead>
           <tr>
@@ -95,22 +113,40 @@
           </tr>
         </thead>
         <tbody>
-          {% for user in users %}
+          {% for user in users %} {% if user.niveau_anonymat is defined and
+          user.niveau_anonymat == 'anonyme' %}
           <tr>
-            {% if user.niveau_anonymat is defined and user.niveau_anonymat == 'anonyme' %}
-              
-            {% else %}
-              <td><img src="{{ url_for('static', filename=user.photo_de_profil) }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%;"></td>
-              <td>{{ user.username }}</td>
-              <td>{{ user.prenom }}</td>
-              <td>{{ user.nom }}</td>
-              <td>{{ user.email }}</td>
-            {% endif %}
+            <td colspan="5" style="text-align: center; font-style: italic">
+              Cet utilisateur est anonyme.
+            </td>
           </tr>
-          {% endfor %}
+          {% else %}
+          <tr
+            class="clickable-row"
+            tabindex="0"
+            role="button"
+            onclick="window.location='{{ url_for('profil_utilisateur', username=user.username) }}'"
+            onkeypress="handleKeyPress(event, '{{ url_for('profil_utilisateur', username=user.username) }}')"
+          >
+            <td>
+              <img
+                src="{{ url_for('static', filename=user.photo_de_profil) }}"
+                alt="Photo de profil"
+                width="50"
+                height="50"
+                style="border-radius: 50%"
+              />
+            </td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.prenom }}</td>
+            <td>{{ user.nom }}</td>
+            <td>{{ user.email }}</td>
+          </tr>
+
+          {% endif %} {% endfor %}
         </tbody>
       </table>
-    {% endif %}
-  </div>
-</body>
+      {% endif %}
+    </div>
+  </body>
 </html>

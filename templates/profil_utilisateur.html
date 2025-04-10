@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil utilisateur</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    .profil-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    .profil-container h1 {
+      color: #6F2DBD;
+      margin-bottom: 30px;
+    }
+
+    .profil-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px; /* Ajoute un espace entre la photo et les infos */
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Pour éviter les débordements sur petit écran */
+}
+
+.photo-profil {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #A663CC;
+}
+
+.infos-utilisateur {
+  background-color: #B9FAF8;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: left;
+  min-width: 240px;
+}
+
+
+    .infos-utilisateur p {
+      margin: 5px 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .publications-titre {
+      color: #6F2DBD;
+      margin-top: 20px;
+    }
+
+    .publication-item {
+      text-align: left;
+      background-color: #f3f3f3;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    .anonyme-msg {
+      font-size: 1.1rem;
+      color: #888;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="profil-container">
+    {% if not utilisateur %}
+      <p class="anonyme-msg">Utilisateur introuvable.</p>
+
+    {% elif utilisateur.niveau_anonymat == 'anonyme' %}
+      <p class="anonyme-msg">Cet utilisateur a choisi de rester totalement anonyme.</p>
+
+    {% else %}
+    <div class="profil-header">
+      <img src="{{ url_for('static', filename=utilisateur.photo_de_profil) }}" alt="Photo de profil" class="photo-profil">
+
+      <div class="infos-utilisateur">
+        <p><strong>Nom d’utilisateur :</strong> {{ utilisateur.username }}</p>
+        <p><strong>Prénom :</strong> {{ utilisateur.prenom }}</p>
+        <p><strong>Nom :</strong> {{ utilisateur.nom }}</p>
+
+        {% if utilisateur.niveau_anonymat == 'public' %}
+        <p><strong>Adresse courriel :</strong> {{ utilisateur.email }}</p>
+        {% endif %}
+      </div>
+    </div>
+      {% if utilisateur.niveau_anonymat == 'public' %}
+        <h2 class="publications-titre">Publications de l'utilisateur :</h2>
+        {% if publications %}
+          {% for pub in publications %}
+          <div class="publication-item">
+            <strong>{{ pub.p_titre }}</strong><br>
+            <small>{{ pub.date.strftime('%d/%m/%Y %H:%M') }}</small><br>
+            <p>{{ pub.texte|truncate(150) }}</p>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p>Aucune publication disponible.</p>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+</html>

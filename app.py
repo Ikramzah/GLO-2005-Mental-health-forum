@@ -203,6 +203,32 @@ def rendezvous(username):
     else:
         return "Conseiller introuvable", 404
 
+@app.route('/profil/<username>')
+def profil_utilisateur(username):
+    conn = get_connection()
+    utilisateur = None
+    publications = []
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT U.username, U.nom, U.prenom, U.email, U.photo_de_profil, E.niveau_anonymat
+                FROM Utilisateurs U
+                JOIN Etudiants E ON U.username = E.username
+                WHERE U.username = %s
+            """, (username,))
+            utilisateur = cursor.fetchone()
+
+            if utilisateur and utilisateur['niveau_anonymat'] != 'anonyme':
+                cursor.execute("""
+                    SELECT * FROM Publications
+                    WHERE username = %s
+                    ORDER BY date DESC
+                """, (username,))
+                publications = cursor.fetchall()
+    finally:
+        conn.close()
+
+    return render_template('profil_utilisateur.html', utilisateur=utilisateur, publications=publications)
 
 
 if __name__ == '__main__':
