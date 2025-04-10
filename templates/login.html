@@ -6,37 +6,46 @@
   <style>
     :root {
       --primary: #6F2DBD;
-      --secondary: #A663CC;
       --light-purple: #B298DC;
-      --light-blue: #B8D0EB;
-      --light-cyan: #B9FAF8;
       --ulaval-blue: #006AFF;
       --ulaval-blue-hover: #0051cc;
     }
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      padding: 40px;
       margin: 0;
-      background-image: url("/static/background.jpg");
+      padding: 0;
+      background-image: url("{{ url_for('static', filename='background/le_back_du_back.png') }}");
       background-size: cover;
       background-attachment: fixed;
-      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    header img {
+      height: 50px;
     }
 
     form {
       max-width: 500px;
-      margin: auto;
-      background-color: rgba(255, 255, 255, 0.95);
+      margin: 80px auto;
+      background-color: rgba(111, 45, 189, 0.15);
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      backdrop-filter: blur(5px);
     }
 
     h2 {
       text-align: center;
-      color: var(--primary);
+      color: white;
       margin-bottom: 20px;
     }
 
@@ -44,7 +53,7 @@
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
-      color: #333;
+      color: white;
     }
 
     input[type="email"],
@@ -55,6 +64,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.85);
     }
 
     button {
@@ -74,6 +84,12 @@
       background-color: var(--ulaval-blue-hover);
     }
 
+    p {
+      text-align: center;
+      font-size: 14px;
+      color: white;
+    }
+
     a {
       color: var(--light-purple);
       text-decoration: none;
@@ -84,43 +100,36 @@
       text-decoration: underline;
     }
 
-    p {
-      text-align: center;
-      font-size: 14px;
-    }
-
     .success {
-      color: green;
+      color: lightgreen;
       font-weight: bold;
-      margin-bottom: 15px;
     }
 
     .error {
-      color: red;
+      color: #FF8080;
       font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-bottom: 20px;
-      color: var(--ulaval-blue);
-      font-size: 14px;
-    }
-
-    .back-link:hover {
-      color: var(--ulaval-blue-hover);
     }
   </style>
 </head>
 <body>
 
-  <a class="back-link" href="{{ url_for('accueil') }}">← Retour à la page d'accueil</a>
+  <header>
+    <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
+  </header>
 
-  <h2>Connexion</h2>
+  <a href="{{ url_for('accueil') }}" style="
+    display: block;
+    color: #6F2DBD;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: left;
+    margin: 20px 30px 0;
+    text-decoration: none;
+  ">← Retour à la page d'accueil</a>
 
   <form method="POST">
+    <h2>Connexion</h2>
+
     <label for="email">Courriel</label>
     <input type="email" id="email" name="email" required>
 
@@ -128,13 +137,16 @@
     <input type="password" id="password" name="password" required>
 
     <button type="submit">Se connecter</button>
+
+    <div style="text-align: center; margin-top: 15px;">
+      <span style="color: white;">Pas de compte ? </span>
+      <a href="{{ url_for('signup') }}">Créer un compte</a>
+    </div>
   </form>
 
   {% if msg %}
     <p class="{{ msg_type }}">{{ msg }}</p>
   {% endif %}
-
-  <p>Pas de compte ? <a href="{{ url_for('signup') }}">Créer un compte</a></p>
 
 </body>
 </html>

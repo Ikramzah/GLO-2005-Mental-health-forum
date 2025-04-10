@@ -8,7 +8,7 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
+      background-image: url("{{ url_for('static', filename='background/le_back_du_back.png') }}");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -17,7 +17,7 @@
 
     header {
       background-color: rgba(111, 45, 189, 0.95);
-      padding: 15px;
+      padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -26,9 +26,14 @@
       z-index: 10;
     }
 
-    nav {
+    header img {
+      height: 45px;
+    }
+
+    .nav-right {
       display: flex;
-      gap: 20px;
+      align-items: center;
+      gap: 30px;
     }
 
     .nav-link {
@@ -39,7 +44,7 @@
 
     .main-container {
       max-width: 800px;
-      margin: 60px auto;
+      margin: 60px auto 30px;
       text-align: center;
       background: rgba(190, 255, 200, 0.3);
       padding: 30px;
@@ -75,21 +80,48 @@
       transform: translateY(-5px);
     }
 
-    .pub-btn { background-color: #B298DC; }
-    .util-btn { background-color: #B9FAF8; color: #333; }
+    .pub-btn { background-color: #9D6BFF; }
+    .util-btn { background-color: #B9FAF8; color: #222; }
     .livres-btn { background-color: #A663CC; }
+    .rdv-btn { background-color: #6F2DBD; }
+
+    .floating-text {
+      margin: 40px auto;
+      max-width: 700px;
+      font-size: 18px;
+      color: white;
+      text-align: center;
+      font-weight: 500;
+      background-color: rgba(0, 0, 0, 0.25);
+      padding: 20px 25px;
+      border-radius: 12px;
+      animation: fadeIn 4s ease-out;
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typing 6s steps(70, end), blink-caret 0.75s step-end infinite;
+      border-right: 2px solid white;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: white }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Header avec logo ULaval -->
   <header>
-    <nav>
-      <a href="{{ url_for('dashboard') }}" class="nav-link">Accueil</a>
-    </nav>
-    <div style="display: flex; align-items: center; gap: 30px;">
+    <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
+
+    <div class="nav-right">
       <a href="{{ url_for('accueil') }}" title="Profil">
-        <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
+        <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%; background-color: white;">
       </a>
       <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
     </div>
@@ -97,7 +129,7 @@
 
   <!-- Contenu principal -->
   <div class="main-container">
-    <h2>Bienvenue {{ session['prenom']}}{{session['nom']}} 👋</h2>
+    <h2>Bienvenue {{ session['prenom'] }} {{ session['nom'] }} 👋</h2>
     <p>Tu es connecté(e) avec l'adresse : <strong>{{ session['email'] }}</strong></p>
     <p>Ravie de te revoir sur le forum bien-être ULaval 🌿</p>
 
@@ -107,8 +139,14 @@
       <a href="{{ url_for('publications') }}" class="pub-btn">📝 Publications</a>
       <a href="{{ url_for('chercher_utilisateurs') }}" class="util-btn">👥 Utilisateurs</a>
       <a href="{{ url_for('livres') }}" class="livres-btn">📚 Livres</a>
-      <a href="{{ url_for('conseillers') }}" class="rdv-btn"> Rendez-vous</a>
+      <a href="{{ url_for('conseillers') }}" class="rdv-btn">🤝 Rendez-vous</a>
+      <a href="{{ url_for('profile') }}" class="pub-btn"> Mon Profile</a>
     </div>
+  </div>
+
+  <!-- Texte flottant -->
+  <div class="floating-text">
+    Votre bien-être mental est notre priorité. Ici, vous êtes écouté, accompagné et soutenu. 🌸
   </div>
 
 </body>

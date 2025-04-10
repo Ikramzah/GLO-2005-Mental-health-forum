@@ -6,10 +6,6 @@
   <style>
     :root {
       --primary: #6F2DBD;
-      --secondary: #A663CC;
-      --light-purple: #B298DC;
-      --light-blue: #B8D0EB;
-      --light-cyan: #B9FAF8;
       --ulaval-blue: #006AFF;
       --ulaval-blue-hover: #0051cc;
     }
@@ -18,91 +14,64 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      background-image: url("{{ url_for('static', filename='background/BOOKS.png') }}");
+      background-image: url("{{ url_for('static', filename='background/le_back_du_back.png') }}");
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
 
-    header {
-      background-color: #6F2DBD;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    nav a {
-      color: #B9FAF8;
-      margin-right: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .main-container {
-      max-width: 1000px;
-      margin: 40px auto;
-      background-color: rgba(200, 255, 200, 0.3); /* Vert léger et transparent */
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      backdrop-filter: blur(6px); /* flou doux */
-    }
-
     h1 {
       text-align: center;
       color: var(--primary);
-      margin-bottom: 30px;
+      margin: 40px 0;
     }
 
     .book-card {
-      background-color: var(--light-cyan);
-      border-left: 8px solid var(--primary);
-      margin-bottom: 20px;
+      background-color: rgba(111, 45, 189, 0.7); /* violet transparent */
+      border-left: 8px solid white;
+      margin: 30px auto;
       padding: 20px;
       border-radius: 12px;
+      max-width: 850px;
       display: flex;
       gap: 20px;
       align-items: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
     }
 
     .book-card img {
-      height: 100px;
-      width: 80px;
+      height: 160px;
+      width: 120px;
       border-radius: 8px;
       object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .book-info {
       flex: 1;
+      color: white;
     }
 
     .book-info h2 {
       margin: 0;
-      color: var(--primary);
+      font-size: 22px;
+      color: #ffffff;
     }
 
     .book-info p {
-      margin: 5px 0;
+      margin: 8px 0;
+      font-size: 15px;
     }
 
     .book-info .meta {
       font-size: 0.9em;
-      color: #555;
-    }
-
-    .details-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 14px;
-      background-color: var(--ulaval-blue);
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-    }
-
-    .details-btn:hover {
-      background-color: var(--ulaval-blue-hover);
+      color: #e0e0e0;
     }
   </style>
 </head>
@@ -110,24 +79,56 @@
 
   {% include 'header.html' %}
 
-  <div class="main-container">
-    <h1>Livres Recommandés 📚</h1>
+  <h1>Livres Recommandés 📚</h1>
 
-    {% if livres %}
-      {% for livre in livres %}
-        <div class="book-card">
-          <img src="{{ livre.photo_livre or url_for('static', filename='default-book.jpg') }}" alt="Couverture du livre">
-          <div class="book-info">
-            <h2>{{ livre.nom_livre }}</h2>
-            <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
-            <p>{{ livre.description | truncate(150) }}</p>
-            <p class="meta">📌 Recommandé par {{ livre.Conseiller }}</p>
-          </div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p style="text-align: center;">Aucun livre trouvé.</p>
-    {% endif %}
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Ta deuxième vie commence quand tu comprends que tu n’en as qu’une.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Ta deuxième vie commence quand tu comprends que tu n’en as qu’une</h2>
+      <p class="meta">Auteur : Raphaëlle Giordano | Publié le 17/06/2015</p>
+      <p>Un roman feel-good qui mêle développement personnel et fiction pour aider à mieux vivre.</p>
+      <p class="meta">📌 Recommandé par Amélie Deschamps</p>
+    </div>
+  </div>
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Imparfaits, libres et heureux.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Imparfaits, libres et heureux</h2>
+      <p class="meta">Auteur : Christophe André | Publié le 03/01/2006</p>
+      <p>Une invitation à s'accepter tel qu'on est et à cultiver la bienveillance envers soi-même.</p>
+      <p class="meta">📌 Recommandé par Yves Carpentier</p>
+    </div>
+  </div>
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Les Quatre Accords toltèques.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Les 4 accords toltèques</h2>
+      <p class="meta">Auteur : Don Miguel Ruiz | Publié le 01/05/2000</p>
+      <p>Un guide vers la liberté personnelle, basé sur la sagesse toltèque, simple et puissant.</p>
+      <p class="meta">📌 Recommandé par Patricia Robert</p>
+    </div>
+  </div>
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Le pouvoir du moment présent.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Le pouvoir du moment présent</h2>
+      <p class="meta">Auteur : Eckhart Tolle | Publié le 29/08/1997</p>
+      <p>Un guide vers la pleine conscience, pour sortir du mental et vivre l’instant présent.</p>
+      <p class="meta">📌 Recommandé par Monique Lefebvre</p>
+    </div>
+  </div>
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Cessez d’être gentil, soyez vrai !.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Cessez d’être gentil, soyez vrai !</h2>
+      <p class="meta">Auteur : Thomas d’Ansembourg | Publié le 15/03/2001</p>
+      <p>Un livre sur la communication authentique et la bienveillance envers soi et les autres.</p>
+      <p class="meta">📌 Recommandé par Daniel Arsenault</p>
+    </div>
   </div>
 
 </body>

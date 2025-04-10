@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>À propos | U HealthForum</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('{{ url_for('static', filename='background/mask-3829017_1280.png') }}');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      padding: 80px 30px 120px;
+      color: white;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: rgba(0, 0, 0, 0.45); /* Transparence améliorée */
+      padding: 60px 40px;
+      border-radius: 20px;
+    }
+
+    h1 {
+      color: #FFFFFF;
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+
+    h2 {
+      color: #B9FAF8;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .description {
+      line-height: 1.8;
+      margin-bottom: 50px;
+      font-size: 17px;
+    }
+
+    .faq-item {
+      margin-bottom: 25px;
+    }
+
+    .faq-question {
+      background: none;
+      border: none;
+      color: #B9FAF8;
+      font-weight: bold;
+      font-size: 16px;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      padding: 10px 0;
+      transition: color 0.3s ease;
+    }
+
+    .faq-question:hover {
+      color: #A663CC;
+    }
+
+    .faq-answer {
+      display: none;
+      padding-left: 15px;
+      padding-top: 5px;
+      color: #e8e8e8;
+      font-size: 15px;
+    }
+
+    .faq-answer.active {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .contact ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 15px;
+    }
+
+    .contact li {
+      margin-bottom: 10px;
+    }
+
+    .contact a {
+      color: #B9FAF8;
+      text-decoration: none;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="{{ url_for('accueil') }}">← Retour à la page d'accueil</a>
+
+  <div class="container">
+
+    <h1>À propos de U HealthForum</h1>
+
+    <div class="description">
+      <p>
+        <strong>U HealthForum</strong> est une initiative étudiante à l’Université Laval visant à promouvoir le bien-être mental, émotionnel et social de la communauté universitaire.
+        Ce site propose un espace d’écoute, de discussion, de recommandations de ressources, et la possibilité de planifier des rendez-vous confidentiels avec des conseillers.
+      </p>
+    </div>
+
+    <div class="faq">
+      <h2>Foire aux questions (FAQ)</h2>
+
+      <div class="faq-item">
+        <button class="faq-question">🌿 Est-ce que mes publications sont anonymes ?</button>
+        <div class="faq-answer">Oui, vous pouvez publier avec différents niveaux d’anonymat selon vos préférences personnelles.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">📅 Puis-je réserver un rendez-vous avec un conseiller ?</button>
+        <div class="faq-answer">Bien sûr ! Consultez les disponibilités et réservez un créneau directement depuis la section dédiée aux rendez-vous.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">🎓 Ce forum est-il réservé aux étudiants de l’Université Laval ?</button>
+        <div class="faq-answer">Le forum est destiné en priorité aux étudiants ULaval, mais certains accès sont ouverts aux conseillers et invités enregistrés.</div>
+      </div>
+    </div>
+
+    <div class="contact">
+      <h2>Contactez-nous</h2>
+      <ul>
+        <li><strong>Samah Naji :</strong> <a href="mailto:samah.naji.1@ulaval.ca">samah.naji.1@ulaval.ca</a></li>
+        <li><strong>Ikram Zahiri :</strong> <a href="mailto:ikram.zahiri.1@ulaval.ca">ikram.zahiri.1@ulaval.ca</a></li>
+        <li><strong>Malek Azemdroub :</strong> <a href="mailto:malek.azemdroub.1@ulaval.ca">malek.azemdroub.1@ulaval.ca</a></li>
+        <li><strong>Alpha Makuza :</strong> <a href="mailto:alpha.makuza.1@ulaval.ca">alpha.makuza.1@ulaval.ca</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    const questions = document.querySelectorAll('.faq-question');
+    questions.forEach(q => {
+      q.addEventListener('click', () => {
+        const answer = q.nextElementSibling;
+        answer.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>

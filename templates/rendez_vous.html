@@ -2,114 +2,253 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nos conseillers</title>
+    <title>Prendre rendez-vous avec {{ conseiller['prenom'] }} {{ conseiller['nom'] }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
 
     <style>
-        body {
+        :root {
+            --couleur-1: #6F2DBD;
+            --couleur-2: #A663CC;
+            --couleur-3: #B298DC;
+            --couleur-4: #B8D0EB;
+            --couleur-5: #B9FAF8;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: #cce0f9;
+        }
+
+        body {
             font-family: 'Segoe UI', sans-serif;
-        }
-
-        .container {
-            display: flex;
-            align-items: center;           /* Centre verticalement */
-            justify-content: center;       /* Centre horizontalement */
-            gap: 40px;
-            padding: 40px;
-            min-height: 100vh;             /* Hauteur min = hauteur écran */
-        }
-
-        .sidebar {
+            background: linear-gradient(to right, var(--couleur-5), var(--couleur-4));
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: fit-content;
+            padding: 40px 20px;
+            color: #333;
         }
 
-        .sidebar img {
-            width: 260px;
-            border-radius: 40% 60% 55% 45% / 55% 45% 55% 45%;
+        h1 {
+            font-size: 3em;
+            font-weight: 900;
+            color: var(--couleur-1);
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .sidebar h2 {
-            font-size: 70px;
-            font-family: 'Playfair Display', serif;
-            font-weight: 800;
-            font-style: italic;
-            color: #8134af;
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: var(--couleur-1);
             margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--couleur-1);
+            padding-bottom: 5px;
+        }
+
+        .btn-book {
+            background: var(--couleur-1);
+            color: #fff;
+            padding: 12px 20px;
+            margin: 6px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .btn-book:hover {
+            background: var(--couleur-2);
+            transform: scale(1.05);
+        }
+
+        .btn-book:active {
+            transform: scale(0.98);
+        }
+
+        #reservation-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background-color: var(--couleur-4);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        #reservation-popup h2 {
+            color: var(--couleur-1);
+            font-size: 1.8em;
+            margin-bottom: 15px;
             text-align: center;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 960px;
-            justify-content: center; /* Centre les cartes même si moins de 3 */
-        }
-
-        .card {
-            background-color: #d6aeea;
-            color: #fff6e9;
-            border-radius: 20px;
-            padding: 30px 20px;
-            font-weight: bold;
-            font-size: 18px;
+        #reservation-popup p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
             text-align: center;
-            width: 180px;
-            min-height: 130px;
-            position: relative;
         }
 
-        .card .plus {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background-color: #fff6e9;
-            color: #a187e2;
-            border-radius: 50%;
-            border-color: white;
-            width: 24px;
-            height: 24px;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        #reservation-popup textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            resize: vertical;
+            margin-bottom: 15px;
         }
 
-        /* Variantes de couleur (si utilisées dynamiquement plus tard) */
-        .rose { background-color: #d9aacd; }
-        .mauve { background-color: #bda7f2; }
-        .violet { background-color: #b668d1; }
-        .pourpre { background-color: #762bc4; }
-        .bleu-clair {
-            background-color: #e3f0fd;
-            color: #d6aeea;
+        #reservation-popup button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: var(--couleur-1);
+            color: white;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #reservation-popup button:hover {
+            background-color: var(--couleur-2);
+        }
+
+        input[type="hidden"] {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .btn-book {
+                width: 100%;
+                margin: 8px 0;
+            }
+
+            #reservation-popup {
+                width: 90%;
+            }
         }
     </style>
+
 </head>
 <body>
-{% include 'header.html' %}
+
+<h1>Prendre rendez-vous avec {{ conseiller['prenom'] }} {{ conseiller['nom'] }}</h1>
 
 <div class="container">
-    <div class="sidebar">
-        <img src="{{ url_for('static', filename='images/Image-rdv1.svg') }}" alt="Livre">
-        <h2>Nos<br>conseillers</h2>
-    </div>
+    <div class = "subcontainer">
 
-    <div class="grid">
-        {% for conseiller in conseillers %}
-        <div class="card">
-            <div><button class = "plus">+</button></div>
-            {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
+    </div>
+    {% for day, horaires in horaires_disponibles.items() %}
+    <h3>{{ day }}</h3>
+    <div>
+        {% for start_time, end_time in horaires %}
+        <div class="btn-book" onclick="openPopup('{{ start_time }}', '{{ end_time }}', '{{ day }}', '{{ conseiller['username'] }}')">
+            {{ start_time }} - {{ end_time }}
         </div>
         {% endfor %}
     </div>
+    {% endfor %}
 </div>
+
+<!-- Pop-up de confirmation de la réservation -->
+<div id="reservation-popup">
+    <h2>Confirmer la réservation</h2>
+    <p>Vous avez choisi le créneau de <span id="start-time"></span> à <span id="end-time"></span> pour {{ conseiller['prenom'] }} {{ conseiller['nom'] }} le <span id="selected-date"></span>.</p>
+    <label for="raison">Raison (facultatif) :</label>
+    <textarea id="raison" name="raison" rows="4" cols="50"></textarea><br>
+    <button onclick="submitReservation()">Confirmer la réservation</button>
+    <button onclick="closePopup()">Annuler</button>
+</div>
+
+<!-- Champs cachés pour stocker les informations -->
+<input type="hidden" id="start_time" value="">
+<input type="hidden" id="end_time" value="">
+<input type="hidden" id="date" value="">
+<input type="hidden" id="conseiller_username" value="">
+
+<script>
+    // Fonction pour ouvrir le pop-up avec les informations du créneau sélectionné
+    function openPopup(start_time, end_time, date, conseiller_username) {
+        console.log("Popup Opened");
+        document.getElementById('start-time').innerText = start_time;
+        document.getElementById('end-time').innerText = end_time;
+        document.getElementById('selected-date').innerText = date;
+
+        // Mettre à jour les valeurs dans les champs cachés
+        document.getElementById('start_time').value = start_time;
+        document.getElementById('end_time').value = end_time;
+        document.getElementById('date').value = date;
+        document.getElementById('conseiller_username').value = conseiller_username;
+
+        // Afficher le pop-up
+        document.getElementById('reservation-popup').style.display = 'block';
+    }
+
+    // Fonction pour soumettre la réservation
+    function submitReservation() {
+        var raison = document.getElementById('raison').value;
+        var start_time = document.getElementById('start_time').value;
+        var end_time = document.getElementById('end_time').value;
+        var date = document.getElementById('date').value;
+        var conseiller_username = document.getElementById('conseiller_username').value;
+
+        // Soumettre les données via un formulaire POST
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/reserver/' + conseiller_username + '/' + date + '/' + start_time;
+
+        var raisonInput = document.createElement('input');
+        raisonInput.type = 'hidden';
+        raisonInput.name = 'raison';
+        raisonInput.value = raison;
+        form.appendChild(raisonInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // Fonction pour fermer le pop-up
+    function closePopup() {
+        document.getElementById('reservation-popup').style.display = 'none';
+    }
+</script>
+
 </body>
 </html>

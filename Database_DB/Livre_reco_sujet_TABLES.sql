@@ -1,6 +1,8 @@
 USE MENTALHEALTH_DB;
 
--- Table Livre
+-- ========================================
+-- TABLE LIVRE
+-- ========================================
 CREATE TABLE IF NOT EXISTS Livre (
     id_livre INT PRIMARY KEY AUTO_INCREMENT,
     nom_livre VARCHAR(100) NOT NULL,
@@ -11,6 +13,9 @@ CREATE TABLE IF NOT EXISTS Livre (
     photo_livre VARCHAR(255)
 );
 
+-- ========================================
+-- TABLE RECOMMANDER
+-- ========================================
 CREATE TABLE IF NOT EXISTS Recommander (
     id_livre INT,
     username_conseiller VARCHAR(50),
@@ -19,21 +24,33 @@ CREATE TABLE IF NOT EXISTS Recommander (
     FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table Sujets (liée à Utilisateurs).
+-- ========================================
+-- TABLE SUJETS
+-- ========================================
 CREATE TABLE IF NOT EXISTS Sujets (
     id_sujet INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(100) UNIQUE NOT NULL,
-    id_publication VARCHAR(45),
+    titre_sujet VARCHAR(150) NOT NULL UNIQUE,
     username VARCHAR(50),
+    date_creation DATE DEFAULT CURDATE(),
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- ========================
--- ROUTINES (PROCÉDURES)
--- ========================
+-- ========================================
+-- TABLE D’ASSOCIATION SUJETS_PUBLICATIONS
+-- ========================================
+CREATE TABLE IF NOT EXISTS Sujets_Publications (
+    id_sujet INT NOT NULL,
+    id_publication INT NOT NULL,
+    PRIMARY KEY (id_sujet, id_publication),
+    FOREIGN KEY (id_sujet) REFERENCES Sujets(id_sujet) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Ajouter un nouveau livre
+-- ========================================
+-- PROCÉDURES STOCKÉES
+-- ========================================
 DELIMITER $$
+
 CREATE PROCEDURE AjouterLivre (
     IN p_nom_livre VARCHAR(100),
     IN p_auteur VARCHAR(100),
@@ -46,10 +63,7 @@ BEGIN
     INSERT INTO Livre (nom_livre, auteur, date_publication, description, editeur, photo_livre)
     VALUES (p_nom_livre, p_auteur, p_date_publication, p_description, p_editeur, p_photo_livre);
 END$$
-DELIMITER ;
 
--- Associer un livre recommandé à un conseiller
-DELIMITER $$
 CREATE PROCEDURE RecommanderLivre (
     IN p_id_livre INT,
     IN p_username_conseiller VARCHAR(50)
@@ -58,10 +72,7 @@ BEGIN
     INSERT INTO Recommander (id_livre, username_conseiller)
     VALUES (p_id_livre, p_username_conseiller);
 END$$
-DELIMITER ;
 
--- Obtenir les livres recommandés par un conseiller
-DELIMITER $$
 CREATE PROCEDURE RechercherLivresParConseiller (
     IN p_username_conseiller VARCHAR(50)
 )
@@ -71,11 +82,12 @@ BEGIN
     JOIN Recommander R ON L.id_livre = R.id_livre
     WHERE R.username_conseiller = p_username_conseiller;
 END$$
+
 DELIMITER ;
 
--- ========================
--- PEUPLEMENT (Données)
--- ========================
+-- ========================================
+-- PEUPLEMENT
+-- ========================================
 
 -- Livres
 INSERT INTO Livre (nom_livre, auteur, date_publication, description, editeur, photo_livre)
@@ -95,11 +107,20 @@ VALUES
 (4, 'conseil04'),
 (5, 'conseil05');
 
--- Sujets proposés par des étudiants
-INSERT INTO Sujets (nom, id_publication, username)
+-- Sujets
+INSERT INTO Sujets (titre_sujet, username)
 VALUES
-('Gérer l’anxiété avant les examens', 'PUB001', 'studen001'),
-('S’adapter à la vie au Québec', 'PUB002', 'studen007'),
-('Trouver un équilibre études/vie perso', 'PUB003', 'studen013'),
-('Soutien émotionnel pour étudiants internationaux', 'PUB004', 'studen027'),
-('Surmonter la solitude en résidence', 'PUB005', 'studen022');
+('Gérer l’anxiété avant les examens', 'studen001'),
+('S’adapter à la vie au Québec', 'studen007'),
+('Trouver un équilibre études/vie perso', 'studen013'),
+('Soutien émotionnel pour étudiants internationaux', 'studen027'),
+('Surmonter la solitude en résidence', 'studen022');
+
+-- Sujets_Publications (association)
+INSERT INTO Sujets_Publications (id_sujet, id_publication)
+VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);

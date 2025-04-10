@@ -2,98 +2,145 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil | Forum Bien-Être</title>
+  <title>Accueil | U HealthForum</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f3e8ff;
-      background-image: linear-gradient(145deg, #e5d4fa, #f3e8ff);
-      min-height: 100vh;
+      background-image: url('{{ url_for('static', filename='background/login page.png') }}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100vh;
+      color: white;
+    }
+
+    header {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background-color: rgba(111, 45, 189, 0.7);
+    }
+
+    .logo {
+      display: flex;
       align-items: center;
     }
 
-    .welcome-container {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 40px;
-      border-radius: 20px;
-      max-width: 700px;
-      width: 90%;
+    .logo img {
+      height: 55px;
+      margin-right: 10px;
+    }
+
+    .logo span {
+      font-size: 24px;
+      font-weight: bold;
+      color: black;
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+      font-size: 16px;
+    }
+
+    nav a:hover {
+      color: #B9FAF8;
+    }
+
+    .hero {
       text-align: center;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 1.2s ease-out;
+      margin-top: 15vh;
+      background-color: rgba(111, 45, 189, 0.7);
+      padding: 50px 20px;
+      border-radius: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    h2 {
-      font-size: 28px;
-      color: #6F2DBD;
-      margin-bottom: 25px;
-      opacity: 0;
-      animation: slideDown 1.2s ease forwards;
+    .hero h1 {
+      font-size: 42px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: white;
+      animation: floatText 3s ease-in-out infinite;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      font-size: 1.1em;
-      color: #333;
+    .hero p {
+      font-size: 18px;
+      color: #f2f2f2;
       margin-bottom: 30px;
     }
 
-    li {
-      margin-bottom: 15px;
-    }
-
-    .btn-login {
+    .btn-start {
       background-color: #B9FAF8;
       color: #333;
-      padding: 12px 24px;
+      padding: 12px 28px;
       border-radius: 30px;
       text-decoration: none;
       font-weight: bold;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
 
-    .btn-login:hover {
+    .btn-start:hover {
       transform: translateY(-4px);
-      box-shadow: 0 10px 16px rgba(0,0,0,0.2);
+      background-color: #A5EFF0;
     }
 
-    @keyframes slideDown {
-      from {
-        transform: translateY(-40px);
-        opacity: 0;
-      }
-      to {
+    .btn-start:active {
+      transform: scale(0.96);
+      background-color: #88e5e3;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    @keyframes floatText {
+      0%, 100% {
         transform: translateY(0);
-        opacity: 1;
+      }
+      50% {
+        transform: translateY(-8px);
       }
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
+    @keyframes floatLogo {
+      0%, 100% {
+        transform: translateY(0);
       }
-      to {
-        opacity: 1;
+      50% {
+        transform: translateY(-4px);
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="welcome-container">
-    <h2>Bienvenue sur le forum bien-être de l’Université Laval 🌿</h2>
-    <ul>
-      <li><strong>Infos sur le site :</strong> Ce forum permet aux étudiants de partager leurs expériences, poser des questions, et recevoir du soutien.</li>
-      <li><strong>Contact :</strong> Pour toute question, contactez-nous à <a href="mailto:contact@ulavalforum.ca">contact@ulavalforum.ca</a></li>
-    </ul>
-    <a href="{{ url_for('login') }}" class="btn-login">Accéder à la page de login</a>
+  <header>
+    <div class="logo">
+      <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
+      <span>U HealthForum</span>
+    </div>
+    <nav>
+      <a href="{{ url_for('apropos') }}">À propos de nous</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Votre espace de bien-être universitaire 🌿</h1>
+    <p>U HealthForum vous connecte avec des ressources, des conseillers et une communauté pour soutenir votre santé mentale et émotionnelle.</p>
+    <a href="{{ url_for('login') }}" class="btn-start">Se connecter</a>
   </div>
 
 </body>
