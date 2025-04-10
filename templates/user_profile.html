@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>profil de {{ user['prenom'] }} {{ user['nom'] }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body{
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 95vh; /* or any height you want */
+        }
+
+        .double_containers1 {
+            flex: 1;
+            padding-top: 30px;
+            background-color: #b298dc;
+        }
+
+        .double_containers2 {
+            flex: 1;
+            padding-top: 30px;
+            background-color: #b8d0eb;
+        }
+
+        .image_container{
+            padding-left:8% ;
+            padding-top: 30px;
+        }
+
+        .list_of_options{
+            font-family: 'Alfa Slab One', cursive;
+            color: white;
+            padding-left:11% ;
+            padding-top: 90px;
+            font-size: 25.5px;
+        }
+
+        .list_element{
+            padding-bottom: 10px;
+        }
+
+        .action_button  {
+            padding: 15px 10px;
+            border: 1px solid #da4253;
+            font-family: 'sans-serif';
+            margin-top: 20%;
+            margin-left: 9%;
+            border-radius: 38px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #da4253;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .action_button:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+        }
+
+        .action_button:active{
+            transition: none;
+            background-color: white;
+        }
+
+        .profile-card {
+            text-align: center;
+            background-color: #b8d0eb; /* same as your background */
+            padding: 40px 20px;
+            border-radius: 10px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .profile-img {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-family: 'Alfa Slab One', cursive;
+            color: white;
+            font-size: 25px;
+
+        }
+
+    </style>
+</head>
+
+<body>
+{% include 'header.html' %}
+<div class="container">
+    <div class="double_containers1">
+        <div class="image_container">
+            <img src="../static/images/affiche.svg" alt="Affiche" >
+        </div>
+        <div class ="list_of_options">
+            <ul>
+                <li class="list_element">Mes rendez_vous</li>
+                <li class="list_element">Mes publications</li>
+                <li class="list_element">Modifier photo de profil</li>
+                <li class="list_element">Modifier mot de passe</li>
+                <li class="list_element">Modifier statut</li>
+                <li class="list_element">Modifier email email</li>
+                <li>Modifier lieu de residence</li>
+            </ul>
+        </div>
+        <button class="action_button">Supprimer le compte</button>
+    </div>
+
+    <div class="double_containers2">
+        <div class="profile-card">
+            <img src="{{ url_for('static', filename=user['photo_de_profil']) }}" alt="Photo de profil" class="profile-img">
+            <div class="profile-info">
+                <p>{{ user['nom'] }} {{ user['prenom'] }}</p>
+                <p><em>Statut: {{ statut.statut_etudiant }}</em></p>
+                <p>{{ user.email }}</p>
+                <p>Habite à: {{ user.lieu_de_residence }}</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
