@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-image: url('{{ url_for('static', filename='background/psycho image.png') }}');
+      background-image: url('{{ url_for('static', filename='background/login page.png') }}');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -26,7 +26,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 15px 40px;
-      background-color: #6F2DBD;
+      background-color: rgba(111, 45, 189, 0.7);
     }
 
     .logo {
@@ -35,14 +35,15 @@
     }
 
     .logo img {
-      height: 60px;
-      margin-right: 12px;
+      height: 55px;
+      margin-right: 10px;
     }
 
     .logo span {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      color: white;
+      color: black;
+      animation: floatLogo 4s ease-in-out infinite;
     }
 
     nav a {
@@ -61,7 +62,7 @@
     .hero {
       text-align: center;
       margin-top: 15vh;
-      background-color: rgba(111, 45, 189, 0.7); /* plus transparent */
+      background-color: rgba(111, 45, 189, 0.7);
       padding: 50px 20px;
       border-radius: 20px;
       max-width: 800px;
@@ -74,7 +75,7 @@
       font-weight: bold;
       margin-bottom: 20px;
       color: white;
-      animation: float 3s ease-in-out infinite;
+      animation: floatText 3s ease-in-out infinite;
     }
 
     .hero p {
@@ -91,7 +92,7 @@
       text-decoration: none;
       font-weight: bold;
       box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .btn-start:hover {
@@ -99,12 +100,27 @@
       background-color: #A5EFF0;
     }
 
-    @keyframes float {
+    .btn-start:active {
+      transform: scale(0.96);
+      background-color: #88e5e3;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    @keyframes floatText {
       0%, 100% {
         transform: translateY(0);
       }
       50% {
-        transform: translateY(-10px);
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes floatLogo {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
       }
     }
   </style>
@@ -117,7 +133,7 @@
       <span>U HealthForum</span>
     </div>
     <nav>
-<a href="{{ url_for('apropos') }}">À propos de nous</a>
+      <a href="{{ url_for('apropos') }}">À propos de nous</a>
     </nav>
   </header>
 
