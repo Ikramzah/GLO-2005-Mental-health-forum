@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Livre (
     photo_livre VARCHAR(255)
 );
 
+-- Table Recommander
 CREATE TABLE IF NOT EXISTS Recommander (
     id_livre INT,
     username_conseiller VARCHAR(50),
@@ -19,21 +20,24 @@ CREATE TABLE IF NOT EXISTS Recommander (
     FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table Sujets (liée à Utilisateurs).
+-- Table Sujets
 CREATE TABLE IF NOT EXISTS Sujets (
     id_sujet INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(100) UNIQUE NOT NULL,
-    id_publication VARCHAR(45),
+    titre_sujet VARCHAR(150) NOT NULL UNIQUE,
+    id_publication INT,
     username VARCHAR(50),
-    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE
+    date_creation DATE DEFAULT CURDATE(),
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- ========================
 -- ROUTINES (PROCÉDURES)
 -- ========================
 
--- Ajouter un nouveau livre
 DELIMITER $$
+
+-- Ajouter un nouveau livre
 CREATE PROCEDURE AjouterLivre (
     IN p_nom_livre VARCHAR(100),
     IN p_auteur VARCHAR(100),
@@ -46,10 +50,8 @@ BEGIN
     INSERT INTO Livre (nom_livre, auteur, date_publication, description, editeur, photo_livre)
     VALUES (p_nom_livre, p_auteur, p_date_publication, p_description, p_editeur, p_photo_livre);
 END$$
-DELIMITER ;
 
 -- Associer un livre recommandé à un conseiller
-DELIMITER $$
 CREATE PROCEDURE RecommanderLivre (
     IN p_id_livre INT,
     IN p_username_conseiller VARCHAR(50)
@@ -58,10 +60,8 @@ BEGIN
     INSERT INTO Recommander (id_livre, username_conseiller)
     VALUES (p_id_livre, p_username_conseiller);
 END$$
-DELIMITER ;
 
 -- Obtenir les livres recommandés par un conseiller
-DELIMITER $$
 CREATE PROCEDURE RechercherLivresParConseiller (
     IN p_username_conseiller VARCHAR(50)
 )
@@ -71,6 +71,7 @@ BEGIN
     JOIN Recommander R ON L.id_livre = R.id_livre
     WHERE R.username_conseiller = p_username_conseiller;
 END$$
+
 DELIMITER ;
 
 -- ========================
@@ -95,11 +96,11 @@ VALUES
 (4, 'conseil04'),
 (5, 'conseil05');
 
--- Sujets proposés par des étudiants
-INSERT INTO Sujets (nom, id_publication, username)
+-- Sujets
+INSERT INTO Sujets (titre_sujet, id_publication, username)
 VALUES
-('Gérer l’anxiété avant les examens', 'PUB001', 'studen001'),
-('S’adapter à la vie au Québec', 'PUB002', 'studen007'),
-('Trouver un équilibre études/vie perso', 'PUB003', 'studen013'),
-('Soutien émotionnel pour étudiants internationaux', 'PUB004', 'studen027'),
-('Surmonter la solitude en résidence', 'PUB005', 'studen022');
+('Gérer l’anxiété avant les examens', 1, 'studen001'),
+('S’adapter à la vie au Québec', 2, 'studen007'),
+('Trouver un équilibre études/vie perso', 3, 'studen013'),
+('Soutien émotionnel pour étudiants internationaux', 4, 'studen027'),
+('Surmonter la solitude en résidence', 5, 'studen022');
