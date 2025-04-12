@@ -3,85 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title>Recherche d'utilisateur</title>
-    <style>
-          body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-          }
-          .search-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          }
-          .search-container h1 {
-            text-align: center;
-            color: #6f2dbd;
-            margin-bottom: 20px;
-          }
-          .search-container form {
-            text-align: center;
-            margin-bottom: 20px;
-          }
-          .search-container input[type="text"] {
-            padding: 10px;
-            width: 60%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-          }
-          .search-container button {
-            padding: 10px 20px;
-            background-color: #a663cc;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-          }
-          .search-container button:hover {
-            background-color: #6f2dbd;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-          }
-          thead {
-            background-color: #6f2dbd;
-            color: #b9faf8;
-          }
-          th,
-          td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-          }
-          tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-          }
-          .clickable-row {
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-          }
-
-          .clickable-row:hover {
-            background-color: #e8dcfa; /* teinte douce qui respecte la palette */
-          }
-          function handleKeyPress(event, url) {
-            if (event.key === "Enter") {
-             window.location = url;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
+    
   </head>
   <body>
     {% include 'header.html' %}

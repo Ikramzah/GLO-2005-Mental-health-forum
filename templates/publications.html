@@ -6,86 +6,8 @@
   <title>Publications</title>
   <!-- Lien vers ta feuille de style principale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    /* On applique un style de fond clair pour le body */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-image: url("{{ url_for('static', filename='background/PSY.png') }}");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-    }
-
-    /* Container principal qui englobe la liste de publications */
-    .publications-container {
-      max-width: 1000px;
-      margin: 80px auto; /* pour laisser de l'espace sous le header */
-      padding: 20px;
-      background-color: rgba(255, 255, 255, 0.8); /* Fond blanc léger */
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .publications-container h1 {
-      text-align: center;
-      color: #6F2DBD; /* Couleur titre */
-      margin-bottom: 30px;
-    }
-
-    /* Style d'une carte de publication */
-    .publication-card {
-      background-color: #B9FAF8; /* Couleur de la palette */
-      margin-bottom: 20px;
-      padding: 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.1s ease-in-out;
-    }
-    .publication-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    .publication-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin: 0 0 10px 0;
-      color: #6F2DBD;
-    }
-
-    .publication-meta {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .publication-text {
-      color: #333;
-      line-height: 1.4;
-      margin-bottom: 15px;
-    }
-
-    .publication-stats {
-      font-size: 0.85rem;
-      color: #6F2DBD; /* On peut réutiliser la couleur principale */
-    }
-
-    /* Bouton “Voir plus” si tu veux un bouton explicite */
-    .btn-voir-plus {
-      display: inline-block;
-      padding: 8px 15px;
-      background-color: #A663CC;
-      color: #fff;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: background-color 0.2s ease;
-    }
-    
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
+  
 </head>
 <body>
   <!-- Inclusion du header -->

@@ -1,0 +1,200 @@
+:root {
+    --couleur-1: #6F2DBD;
+    --couleur-2: #A663CC;
+    --couleur-3: #B298DC;
+    --couleur-4: #B8D0EB;
+    --couleur-5: #B9FAF8;
+    --text-color: #333;
+    --text-light: #555;
+    --white: #fff;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #cce0f9;
+    min-height: 100vh;
+    padding-top: 100px;
+    color: var(--text-color);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* TITRES */
+h1 {
+    font-size: 3em;
+    font-weight: 900;
+    color: var(--couleur-1);
+    margin-bottom: 30px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+h2, h3 {
+    color: var(--couleur-1);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+h3 {
+    border-bottom: 2px solid var(--couleur-1);
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+/* CONTAINERS */
+.container, .publications-container, .search-container {
+    max-width: 1000px;
+    margin: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* BOUTONS */
+.btn-book, .btn, button[type="submit"] {
+    background-color: var(--couleur-1);
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-book:hover, .btn:hover, button[type="submit"]:hover {
+    background-color: var(--couleur-2);
+    transform: scale(1.05);
+}
+
+.btn-book:active, .btn:active {
+    transform: scale(0.98);
+}
+
+/* TABLES */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: var(--couleur-1);
+    color: var(--couleur-5);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover,
+.clickable-row:focus {
+    background-color: #E8DCFA;
+    outline: none;
+}
+
+/* PUBLICATIONS */
+.publication-card {
+    background-color: var(--couleur-5);
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 16px;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.publication-card:hover {
+    transform: translateY(-3px);
+}
+
+.publication-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.publication-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--couleur-1);
+}
+
+.publication-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.publication-stats {
+    font-size: 0.85rem;
+    color: var(--couleur-2);
+}
+
+/* PROFIL IMAGE */
+img.profile-pic {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+}
+
+/* FORMULAIRE DE RECHERCHE */
+input[type="text"] {
+    padding: 12px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+button[type="submit"] {
+    margin-left: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .container, .publications-container, .search-container {
+        padding: 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .btn-book {
+        width: 100%;
+        margin: 8px 0;
+    }
+}
