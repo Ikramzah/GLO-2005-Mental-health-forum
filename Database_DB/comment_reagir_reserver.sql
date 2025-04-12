@@ -109,6 +109,16 @@ INSERT INTO Reserver (username_etudiant, username_conseiller, date, heure_debut,
 ('studen009', 'conseil05', '2025-03-23', '11:30:00', '12:15:00', 'En attente', 'Pensées négatives intrusives'),
 ('studen010', 'conseil03', '2025-03-24', '16:00:00', '16:45:00', 'Confirmé', 'Crise existentielle et perte de motivation');
 
+CREATE TABLE Indisponibilites (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username_conseiller VARCHAR(50),
+    date DATE NOT NULL,
+    heure_debut TIME NOT NULL,
+    heure_fin TIME NOT NULL,
+    raison VARCHAR(255),
+    FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
+);
+
 -- Triggers
 DELIMITER $$
 CREATE TRIGGER trig_prevent_double_booking

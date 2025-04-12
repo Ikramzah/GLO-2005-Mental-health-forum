@@ -46,6 +46,16 @@ countries = [
     "Turquie", "Ukraine", "Uruguay", "Vanuatu", "Vatican", "Venezuela", "Vietnam", "Yémen",
     "Zambie", "Zimbabwe"
 ]
+@app.context_processor
+def inject_user():
+    if 'username' in session:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM Utilisateurs WHERE username = %s", (session['username'],))
+            user = cursor.fetchone()
+        conn.close()
+        return dict(user=user)
+    return dict(user=None)
 
 @app.route('/')
 def accueil():
@@ -123,7 +133,21 @@ def login():
             session['email'] = user['email']
             session['nom'] = user['nom']
             session['prenom'] = user['prenom']
+            # Détection du rôle
+            conn = get_connection()
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT * FROM Conseillers WHERE username = %s", (user['username'],))
+                if cursor.fetchone():
+                    session['role'] = 'conseiller'
+                else:
+                    cursor.execute("SELECT * FROM Moderateur WHERE username = %s", (user['username'],))
+                    if cursor.fetchone():
+                        session['role'] = 'moderateur'
+                    else:
+                        session['role'] = 'etudiant'
+            conn.close()
             return redirect('/dashboard')
+
         else:
             msg = 'Identifiants incorrects.'
             msg_type = 'error'
@@ -154,6 +178,30 @@ def publications():
         publications = cursor.fetchall()
     conn.close()
     return render_template('publications.html', publications=publications)
+
+@app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
+def ajouter_indisponibilite():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        username = session['username']
+        date = request.form['date']
+        heure_debut = request.form['heure_debut']
+        heure_fin = request.form['heure_fin']
+        raison = request.form.get('raison', '')
+
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO Indisponibilites (username_conseiller, date, heure_debut, heure_fin, raison)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (username, date, heure_debut, heure_fin, raison))
+            conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))  # ou une page de confirmation
+
+    return render_template('ajouter_indisponibilite.html')
 
 @app.route('/chercher_utilisateurs', methods=['GET'])
 def chercher_utilisateurs():
@@ -197,74 +245,116 @@ def conseillers():
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
 
+@app.route('/mes_publications')
+def mes_publications():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT P.*, U.photo_de_profil
+            FROM Publications P
+            JOIN Utilisateurs U ON P.username = U.username
+            WHERE P.username = %s
+            ORDER BY P.date DESC
+        """, (session['username'],))
+        publications = cursor.fetchall()
+    conn.close()
+    return render_template('mes_publications.html', publications=publications)
+
+@app.route('/mes_rendez_vous')
+def mes_rendez_vous():
+    if 'username' not in session or session.get('role') != 'conseiller':
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT R.date, R.heure_debut, R.heure_fin, R.raison, U.nom, U.prenom
+                FROM Reserver R
+                JOIN Utilisateurs U ON R.username_etudiant = U.username
+                WHERE R.username_conseiller = %s AND R.date >= CURDATE()
+                ORDER BY R.date, R.heure_debut
+            """, (session['username'],))
+            rendez_vous = cursor.fetchall()
+    finally:
+        conn.close()
+
+    return render_template('mes_rendez_vous.html', rendez_vous=rendez_vous)
 
 
 @app.route('/rendez_vous/<username>', methods=['GET', 'POST'])
 def rendez_vous(username):
-    # Connexion à la base de données
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            # Récupérer les données du conseiller
             cursor.execute('SELECT prenom, nom, username FROM Utilisateurs WHERE username = %s', (username,))
             conseiller = cursor.fetchone()
 
-            # Vérifier si le conseiller existe
             if not conseiller:
                 return "Conseiller non trouvé", 404
 
-            # Obtenir la date actuelle
             current_date = datetime.now().date()
+            duree_rdv = int(request.form.get('duree_rdv', 60)) if request.method == 'POST' else 60
 
-            # Calculer les 15 jours à venir
-            days = []
-            for i in range(15):
-                day = current_date + timedelta(days=i)
-                days.append(day)
-
-            # Durée par défaut (60 minutes)
-            duree_rdv = int(request.form.get('duree_rdv', 60))  # Défaut à 60 minutes
-
-            # Préparer un dictionnaire pour les créneaux horaires
+            days = [current_date + timedelta(days=i) for i in range(15)]
             horaires_disponibles = {}
 
-            # Remplir le dictionnaire avec les créneaux horaires
             for day in days:
-                # Ne pas afficher de créneaux le week-end
-                if day.weekday() in [5, 6]:  # 5 = samedi, 6 = dimanche
+                if day.weekday() in [5, 6]:  # Week-end
                     horaires_disponibles[day] = []
-                else:
-                    horaires_disponibles[day] = []
-                    start_time = datetime.combine(day, datetime.min.time())
-                    for hour in range(9, 18):  # De 9h00 à 17h00
-                        start_time_str = (start_time + timedelta(hours=hour)).strftime('%H:%M')
-                        end_time_str = (start_time + timedelta(hours=hour, minutes=duree_rdv)).strftime('%H:%M')
+                    continue
 
-                        # Vérifier si le créneau est déjà réservé
-                        cursor.execute("""
-                            SELECT 1 FROM Reserver
-                            WHERE (username_conseiller = %s OR username_etudiant = %s)
-                            AND date = %s
-                            AND (
-                                (heure_debut < %s AND heure_fin > %s) OR
-                                (heure_debut >= %s AND heure_debut < %s) OR
-                                (heure_fin > %s AND heure_fin <= %s)
-                            )
-                        """, (username, session['username'], day, end_time_str, start_time_str, start_time_str, end_time_str, start_time_str, end_time_str))
+                horaires_disponibles[day] = []
+                start_time = datetime.combine(day, datetime.min.time())
 
-                        reserved = cursor.fetchone()
+                for hour in range(9, 17):  # 9h à 16h pour un créneau de 1h max
+                    start_time_str = (start_time + timedelta(hours=hour)).strftime('%H:%M')
+                    end_time_str = (start_time + timedelta(hours=hour, minutes=duree_rdv)).strftime('%H:%M')
 
-                        if not reserved:
-                            horaires_disponibles[day].append((start_time_str, end_time_str))
+                    # Vérifie indisponibilités
+                    cursor.execute("""
+                        SELECT 1 FROM Indisponibilites
+                        WHERE username_conseiller = %s AND date = %s
+                        AND (
+                            (heure_debut < %s AND heure_fin > %s) OR
+                            (heure_debut >= %s AND heure_debut < %s) OR
+                            (heure_fin > %s AND heure_fin <= %s)
+                        )
+                    """, (username, day, end_time_str, start_time_str,
+                          start_time_str, end_time_str,
+                          start_time_str, end_time_str))
+                    indispo = cursor.fetchone()
+                    if indispo:
+                        continue
 
-            # Si le formulaire est soumis (pour choisir la durée du rendez-vous)
-            if request.method == 'POST':
-                return render_template('rendez_vous.html', horaires_disponibles=horaires_disponibles, conseiller=conseiller, duree_rdv=duree_rdv)
+                    # Vérifie si déjà réservé
+                    cursor.execute("""
+                        SELECT 1 FROM Reserver
+                        WHERE (username_conseiller = %s OR username_etudiant = %s)
+                        AND date = %s
+                        AND (
+                            (heure_debut < %s AND heure_fin > %s) OR
+                            (heure_debut >= %s AND heure_debut < %s) OR
+                            (heure_fin > %s AND heure_fin <= %s)
+                        )
+                    """, (username, session['username'], day,
+                          end_time_str, start_time_str,
+                          start_time_str, end_time_str,
+                          start_time_str, end_time_str))
+                    reserved = cursor.fetchone()
+                    if not reserved:
+                        horaires_disponibles[day].append((start_time_str, end_time_str))
 
-            return render_template('rendez_vous.html', horaires_disponibles=horaires_disponibles, conseiller=conseiller, duree_rdv=duree_rdv)
-
+            return render_template('rendez_vous.html',
+                                   horaires_disponibles=horaires_disponibles,
+                                   conseiller=conseiller,
+                                   duree_rdv=duree_rdv)
     finally:
         connection.close()
+
 
 @app.route('/reserver/<username>/<date>/<start_time>', methods=['POST'])
 def reserver(username, date, start_time):

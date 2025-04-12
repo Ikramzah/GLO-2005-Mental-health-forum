@@ -70,12 +70,16 @@
     >
     <a href="{{ url_for('livres') }}" class="nav-link">Livres</a>
     <a href="{{ url_for('conseillers') }}" class="nav-link">Rendez-vous</a>
+    {% if session['role'] == 'conseiller' %}
+      <a href="{{ url_for('ajouter_indisponibilite') }}">Mes indisponibilités</a>
+      <a href="{{ url_for('mes_rendez_vous') }}" class="livres-btn">Mes rendez-vous</a>
+    {% endif %}
   </nav>
 
   <div
     style="display: flex; gap: 20px; align-items: center; margin-right: 20px"
   >
-    <a href="{{ url_for('accueil') }}" title="Profil">
+    <a href="{{ url_for('profile') }}" title="Profil">
       <img src="{{ url_for('static', filename=user['photo_de_profil']) }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
     </a>
     <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>

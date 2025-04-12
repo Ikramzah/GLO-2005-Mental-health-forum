@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mes publications</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style_homogene.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'header.html' %}
+    <div class="container publications-container">
+      <h1 class="page-title">📝 Mes Publications</h1>
+
+      {% if publications %} {% for pub in publications %}
+      <div class="publication-card">
+        <!-- Profil utilisateur + Titre publication -->
+        <div style="display: flex; align-items: center">
+          <div
+            class="publication-meta"
+            style="display: flex; align-items: center; gap: 10px"
+          >
+            <img
+              src="{{ url_for('static', filename=pub.photo_de_profil) }}"
+              alt="Photo de profil"
+              width="50"
+              height="50"
+              style="border-radius: 50%; object-fit: cover"
+            />
+            <h2 class="publication-title">{{ pub.p_titre }}</h2>
+          </div>
+        </div>
+
+        <div class="publication-meta">
+          Posté par <strong>{{ pub.username }}</strong>
+          le {{ pub['date'].strftime('%d/%m/%Y %H:%M') }} {% if pub.statut ==
+          'anonyme' %}
+          <em>(anonyme)</em>
+          {% endif %}
+        </div>
+
+        <div class="publication-text">{{ pub.texte|truncate(200) }}</div>
+
+        <div class="publication-stats">
+          Réponses : {{ pub.nb_reponses }} | Réactions : {{ pub.nb_reaction }}
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <p class="no-data">Vous n'avez encore publié aucun message.</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
