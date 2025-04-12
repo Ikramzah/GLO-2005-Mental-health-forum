@@ -14,6 +14,11 @@ CREATE TABLE Commentaires (
     CONSTRAINT fk_commentaire_parent FOREIGN KEY (id_parent_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE INDEX idx_commentaires_username ON Commentaires(username);
+CREATE INDEX idx_commentaires_publication ON Commentaires(id_publication);
+CREATE INDEX idx_commentaires_parent ON Commentaires(id_parent_commentaire);
+CREATE INDEX idx_commentaires_date ON Commentaires(date_creation);
+
 CREATE TABLE Reagir_commentaire (
     id_reaction_c INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -24,6 +29,10 @@ CREATE TABLE Reagir_commentaire (
     CONSTRAINT fk_reaction_commentaire FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT unique_reaction UNIQUE (username, id_commentaire)
 );
+
+CREATE INDEX idx_reagir_commentaire_user ON Reagir_commentaire(username);
+CREATE INDEX idx_reagir_commentaire_id ON Reagir_commentaire(id_commentaire);
+CREATE INDEX idx_reagir_commentaire_type ON Reagir_commentaire(type_reaction);
 
 CREATE TABLE Reserver (
     id_rdv INT AUTO_INCREMENT PRIMARY KEY,
@@ -38,6 +47,14 @@ CREATE TABLE Reserver (
     CONSTRAINT fk_reserver_etudiant FOREIGN KEY (username_etudiant) REFERENCES Etudiants(username) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_reserver_conseiller FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE INDEX idx_reserver_etudiant ON Reserver(username_etudiant);
+CREATE INDEX idx_reserver_conseiller ON Reserver(username_conseiller);
+CREATE INDEX idx_reserver_date ON Reserver(date);
+CREATE INDEX idx_reserver_date_heure ON Reserver(date, heure_debut, heure_fin);
+
+-- Ajout d'une contrainte UNIQUE pour éviter les doublons identiques 
+ALTER TABLE Reserver ADD CONSTRAINT uq_rdv_unique UNIQUE (username_etudiant, username_conseiller, date, heure_debut, heure_fin);
 
 -- Contraintes supplémentaires
 ALTER TABLE Reserver
