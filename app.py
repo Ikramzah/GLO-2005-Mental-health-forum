@@ -211,13 +211,24 @@ def chercher_utilisateurs():
         conn = get_connection()
         with conn.cursor() as cursor:
             sql = """
-                SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email, U.photo_de_profil
+                SELECT 
+                    U.username, 
+                    U.nom, 
+                    U.prenom, 
+                    COALESCE(E.niveau_anonymat, 'public') AS niveau_anonymat,
+                    U.email, 
+                    U.photo_de_profil
                 FROM Utilisateurs U
-                INNER JOIN Etudiants E ON U.username = E.username
-                WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom OR U.email LIKE %s
+                LEFT JOIN Etudiants E ON U.username = E.username
+                LEFT JOIN Conseillers C ON U.username = C.username
+                WHERE 
+                    U.username LIKE %s OR 
+                    U.nom LIKE %s OR 
+                    U.prenom LIKE %s OR 
+                    U.email LIKE %s
             """
-            wildcard = '%' + query + '%'
-            cursor.execute(sql, (wildcard, wildcard, wildcard))
+            wildcard = f"%{query}%"
+            cursor.execute(sql, (wildcard, wildcard, wildcard, wildcard))
             users = cursor.fetchall()
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
@@ -411,27 +422,38 @@ def profil_utilisateur(username):
     conn = get_connection()
     utilisateur = None
     publications = []
+    est_conseiller = False
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT U.username, U.nom, U.prenom, U.email, U.photo_de_profil, E.niveau_anonymat
+                SELECT U.username, U.nom, U.prenom, U.email, U.photo_de_profil,
+                       COALESCE(E.niveau_anonymat, 'public') AS niveau_anonymat
                 FROM Utilisateurs U
-                JOIN Etudiants E ON U.username = E.username
+                LEFT JOIN Etudiants E ON U.username = E.username
                 WHERE U.username = %s
             """, (username,))
             utilisateur = cursor.fetchone()
 
-            if utilisateur and utilisateur['niveau_anonymat'] != 'anonyme':
-                cursor.execute("""
-                    SELECT * FROM Publications
-                    WHERE username = %s
-                    ORDER BY date DESC
-                """, (username,))
-                publications = cursor.fetchall()
+            if utilisateur:
+                cursor.execute("SELECT 1 FROM Conseillers WHERE username = %s", (username,))
+                est_conseiller = cursor.fetchone() is not None
+
+                if utilisateur['niveau_anonymat'] != 'anonyme':
+                    cursor.execute("""
+                        SELECT * FROM Publications
+                        WHERE username = %s
+                        ORDER BY date DESC
+                    """, (username,))
+                    publications = cursor.fetchall()
     finally:
         conn.close()
 
-    return render_template('profil_utilisateur.html', utilisateur=utilisateur, publications=publications)
+    return render_template(
+        'profil_utilisateur.html',
+        utilisateur=utilisateur,
+        publications=publications,
+        est_conseiller=est_conseiller
+    )
 
 @app.route('/modifier_photo', methods=['GET', 'POST'])
 def modifier_photo():

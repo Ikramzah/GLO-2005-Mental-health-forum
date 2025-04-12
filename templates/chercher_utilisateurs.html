@@ -14,7 +14,7 @@
         <input
           type="text"
           name="q"
-          placeholder="Rechercher par nom, prénom, email ou username"
+          placeholder="Rechercher par nom, prénom ou nom d'utilisateur"
           value="{{ query }}"
         />
         <button type="submit">Rechercher</button>
@@ -25,50 +25,20 @@
         Aucun utilisateur trouvé pour « {{ query }} ».
       </p>
       {% endif %} {% if users|length > 0 %}
-      <table>
-        <thead>
-          <tr>
-            <th>Photo de profil</th>
-            <th>Nom d'utilisateur</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Courriel</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in users %} {% if user.niveau_anonymat is defined and
-          user.niveau_anonymat == 'anonyme' %}
-          <tr>
-            <td colspan="5" style="text-align: center; font-style: italic">
-              Cet utilisateur est anonyme.
-            </td>
-          </tr>
-          {% else %}
-          <tr
-            class="clickable-row"
-            tabindex="0"
-            role="button"
-            onclick="window.location='{{ url_for('profil_utilisateur', username=user.username) }}'"
-            onkeypress="handleKeyPress(event, '{{ url_for('profil_utilisateur', username=user.username) }}')"
-          >
-            <td>
-              <img
-                src="{{ url_for('static', filename=user.photo_de_profil) }}"
-                alt="Photo de profil"
-                width="50"
-                height="50"
-                style="border-radius: 50%"
-              />
-            </td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.prenom }}</td>
-            <td>{{ user.nom }}</td>
-            <td>{{ user.email }}</td>
-          </tr>
-
-          {% endif %} {% endfor %}
-        </tbody>
-      </table>
+      <div class="resultats-utilisateurs">
+        {% for user in users %}
+          {% if user.niveau_anonymat is defined and user.niveau_anonymat != 'anonyme' %}
+            <div class="user-card" onclick="window.location='{{ url_for('profil_utilisateur', username=user.username) }}'" tabindex="0">
+              <img class="user-avatar" src="{{ url_for('static', filename=user.photo_de_profil) }}" alt="Photo de profil">
+              <div class="user-info">
+                <p class="username">@{{ user.username }}</p>
+                <p>{{ user.prenom }} {{ user.nom }}</p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      
       {% endif %}
     </div>
   </body>
