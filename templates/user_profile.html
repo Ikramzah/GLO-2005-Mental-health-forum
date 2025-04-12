@@ -54,6 +54,26 @@
             font-size: 25.5px;
         }
 
+        .list_link{
+            font-family: 'Alfa Slab One', cursive;
+            color: white;
+            text-decoration: none;
+            font-size: 25.5px;
+            transition: all 0.1s ease-in-out;
+
+
+        }
+
+        .list_link:hover {
+            color: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 6px 0 #754eaa;
+        }
+
+        .list_link:active{
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #754eaa;
+        }
+
         .list_element{
             padding-bottom: 10px;
         }
@@ -126,14 +146,17 @@
         </div>
         <div class ="list_of_options">
             <ul>
-                <li class="list_element">Mes rendez_vous</li>
-                <li class="list_element">Mes publications</li>
-                <li class="list_element">Modifier photo de profil</li>
-                <li class="list_element">Modifier mot de passe</li>
-                <li class="list_element">Modifier statut</li>
-                <li class="list_element">Modifier email email</li>
-                <li>Modifier lieu de residence</li>
-            </ul>
+    <li class="list_element">Mes rendez_vous</li>
+    <li class="list_element">Mes publications</li>
+    <li class="list_element">
+        <a href="{{ url_for('modifier_photo') }}" class="list_link">Modifier photo de profil</a>
+    </li>
+    <li class="list_element">Modifier mot de passe</li>
+    <li class="list_element">Modifier statut</li>
+    <li class="list_element">Modifier email email</li>
+    <li class="list_element">Modifier lieu de residence</li>
+</ul>
+
         </div>
         <button class="action_button">Supprimer le compte</button>
     </div>

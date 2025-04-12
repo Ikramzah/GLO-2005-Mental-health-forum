@@ -76,11 +76,7 @@
     style="display: flex; gap: 20px; align-items: center; margin-right: 20px"
   >
     <a href="{{ url_for('accueil') }}" title="Profil">
-      <img
-        src="{{ url_for('static', filename='images/user-icon.png') }}"
-        alt="Profil"
-        style="width: 35px; height: 35px; border-radius: 50%"
-      />
+      <img src="{{ url_for('static', filename=user['photo_de_profil']) }}" alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
     </a>
     <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
   </div>

@@ -3,9 +3,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from Database_DB.db_config import get_connection
 from datetime import datetime, timedelta
 import pymysql
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 app = Flask(__name__)
 app.secret_key = 'secret123'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Liste des pays
 countries = [
@@ -330,6 +342,42 @@ def profil_utilisateur(username):
         conn.close()
 
     return render_template('profil_utilisateur.html', utilisateur=utilisateur, publications=publications)
+
+@app.route('/modifier_photo', methods=['GET', 'POST'])
+def modifier_photo():
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+
+    msg = ''
+    if request.method == 'POST':
+        if 'photo' not in request.files:
+            msg = "Aucun fichier envoyé."
+        file = request.files['photo']
+        if file.filename == '':
+            msg = "Nom de fichier vide."
+        elif file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            photo_path = f"uploads/{filename}"
+            print(filename)
+            print(filepath)
+            # Mise à jour en BD
+            conn = get_connection()
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE Utilisateurs SET photo_de_profil = %s WHERE username = %s
+                """, (photo_path, session['username']))
+                conn.commit()
+            conn.close()
+
+            session['photo_de_profil'] = filename  # Mémoriser en session
+            msg = "Photo mise à jour avec succès !"
+            return redirect('/user_profile')
+        else:
+            msg = "Format non supporté."
+
+    return render_template('modifier_photo.html', msg=msg)
 
 @app.route('/apropos')
 def apropos():
