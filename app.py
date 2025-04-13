@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
+from flask import jsonify
 
 
 def allowed_file(filename):
@@ -324,29 +324,26 @@ def logout():
 def publications():
     conn = get_connection()
     with conn.cursor() as cursor:
-        # Récupérer publications non supprimées et compter uniquement les commentaires non supprimés
+        #  Récupère les publications non supprimées
         cursor.execute("""
-            SELECT P.*, U.photo_de_profil,
-            (
-                SELECT COUNT(*) 
-                FROM Commentaires C
-                WHERE C.id_publication = P.id_publication
-                  AND NOT EXISTS (
-                      SELECT 1 FROM Effacer E 
-                      WHERE E.id_commentaire = C.id_commentaire
-                  )
-            ) AS nb_reponses
+            SELECT 
+                P.*, 
+                U.photo_de_profil,
+                COUNT(C.id_commentaire) AS nb_reponses
             FROM Publications P
             JOIN Utilisateurs U ON P.username = U.username
-            WHERE NOT EXISTS (
-                SELECT 1 FROM Effacer E 
-                WHERE E.id_publication = P.id_publication
-            )
+            LEFT JOIN Commentaires C 
+                ON P.id_publication = C.id_publication 
+                AND C.status_suppression = FALSE
+            LEFT JOIN Effacer E 
+                ON E.id_commentaire = C.id_commentaire
+            WHERE E.id_publication IS NULL
+            GROUP BY P.id_publication
             ORDER BY P.date DESC
         """)
         publications = cursor.fetchall()
 
-        # Réactions
+        #  Réactions par type pour chaque publication
         cursor.execute("""
             SELECT id_publication, type_reaction, COUNT(*) AS nb
             FROM Reagir_publication
@@ -356,6 +353,7 @@ def publications():
 
     conn.close()
 
+    #  Structuration des réactions
     reactions = {}
     for r in reactions_data:
         pub_id = r['id_publication']
@@ -364,6 +362,30 @@ def publications():
         reactions[pub_id][r['type_reaction']] = r['nb']
 
     return render_template('publications.html', publications=publications, reactions=reactions)
+
+@app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
+def ajouter_indisponibilite():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        username = session['username']
+        date = request.form['date']
+        heure_debut = request.form['heure_debut']
+        heure_fin = request.form['heure_fin']
+        raison = request.form.get('raison', '')
+
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO Indisponibilites (username_conseiller, date, heure_debut, heure_fin, raison)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (username, date, heure_debut, heure_fin, raison))
+            conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))  # ou une page de confirmation
+
+    return render_template('ajouter_indisponibilite.html')
 
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
 def ajouter_indisponibilite():
@@ -714,43 +736,73 @@ def afficher_une_publication(id):
     conn = get_connection()
     publication = None
     commentaires = []
- 
+    reactions = {}
+    commentaire_reactions = {}
+
     try:
         with conn.cursor() as cursor:
+            #  Publication
             cursor.execute("""
                 SELECT P.*, U.nom, U.prenom, U.photo_de_profil
                 FROM Publications P
                 JOIN Utilisateurs U ON P.username = U.username
-                WHERE id_publication = %s
+                WHERE P.id_publication = %s
             """, (id,))
             publication = cursor.fetchone()
- 
-            if publication:
-                # Image de profil
-                publication["photo_profil_path"] = publication["photo_de_profil"]
- 
-            # Commentaires
+
+            if not publication:
+                return "Publication introuvable", 404
+
+            publication["photo_profil_path"] = publication["photo_de_profil"]
+
+            #  Commentaires visibles (non effacés)
             cursor.execute("""
-                SELECT C.contenu AS texte , C.date_creation AS date_et_heure, U.nom, U.prenom, E.niveau_anonymat
+                SELECT C.id_commentaire, C.contenu AS texte, C.date_creation AS date_et_heure,
+                       U.nom, U.prenom, E.niveau_anonymat
                 FROM Commentaires C
                 JOIN Utilisateurs U ON C.username = U.username
                 JOIN Etudiants E ON U.username = E.username
                 WHERE C.id_publication = %s
+                  AND NOT EXISTS (
+                    SELECT 1 FROM Effacer EFF WHERE EFF.id_commentaire = C.id_commentaire
+                  )
                 ORDER BY C.date_creation ASC
             """, (id,))
             commentaires = cursor.fetchall()
- 
+
+            #  Réactions sur la publication
+            cursor.execute("""
+                SELECT id_publication, type_reaction, COUNT(*) AS nb
+                FROM Reagir_publication
+                WHERE id_publication = %s
+                GROUP BY id_publication, type_reaction
+            """, (id,))
+            for r in cursor.fetchall():
+                reactions.setdefault(r['id_publication'], {})[r['type_reaction']] = r['nb']
+
+            #  Réactions sur commentaires
+            cursor.execute("""
+                SELECT C.id_commentaire, RC.type_reaction, COUNT(*) AS nb
+                FROM Commentaires C
+                JOIN Reagir_commentaire RC ON C.id_commentaire = RC.id_commentaire
+                WHERE C.id_publication = %s
+                GROUP BY C.id_commentaire, RC.type_reaction
+            """, (id,))
+            for r in cursor.fetchall():
+                cid = r['id_commentaire']
+                commentaire_reactions.setdefault(cid, {})[r['type_reaction']] = r['nb']
+
     finally:
         conn.close()
- 
-    if not publication:
-        return "Publication introuvable", 404
-     
-    print("Publication =", publication)
-    print("Commentaires =", commentaires)
- 
- 
-    return render_template('publication_affichage.html', publication=publication, commentaires=commentaires)
+
+    return render_template(
+        'publication_affichage.html',
+        publication=publication,
+        commentaires=commentaires,
+        reactions=reactions,
+        commentaire_reactions=commentaire_reactions
+    )
+
  
 @app.route('/modifier_publication/<int:id>', methods=['GET', 'POST'])
 def modifier_publication(id):
@@ -904,6 +956,132 @@ def modifier_statut():
     conn.close()
     return render_template('modifier_statut.html', statut=statut)
 
+from flask import jsonify, request
+
+@app.route('/react_publication', methods=['POST'])
+def react_publication():
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.get_json()
+    pub_id = data.get('id_publication')
+    reaction = data.get('type_reaction')
+    username = session['username']
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Vérifie si une réaction existe déjà
+        cursor.execute("""
+            SELECT * FROM Reagir_publication
+            WHERE id_publication = %s AND username = %s
+        """, (pub_id, username))
+        existing = cursor.fetchone()
+
+        if existing:
+            # Met à jour la réaction
+            cursor.execute("""
+                UPDATE Reagir_publication
+                SET type_reaction = %s, timestamp = NOW()
+                WHERE id_publication = %s AND username = %s
+            """, (reaction, pub_id, username))
+        else:
+            # Insère une nouvelle réaction
+            cursor.execute("""
+                INSERT INTO Reagir_publication (id_publication, username, type_reaction)
+                VALUES (%s, %s, %s)
+            """, (pub_id, username, reaction))
+
+        conn.commit()
+
+        # Recalcule tous les types de réaction
+        cursor.execute("""
+            SELECT type_reaction, COUNT(*) as nb
+            FROM Reagir_publication
+            WHERE id_publication = %s
+            GROUP BY type_reaction
+        """, (pub_id,))
+        stats = cursor.fetchall()
+    conn.close()
+
+    return jsonify({r['type_reaction']: r['nb'] for r in stats})
+
+@app.route('/react_commentaire', methods=['POST'])
+def react_commentaire():
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.get_json()
+    com_id = data.get('id_commentaire')
+    reaction = data.get('type_reaction')
+    username = session['username']
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Vérifie si une réaction existe déjà
+        cursor.execute("""
+            SELECT * FROM Reagir_commentaire
+            WHERE id_commentaire = %s AND username = %s
+        """, (com_id, username))
+        existing = cursor.fetchone()
+
+        if existing:
+            # Met à jour la réaction
+            cursor.execute("""
+                UPDATE Reagir_commentaire
+                SET type_reaction = %s, date_reaction = NOW()
+                WHERE id_commentaire = %s AND username = %s
+            """, (reaction, com_id, username))
+        else:
+            # Insère une nouvelle réaction
+            cursor.execute("""
+                INSERT INTO Reagir_commentaire (id_commentaire, username, type_reaction)
+                VALUES (%s, %s, %s)
+            """, (com_id, username, reaction))
+
+        conn.commit()
+
+        # Recalcule tous les types de réaction
+        cursor.execute("""
+            SELECT type_reaction, COUNT(*) as nb
+            FROM Reagir_commentaire
+            WHERE id_commentaire = %s
+            GROUP BY type_reaction
+        """, (com_id,))
+        stats = cursor.fetchall()
+    conn.close()
+
+    return jsonify({r['type_reaction']: r['nb'] for r in stats})
+
+@app.route('/creer_publication', methods=['GET', 'POST'])
+def creer_publication():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        titre = request.form['p_titre']
+        texte = request.form['texte']
+        statut = request.form['statut']
+        image = request.files.get('image')
+        chemin_image = None
+
+        if image and image.filename != '':
+            filename = secure_filename(image.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image.save(filepath)
+            chemin_image = f"uploads/{filename}"
+
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO Publications (username, p_titre, texte, statut, images)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (session['username'], titre, texte, statut, chemin_image))
+            conn.commit()
+        conn.close()
+
+        return redirect(url_for('publications'))
+
+    return render_template('creer_publication.html')
  
 
 if __name__ == '__main__':
