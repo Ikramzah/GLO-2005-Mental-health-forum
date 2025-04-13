@@ -387,30 +387,6 @@ def ajouter_indisponibilite():
 
     return render_template('ajouter_indisponibilite.html')
 
-@app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
-def ajouter_indisponibilite():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        username = session['username']
-        date = request.form['date']
-        heure_debut = request.form['heure_debut']
-        heure_fin = request.form['heure_fin']
-        raison = request.form.get('raison', '')
-
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO Indisponibilites (username_conseiller, date, heure_debut, heure_fin, raison)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (username, date, heure_debut, heure_fin, raison))
-            conn.commit()
-        conn.close()
-        return redirect(url_for('dashboard'))  # ou une page de confirmation
-
-    return render_template('ajouter_indisponibilite.html')
-
 @app.route('/chercher_utilisateurs', methods=['GET'])
 def chercher_utilisateurs():
     query = request.args.get('q', '')
