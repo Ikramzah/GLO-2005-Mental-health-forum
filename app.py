@@ -824,6 +824,86 @@ def ajouter_commentaire(id):
         conn.commit()
     conn.close()
     return redirect(url_for('afficher_une_publication', id=id))
+
+@app.route('/modifier_lieu', methods=['GET', 'POST'])
+def modifier_lieu():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    msg = ''
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        if request.method == 'POST':
+            nouveau_lieu = request.form['lieu_de_residence']
+
+            cursor.execute("""
+                UPDATE Utilisateurs SET lieu_de_residence = %s WHERE username = %s
+            """, (nouveau_lieu, session['username']))
+            conn.commit()
+            session['lieu_de_residence'] = nouveau_lieu
+            return redirect(url_for('profile'))
+
+        cursor.execute("""
+            SELECT lieu_de_residence FROM Utilisateurs WHERE username = %s
+        """, (session['username'],))
+        user = cursor.fetchone()
+    conn.close()
+    return render_template('modifier_lieu.html', lieu_actuel=user['lieu_de_residence'], countries=countries, msg=msg)
+
+@app.route('/modifier_email', methods=['GET', 'POST'])
+def modifier_email():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    msg = ''
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        if request.method == 'POST':
+            nouvel_email = request.form['email']
+
+            # Vérifier que l’email n’est pas déjà pris
+            cursor.execute("SELECT * FROM Utilisateurs WHERE email = %s AND username != %s", (nouvel_email, session['username']))
+            email_existant = cursor.fetchone()
+            if email_existant:
+                msg = "Cet email est déjà utilisé par un autre utilisateur."
+            else:
+                cursor.execute("""
+                    UPDATE Utilisateurs SET email = %s WHERE username = %s
+                """, (nouvel_email, session['username']))
+                conn.commit()
+                session['email'] = nouvel_email
+                return redirect(url_for('profile'))
+
+        cursor.execute("""
+            SELECT email FROM Utilisateurs WHERE username = %s
+        """, (session['username'],))
+        user = cursor.fetchone()
+    conn.close()
+    return render_template('modifier_email.html', email=user['email'], msg=msg)
+
+@app.route('/modifier_statut', methods=['GET', 'POST'])
+def modifier_statut():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        if request.method == 'POST':
+            nouveau_statut = request.form['statut_etudiant']
+            cursor.execute("""
+                UPDATE Etudiants SET statut_etudiant = %s WHERE username = %s
+            """, (nouveau_statut, session['username']))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('profile'))
+
+        cursor.execute("""
+            SELECT statut_etudiant FROM Etudiants WHERE username = %s
+        """, (session['username'],))
+        statut = cursor.fetchone()
+    conn.close()
+    return render_template('modifier_statut.html', statut=statut)
+
  
 
 if __name__ == '__main__':
