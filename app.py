@@ -1187,7 +1187,55 @@ def creer_publication():
         return redirect(url_for('publications'))
 
     return render_template('creer_publication.html')
- 
+
+@app.route('/supprimer_publication/<int:id>', methods=['POST'])
+def supprimer_publication(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Vérifie que la publication appartient à l'utilisateur
+        cursor.execute("SELECT * FROM Publications WHERE id_publication = %s AND username = %s", (id, session['username']))
+        publication = cursor.fetchone()
+
+        if not publication:
+            return "Non autorisé ou publication inexistante.", 403
+
+        # On marque comme effacé via table Effacer
+        cursor.execute("""
+            INSERT INTO Effacer (id_publication, username, type_effacement)
+            VALUES (%s, %s, 'utilisateur')
+        """, (id, session['username']))
+        conn.commit()
+
+    conn.close()
+    return redirect(url_for('publications'))
+
+@app.route('/supprimer_commentaire/<int:id>', methods=['POST'])
+def supprimer_commentaire(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT * FROM Commentaires WHERE id_commentaire = %s AND username = %s
+        """, (id, session['username']))
+        commentaire = cursor.fetchone()
+
+        if not commentaire:
+            return "Non autorisé ou commentaire inexistant.", 403
+
+        # Marquer comme supprimé
+        cursor.execute("""
+            INSERT INTO Effacer (id_commentaire, username, type_effacement)
+            VALUES (%s, %s, 'utilisateur')
+        """, (id, session['username']))
+        conn.commit()
+
+    conn.close()
+    return redirect(request.referrer or url_for('publications'))
 
 if __name__ == '__main__':
     app.run(debug=True)
