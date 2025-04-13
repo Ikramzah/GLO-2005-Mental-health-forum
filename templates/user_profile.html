@@ -208,7 +208,7 @@
       <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
 
       <div class="buttons">
-        <a href="{{ url_for('mes_publications') }}" class="btn">📝 Mes publications</a>
+        <a href="{{ url_for('publications_utilisateur') }}" class="btn">📝 Mes publications</a>
         <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
         <a href="{{ url_for('demander_code_reset') }}" class="btn">🔑 Modifier mot de passe</a>
         <a href="{{ url_for('modifier_statut') }}" class="btn">📌 Modifier statut</a>
