@@ -1,3 +1,5 @@
+{% include 'header.html' %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -96,20 +98,28 @@
     }
 
     .btn-modifier,
-    .btn-signaler {
+    .btn-signaler,
+    .btn-supprimer {
       margin-top: 10px;
       margin-right: 10px;
       font-size: 0.85em;
       padding: 6px 14px;
       border-radius: 20px;
       border: none;
-      background-color: #6f2dbd;
-      color: white;
       cursor: pointer;
+      color: white;
+    }
+
+    .btn-modifier {
+      background-color: #6f2dbd;
     }
 
     .btn-signaler {
       background-color: #ff6b6b;
+    }
+
+    .btn-supprimer {
+      background-color: #ff3333;
     }
   </style>
 </head>
@@ -133,6 +143,9 @@
       <a href="{{ url_for('modifier_publication', id=publication.id_publication) }}">
         <button class="btn-modifier">Modifier</button>
       </a>
+      <form action="{{ url_for('supprimer_publication', id=publication.id_publication) }}" method="POST" style="display:inline;">
+        <button class="btn-supprimer" onclick="return confirm('Supprimer cette publication ?')">Supprimer</button>
+      </form>
     {% else %}
       <a href="{{ url_for('signaler_publication', id=publication.id_publication) }}">
         <button class="btn-signaler">Signaler</button>
@@ -157,6 +170,12 @@
         <div class="comment-meta">{{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}</div>
         <div class="comment-text">{{ c.texte }}</div>
 
+        {% if c.username == session['username'] %}
+          <form action="{{ url_for('supprimer_commentaire', id=c.id_commentaire) }}" method="POST" style="display:inline;">
+            <button class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">Supprimer</button>
+          </form>
+        {% endif %}
+
         <div class="comment-reactions">
           {% for reaction in ['LIKE', 'LOVE', 'SAD', 'ANGRY', 'DISLIKE'] %}
             <button class="reaction-btn" onclick="reactToCommentaire({{ c.id_commentaire }}, '{{ reaction }}')">
@@ -179,46 +198,26 @@
 
 <script>
   function reactToPublication(id, type) {
-    fetch('/react_publication', {
+    fetch(`/react_publication`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id_publication: id,
-        type_reaction: type
-      })
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_publication: id, type_reaction: type})
     })
     .then(res => res.json())
     .then(data => {
-      for (const reactionType in data) {
-        const el = document.getElementById(`pub-${reactionType}`);
-        if (el) {
-          el.textContent = data[reactionType];
-        }
-      }
+      document.getElementById(`pub-${type}`).textContent = data[type] || 0;
     });
   }
 
   function reactToCommentaire(id_commentaire, type) {
-    fetch('/react_commentaire', {
+    fetch(`/react_commentaire`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id_commentaire: id_commentaire,
-        type_reaction: type
-      })
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_commentaire: id_commentaire, type_reaction: type})
     })
     .then(res => res.json())
     .then(data => {
-      for (const reactionType in data) {
-        const el = document.getElementById(`comm-${id_commentaire}-${reactionType}`);
-        if (el) {
-          el.textContent = data[reactionType];
-        }
-      }
+      document.getElementById(`comm-${id_commentaire}-${type}`).textContent = data[type] || 0;
     });
   }
 </script>
