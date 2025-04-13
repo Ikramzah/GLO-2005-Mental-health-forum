@@ -1,143 +1,161 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>profil de {{ user['prenom'] }} {{ user['nom'] }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <title>Profil de {{ user['prenom'] }} {{ user['nom'] }}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-        }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f3f3;
+    }
 
-        body{
-            padding: 0;
-        }
+    header {
+      background-color: #6f2dbd;
+      color: white;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
 
-        .container {
-            display: flex;
-            width: 100%;
-            height: 95vh; /* or any height you want */
-        }
+    header .logo-header {
+      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .double_containers1 {
-            flex: 1;
-            padding-top: 30px;
-            background-color: #b298dc;
-        }
+    header .logo-header img {
+      width: 40px;
+      height: 40px;
+    }
 
-        .double_containers2 {
-            flex: 1;
-            padding-top: 30px;
-            background-color: #b8d0eb;
-        }
+    nav {
+      display: flex;
+      gap: 20px;
+    }
 
-        .image_container{
-            padding-left:8% ;
-            padding-top: 30px;
-        }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
 
-        .list_of_options{
-            font-family: 'Alfa Slab One', cursive;
-            color: white;
-            padding-left:11% ;
-            padding-top: 90px;
-            font-size: 25.5px;
-        }
+    nav a:hover {
+      color: #d1c6f7;
+    }
 
-        .list_link{
-            font-family: 'Alfa Slab One', cursive;
-            color: white;
-            text-decoration: none;
-            font-size: 25.5px;
-            transition: all 0.1s ease-in-out;
+    .container {
+      display: flex;
+      height: calc(100vh - 64px); /* header height removed */
+    }
 
+    .sidebar {
+      width: 35%;
+      background-color: #6f2dbd;
+      color: white;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-        }
+    .sidebar h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
 
-        .list_link:hover {
-            color: rgba(255, 255, 255, 0.75);
-            box-shadow: 0 6px 0 #754eaa;
-        }
+    .sidebar p {
+      font-size: 17px;
+      margin: 5px 0;
+    }
 
-        .list_link:active{
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #754eaa;
-        }
+    .main {
+      width: 65%;
+      background-color: #e1f7ff;
+      padding: 60px 40px;
+      position: relative;
+    }
 
-        .list_element{
-            padding-bottom: 10px;
-        }
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      width: 120px;
+    }
 
-        .action_button  {
-            padding: 15px 10px;
-            border: 1px solid #da4253;
-            font-family: 'sans-serif';
-            margin-top: 20%;
-            margin-left: 9%;
-            border-radius: 38px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #da4253;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    .profile-pic {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
 
+    .buttons {
+      margin-top: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
 
+    .btn {
+      background-color: #ffffff;
+      color: #6f2dbd;
+      font-weight: bold;
+      padding: 14px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 17px;
+      width: 280px;
+      text-align: center;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
 
-            transition: transform 0.2s ease-in-out;
-        }
+    .btn:hover {
+      background-color: #6f2dbd;
+      color: white;
+      transform: translateY(-4px);
+    }
 
-        .action_button:hover {
-            transform: translateY(-5px);
-            cursor: pointer;
-        }
+    .delete-account {
+      margin-top: 40px;
+      padding: 12px 24px;
+      background-color: transparent;
+      border: 2px solid #da4253;
+      color: #da4253;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-        .action_button:active{
-            transition: none;
-            background-color: white;
-        }
-
-        .profile-card {
-            text-align: center;
-            background-color: #b8d0eb; /* same as your background */
-            padding: 40px 20px;
-            border-radius: 10px;
-            width: fit-content;
-            margin: 0 auto;
-        }
-
-        .profile-img {
-            width: 400px;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-            margin: 0 auto 20px;
-        }
-
-        .profile-info p {
-            margin: 5px 0;
-            font-family: 'Alfa Slab One', cursive;
-            color: white;
-            font-size: 25px;
-
-        }
-
-    </style>
+    .delete-account:hover {
+      background-color: #fff0f0;
+      transform: translateY(-3px);
+    }
+  </style>
 </head>
-
 <body>
+<<<<<<< HEAD
 {% include 'header.html' %}
 <div class="container">
     <div class="double_containers1">
@@ -158,24 +176,56 @@
     <li class="list_element">Modifier email email</li>
     <li class="list_element">Modifier lieu de residence</li>
 </ul>
+=======
+>>>>>>> 7f0c3b3 (authentification, modification de mot de pass, styling de modifier mot de pass, modifier photo et toucher un peu la page profil, Ajout d'un formulaire réservé au conseiller pour ajouter un livre)
 
-        </div>
-        <button class="action_button">Supprimer le compte</button>
+  <!-- 🔹 Header -->
+  <header>
+    <div class="logo-header">
+      <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo" />
+    </div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}"> Accueil</a>
+      <a href="{{ url_for('publications') }}"> Publications</a>
+      <a href="{{ url_for('livres') }}"> Livres</a>
+      <a href="{{ url_for('profile') }}"> Profil</a>
+      <a href="{{ url_for('logout') }}"> Déconnexion</a>
+    </nav>
+  </header>
+
+  <!-- 🔸 Contenu -->
+  <div class="container">
+
+    <div class="sidebar">
+      <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
+      <p><strong>📌 Statut :</strong> {{ statut.statut_etudiant }}</p>
+      <p><strong>📧 Courriel :</strong> {{ user.email }}</p>
+      <p><strong>📍 Lieu :</strong> {{ user.lieu_de_residence }}</p>
     </div>
 
-    <div class="double_containers2">
-        <div class="profile-card">
-            <img src="{{ url_for('static', filename=user['photo_de_profil']) }}" alt="Photo de profil" class="profile-img">
-            <div class="profile-info">
-                <p>{{ user['nom'] }} {{ user['prenom'] }}</p>
-                <p><em>Statut: {{ statut.statut_etudiant }}</em></p>
-                <p>{{ user.email }}</p>
-                <p>Habite à: {{ user.lieu_de_residence }}</p>
-            </div>
-        </div>
+    <div class="main">
+      <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo">
+      <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
+
+      <div class="buttons">
+        <a href="{{ url_for('mes_publications') }}" class="btn">📝 Mes publications</a>
+        <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
+        <a href="{{ url_for('demander_code_reset') }}" class="btn">🔑 Modifier mot de passe</a>
+        <a href="#" class="btn">📌 Modifier statut</a>
+        <a href="#" class="btn">📧 Modifier courriel</a>
+        <a href="#" class="btn">📍 Modifier lieu</a>
+        <button class="delete-account" onclick="confirmDelete()">❌ Supprimer le compte</button>
+      </div>
     </div>
+  </div>
 
-</div>
-
+  <script>
+    function confirmDelete() {
+      const confirmed = confirm("⚠️ Es-tu sûr(e) de vouloir supprimer ton compte ? Cette action est irréversible !");
+      if (confirmed) {
+        window.location.href = "{{ url_for('delete_account') }}";
+      }
+    }
+  </script>
 </body>
 </html>

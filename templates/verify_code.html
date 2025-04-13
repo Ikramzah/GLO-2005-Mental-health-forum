@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vérification du code</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ecd4ff, #d4b6ff);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      width: 160px;
+    }
+
+    .box {
+      background: #f4dbff;
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      color: #6f2dbd;
+    }
+
+    p.description {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 90%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 30px;
+      background-color: #a14be7;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #8e35c9;
+      transform: translateY(-4px);
+    }
+
+    #waitingSection {
+      color: #6f2dbd;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #caaaff;
+      border-top: 3px solid #6f2dbd;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #verifyForm {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .retour-btn {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .retour-btn a {
+      background-color: #d4afff;
+      color: #4a0072;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .retour-btn a:hover {
+      background-color: #c287f4;
+    }
+  </style>
+</head>
+<body>
+  <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
+
+  <div class="box">
+    <h2>📩 Vérification du code</h2>
+    <p class="description">Un code a été envoyé à ton adresse. Entre-le ci-dessous pour continuer.</p>
+
+    <div id="waitingSection">
+      ⏳ Veuillez patienter... Envoi du code en cours...
+      <div class="spinner"></div>
+    </div>
+
+    <form id="verifyForm" method="POST">
+      <input type="text" name="code" placeholder="Entrez le code ici" required />
+      <br>
+      <button type="submit">✅ Valider</button>
+    </form>
+
+    {% if msg %}
+      <p style="color: red; font-weight: bold; margin-top: 15px;">{{ msg }}</p>
+    {% endif %}
+
+    <div class="retour-btn">
+      <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById("waitingSection").style.display = "none";
+      document.getElementById("verifyForm").style.display = "block";
+    }, 5000);
+  </script>
+</body>
+</html>

@@ -27,7 +27,6 @@
         z-index: 10;
       }
 
-      /* Logo ULaval agrandi */
       header img.logo-ulaval {
         height: 58px;
         max-height: 100px;
@@ -38,7 +37,6 @@
         transform: scale(1.05);
       }
 
-      /* Profil + déconnexion */
       .nav-right {
         display: flex;
         align-items: center;
@@ -55,7 +53,7 @@
 
       .nav-right .nav-link {
         background-color: white;
-        color: var(--couleur-1);
+        color: #6f2dbd;
         font-weight: bold;
         padding: 6px 14px;
         border-radius: 8px;
@@ -66,25 +64,15 @@
       }
 
       .nav-right .nav-link:hover {
-        background-color: var(--couleur-5);
-        color: var(--couleur-2);
-      }
-
-      .nav-link {
-        color: #b9faf8;
-        text-decoration: none;
-        font-weight: bold;
+        background-color: #d8b4f8;
+        color: #4a0072;
       }
 
       .main-container {
         max-width: 800px;
         margin: 60px auto 30px;
         text-align: center;
-        background: rgba(190, 255, 200, 0.3);
         padding: 30px;
-        border-radius: 16px;
-        backdrop-filter: blur(6px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
       }
 
       .action-buttons {
@@ -117,13 +105,16 @@
       .pub-btn {
         background-color: #9d6bff;
       }
+
       .util-btn {
-        background-color: #b9faf8;
-        color: #222;
+        background-color: #9d6bff; /* violet */
+        color: white;
       }
+
       .livres-btn {
         background-color: #a663cc;
       }
+
       .rdv-btn {
         background-color: #6f2dbd;
       }
@@ -138,11 +129,10 @@
         background-color: rgba(0, 0, 0, 0.25);
         padding: 20px 25px;
         border-radius: 12px;
-        animation: fadeIn 4s ease-out;
-        overflow: hidden;
-        white-space: nowrap;
         animation: typing 6s steps(70, end), blink-caret 0.75s step-end infinite;
         border-right: 2px solid white;
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       @keyframes typing {
@@ -177,7 +167,7 @@
       <div class="nav-right">
         <a href="{{ url_for('profile') }}">
           <img
-            src="{{ url_for('static', filename=user['photo_de_profil']) }}"
+            src="{{ url_for('static', filename='images/photo de profil default.png') }}"
             alt="Profil"
             class="profile-pic"
           />
@@ -189,42 +179,28 @@
     <!-- Contenu principal -->
     <div class="main-container">
       <h2>Bienvenue {{ session['prenom'] }} {{ session['nom'] }} 👋</h2>
-      <p>
-        Tu es connecté(e) avec l'adresse :
-        <strong>{{ session['email'] }}</strong>
-      </p>
+      <p>Tu es connecté(e) avec l'adresse : <strong>{{ session['email'] }}</strong></p>
       <p>Ravie de te revoir sur le forum bien-être ULaval 🌿</p>
 
       <hr style="margin: 30px 0" />
 
       <div class="action-buttons">
-        <a href="{{ url_for('publications') }}" class="pub-btn"
-          >📝 Publications</a
-        >
-        <a href="{{ url_for('chercher_utilisateurs') }}" class="util-btn"
-          >👥 Utilisateurs</a
-        >
+        <a href="{{ url_for('publications') }}" class="pub-btn">📝 Publications</a>
+        <a href="{{ url_for('chercher_utilisateurs') }}" class="util-btn">👥 Utilisateurs</a>
         <a href="{{ url_for('livres') }}" class="livres-btn">📚 Livres</a>
-        <a href="{{ url_for('conseillers') }}" class="rdv-btn"
-          >🤝 Rendez-vous</a
-        >
-        <a href="{{ url_for('profile') }}" class="pub-btn">Mon Profile</a>
+        <a href="{{ url_for('conseillers') }}" class="rdv-btn">🤝 Rendez-vous</a>
+        <a href="{{ url_for('profile') }}" class="pub-btn">Mon Profil</a>
 
         {% if session['role'] == 'conseiller' %}
-        <a href="{{ url_for('ajouter_indisponibilite') }}" class="rdv-btn"
-          >🕐 Mes indisponibilités</a
-        >
-        <a href="{{ url_for('mes_rendez_vous') }}" class="livres-btn"
-          >📆 Mes rendez-vous</a
-        >
+        <a href="{{ url_for('ajouter_indisponibilite') }}" class="rdv-btn">🕐 Mes indisponibilités</a>
+        <a href="{{ url_for('mes_rendez_vous') }}" class="livres-btn">📆 Mes rendez-vous</a>
         {% endif %}
       </div>
     </div>
 
     <!-- Texte flottant -->
     <div class="floating-text">
-      Votre bien-être mental est notre priorité. Ici, vous êtes écouté,
-      accompagné et soutenu. 🌸
+      Votre bien-être mental est notre priorité. Ici, vous êtes écouté, accompagné et soutenu. 🌸
     </div>
   </body>
 </html>

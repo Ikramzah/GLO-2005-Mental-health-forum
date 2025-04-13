@@ -2,10 +2,15 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from Database_DB.db_config import get_connection
 from datetime import datetime, timedelta
+import smtplib
+import random
+from email.mime.text import MIMEText
 import pymysql
 import os
+import threading
 from werkzeug.utils import secure_filename
-
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=".env")
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -14,11 +19,19 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def send_email_async(email, code):
+    threading.Thread(target=send_reset_code, args=(email, code)).start()
 
 app = Flask(__name__)
 app.secret_key = 'secret123'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Configuration SMTP sécurisée via .env
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 # Liste des pays
 countries = [
     "-- Sélectionnez un pays --",
@@ -56,6 +69,148 @@ def inject_user():
         conn.close()
         return dict(user=user)
     return dict(user=None)
+
+# Configuration de l'envoi d'email
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'samahghost@gmail.com'  # 🔁 Remplace par ton email
+app.config['MAIL_PASSWORD'] = 'ogizkvoawnzsmupz'   # 🔁 Mot de passe d'application Gmail
+app.config['MAIL_USE_TLS'] = True
+
+# Dictionnaire temporaire pour stocker les codes
+reset_codes = {}  # Code temporaire stocké en mémoire (ou utilise ta base SQL)
+
+def send_reset_code(email, code):
+    sender = app.config['MAIL_USERNAME']
+    password = app.config['MAIL_PASSWORD']
+    msg = MIMEText(f"Voici votre code de réinitialisation : {code}")
+    msg['Subject'] = 'Réinitialisation de mot de passe'
+    msg['From'] = sender
+    msg['To'] = email
+
+    with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT']) as server:
+        server.starttls()
+        server.login(sender, password)
+        server.send_message(msg)
+
+@app.route('/demander_code_reset', methods=['GET', 'POST'])
+def demander_code_reset():
+    msg = ''
+    if request.method == 'POST':
+        email = request.form['email']
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT username FROM Utilisateurs WHERE email = %s", (email,))
+            user = cursor.fetchone()
+        conn.close()
+        if user:
+            code = str(random.randint(100000, 999999))
+            reset_codes[email] = code
+            send_email_async(email, code)
+            session['reset_email'] = email
+            msg = "Code envoyé à votre adresse courriel."
+            return redirect(url_for('verifier_code'))
+        else:
+            msg = "Adresse courriel inconnue."
+    return render_template('reset_password_request.html', msg=msg)
+@app.route('/delete_account')
+def delete_account():
+    if 'username' in session:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM Utilisateurs WHERE username = %s", (session['username'],))
+            conn.commit()
+        conn.close()
+        session.clear()
+        return redirect(url_for('login'))
+    return redirect(url_for('login'))
+@app.route('/ajouter_livre', methods=['POST'])
+def ajouter_livre():
+    if 'username' not in session or session['role'] != 'conseiller':
+        return redirect(url_for('login'))
+
+    titre = request.form['titre']
+    auteur = request.form['auteur']
+    date = request.form['date_publication']
+    description = request.form['description']
+    conseiller = request.form['nom_conseiller']
+    photo = request.files['photo_livre']
+
+    if photo and allowed_file(photo.filename):
+        filename = secure_filename(photo.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        photo.save(filepath)
+        chemin_image = f"uploads/{filename}"
+
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO Livre (nom_livre, auteur, date_publication, description, photo_livre)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (titre, auteur, date, description, chemin_image))
+            conn.commit()
+
+            cursor.execute("SELECT LAST_INSERT_ID() AS id")
+            livre_id = cursor.fetchone()['id']
+
+            cursor.execute("""
+                INSERT INTO Recommander (id_livre, username_conseiller)
+                VALUES (%s, %s)
+            """, (livre_id, session['username']))
+            conn.commit()
+        conn.close()
+
+    return redirect(url_for('livres'))
+@app.route('/supprimer_livre/<int:id_livre>', methods=['POST'])
+def supprimer_livre(id_livre):
+    if 'username' not in session or session.get('role') != 'conseiller':
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            # Supprimer d'abord la recommandation (si existe)
+            cursor.execute("DELETE FROM Recommander WHERE id_livre = %s", (id_livre,))
+            # Ensuite, supprimer le livre lui-même
+            cursor.execute("DELETE FROM Livre WHERE id_livre = %s", (id_livre,))
+            conn.commit()
+    finally:
+        conn.close()
+
+    return redirect(url_for('livres'))
+
+
+@app.route('/verifier_code', methods=['GET', 'POST'])
+def verifier_code():
+    msg = ''
+    if request.method == 'POST':
+        email = session.get('reset_email')
+        input_code = request.form['code']
+        if reset_codes.get(email) == input_code:
+            return redirect(url_for('set_new_password'))
+        else:
+            msg = "Code incorrect."
+    return render_template('verify_code.html', msg=msg)
+
+@app.route('/set_new_password', methods=['GET', 'POST'])
+def set_new_password():
+    msg = ''
+    if request.method == 'POST':
+        email = session.get('reset_email')
+        password = request.form['password']
+        confirm = request.form['confirm']
+        if password != confirm:
+            msg = "Les mots de passe ne correspondent pas."
+        else:
+            hashed = generate_password_hash(password)
+            conn = get_connection()
+            with conn.cursor() as cursor:
+                cursor.execute("UPDATE Utilisateurs SET mot_de_passe = %s WHERE email = %s", (hashed, email))
+                conn.commit()
+            conn.close()
+            msg = "Mot de passe modifié avec succès !"
+            return redirect(url_for('login'))
+    return render_template('set_new_password.html', msg=msg)
 
 @app.route('/')
 def accueil():
