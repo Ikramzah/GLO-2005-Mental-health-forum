@@ -71,6 +71,9 @@
     {% if session['role'] == 'conseiller' %}
       <a href="{{ url_for('ajouter_indisponibilite') }}" class="nav-link">Mes indisponibilités</a>
       <a href="{{ url_for('mes_rendez_vous') }}" class="nav-link">Mes rendez-vous</a>
+    {% elif session['role'] == 'moderateur' %}
+      <a href="{{ url_for('moderation') }}" class="nav-link">signalement</a>
+      <a href="{{ url_for('historique_signalements') }}">Historique des signalements</a>
     {% endif %}
   </nav>
 

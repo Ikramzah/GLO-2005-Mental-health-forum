@@ -794,21 +794,150 @@ def modifier_publication(id):
 def signaler_publication(id):
     if 'username' not in session:
         return redirect(url_for('login'))
- 
+
     if request.method == 'POST':
         raison = request.form.get('raison', 'Raison non précisée')
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO Effacer (id_publication, username, raison, type_effacement)
-                VALUES (%s, %s, %s, 'utilisateur')
+                INSERT INTO Signalements (id_publication, username, raison)
+                VALUES (%s, %s, %s)
             """, (id, session['username'], raison))
             conn.commit()
         conn.close()
         return redirect(url_for('publications'))
- 
+
     return render_template('signaler_publication.html', publication_id=id)
- 
+
+@app.route('/moderation')
+def moderation():
+    if 'username' not in session or session.get('role') != 'moderateur':
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        # Signalements avec informations de publications/commentaires
+        cursor.execute("""
+            SELECT 
+                S.*, 
+                U.nom, U.prenom, U.photo_de_profil,
+                P.p_titre, P.texte, P.date AS date_publication,
+                C.contenu AS contenu_commentaire, C.date_creation AS date_commentaire,
+                (
+                    SELECT COUNT(*) 
+                    FROM Commentaires C2
+                    WHERE C2.id_publication = P.id_publication
+                      AND NOT EXISTS (
+                          SELECT 1 FROM Effacer E 
+                          WHERE E.id_commentaire = C2.id_commentaire
+                      )
+                ) AS nb_reponses
+            FROM Signalements S
+            JOIN Utilisateurs U ON S.username = U.username
+            LEFT JOIN Publications P ON S.id_publication = P.id_publication
+            LEFT JOIN Commentaires C ON S.id_commentaire = C.id_commentaire
+            WHERE S.est_traite = FALSE
+            ORDER BY S.date DESC
+        """)
+        signalements = cursor.fetchall()
+
+        # Réactions aux publications (ajouté ici !)
+        cursor.execute("""
+            SELECT id_publication, type_reaction, COUNT(*) AS nb
+            FROM Reagir_publication
+            GROUP BY id_publication, type_reaction
+        """)
+        reactions_data = cursor.fetchall()
+
+    conn.close()
+
+    # Construire le dictionnaire `reactions`
+    reactions = {}
+    for r in reactions_data:
+        pub_id = r['id_publication']
+        if pub_id not in reactions:
+            reactions[pub_id] = {}
+        reactions[pub_id][r['type_reaction']] = r['nb']
+
+    return render_template('moderation.html', signalements=signalements, reactions=reactions)
+
+
+@app.route('/approuver_signalement', methods=['POST'])
+def approuver_signalement():
+    if 'username' not in session or session.get('role') != 'moderateur':
+        return redirect(url_for('login'))
+
+    id_signalement = request.form['id_signalement']
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM Signalements WHERE id_signalement = %s", (id_signalement,))
+        signalement = cursor.fetchone()
+
+        if signalement:
+            cursor.execute("""
+                INSERT INTO Effacer (id_publication, id_commentaire, username, raison, type_effacement)
+                VALUES (%s, %s, %s, %s, 'moderateur')
+            """, (
+                signalement['id_publication'],
+                signalement['id_commentaire'],
+                session['username'],
+                signalement['raison']
+            ))
+
+            cursor.execute("""
+                UPDATE Signalements SET est_traite = TRUE WHERE id_signalement = %s
+            """, (id_signalement,))
+            conn.commit()
+    conn.close()
+    return redirect(url_for('moderation'))
+
+@app.route('/historique_signalements')
+def historique_signalements():
+    if 'username' not in session or session.get('role') != 'moderateur':
+        return redirect(url_for('login'))
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                S.*, 
+                U.nom, U.prenom, U.photo_de_profil,
+                P.p_titre, P.texte, P.date AS date_publication,
+                C.contenu AS contenu_commentaire, C.date_creation AS date_commentaire,
+                CASE 
+                    WHEN E.id_effacement IS NOT NULL THEN TRUE
+                    ELSE FALSE
+                END AS approuve
+            FROM Signalements S
+            JOIN Utilisateurs U ON S.username = U.username
+            LEFT JOIN Publications P ON S.id_publication = P.id_publication
+            LEFT JOIN Commentaires C ON S.id_commentaire = C.id_commentaire
+            LEFT JOIN Effacer E ON 
+                (E.id_publication = S.id_publication AND S.id_publication IS NOT NULL)
+                OR (E.id_commentaire = S.id_commentaire AND S.id_commentaire IS NOT NULL)
+            WHERE S.est_traite = TRUE
+            ORDER BY S.date DESC
+        """)
+        signalements = cursor.fetchall()
+    conn.close()
+
+    return render_template('historique_signalements.html', signalements=signalements)
+
+@app.route('/rejeter_signalement', methods=['POST'])
+def rejeter_signalement():
+    if 'username' not in session or session.get('role') != 'moderateur':
+        return redirect(url_for('login'))
+
+    id_signalement = request.form['id_signalement']
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            UPDATE Signalements SET est_traite = TRUE WHERE id_signalement = %s
+        """, (id_signalement,))
+        conn.commit()
+    conn.close()
+    return redirect(url_for('moderation'))
+
  
 @app.route('/ajouter_commentaire/<int:id>', methods=['POST'])
 def ajouter_commentaire(id):

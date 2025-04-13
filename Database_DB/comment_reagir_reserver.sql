@@ -119,6 +119,23 @@ CREATE TABLE Indisponibilites (
     FOREIGN KEY (username_conseiller) REFERENCES Conseillers(username) ON DELETE CASCADE
 );
 
+CREATE TABLE Signalements (
+    id_signalement INT AUTO_INCREMENT PRIMARY KEY,
+    id_publication INT NULL,
+    id_commentaire INT NULL,
+    username VARCHAR(50) NOT NULL,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    raison TEXT NOT NULL,
+    est_traite BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_publication) REFERENCES Publications(id_publication)
+        ON DELETE CASCADE,
+    FOREIGN KEY (id_commentaire) REFERENCES Commentaires(id_commentaire)
+        ON DELETE CASCADE,
+    FOREIGN KEY (username) REFERENCES Utilisateurs(username)
+        ON DELETE CASCADE
+);
+
+
 -- Triggers
 DELIMITER $$
 CREATE TRIGGER trig_prevent_double_booking
