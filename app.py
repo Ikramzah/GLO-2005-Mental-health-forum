@@ -1188,28 +1188,38 @@ def creer_publication():
 
     return render_template('creer_publication.html')
 
-@app.route('/supprimer_publication/<int:id>', methods=['POST'])
-def supprimer_publication(id):
+@app.route('/supprimer_publication/<int:id_publication>', methods=['POST'])
+def supprimer_publication(id_publication):
     if 'username' not in session:
         return redirect(url_for('login'))
 
     conn = get_connection()
-    with conn.cursor() as cursor:
-        # Vérifie que la publication appartient à l'utilisateur
-        cursor.execute("SELECT * FROM Publications WHERE id_publication = %s AND username = %s", (id, session['username']))
-        publication = cursor.fetchone()
+    try:
+        with conn.cursor() as cursor:
+            # Vérifie que la publication appartient bien à l'utilisateur
+            cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id_publication,))
+            publication = cursor.fetchone()
 
-        if not publication:
-            return "Non autorisé ou publication inexistante.", 403
+            if not publication:
+                return "Publication introuvable", 404
+            if publication['username'] != session['username']:
+                return "Action non autorisée", 403
 
-        # On marque comme effacé via table Effacer
-        cursor.execute("""
-            INSERT INTO Effacer (id_publication, username, type_effacement)
-            VALUES (%s, %s, 'utilisateur')
-        """, (id, session['username']))
-        conn.commit()
+            # Insertion dans Effacer avec une raison explicite
+            cursor.execute("""
+                INSERT INTO Effacer (id_publication, username, raison, type_effacement)
+                VALUES (%s, %s, %s, %s)
+            """, (
+                id_publication,
+                session['username'],
+                "Suppression par l'utilisateur",
+                "utilisateur"
+            ))
 
-    conn.close()
+            conn.commit()
+    finally:
+        conn.close()
+
     return redirect(url_for('publications'))
 
 @app.route('/supprimer_commentaire/<int:id>', methods=['POST'])
