@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier le statut</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #b8d0eb;
+            font-family: Arial, sans-serif;
+            padding: 50px;
+        }
+
+        .form-container {
+            background-color: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        label, select, button {
+            display: block;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        select, button {
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #6f2dbd;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4e1d8b;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="form-container">
+        <h2>Modifier votre statut étudiant</h2>
+        <form method="POST">
+            <label for="statut_etudiant">Nouveau statut :</label>
+            <select name="statut_etudiant" id="statut_etudiant" required>
+                <option value="citoyen" {% if statut.statut_etudiant == 'citoyen' %}selected{% endif %}>Citoyen</option>
+                <option value="résident permanent" {% if statut.statut_etudiant == 'résident permanent' %}selected{% endif %}>Résident permanent</option>
+                <option value="international" {% if statut.statut_etudiant == 'international' %}selected{% endif %}>International</option>
+                <option value="en échange" {% if statut.statut_etudiant == 'en échange' %}selected{% endif %}>En échange</option>
+            </select>
+            <button type="submit">Enregistrer les modifications</button>
+        </form>
+    </div>
+</body>
+</html>
