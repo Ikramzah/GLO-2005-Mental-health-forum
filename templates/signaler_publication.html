@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Signaler une publication</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background-color: #B8D0EB;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 80px auto;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #6F2DBD;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      margin-bottom: 20px;
+    }
+    button {
+      display: block;
+      margin-left: auto;
+      background-color: #6F2DBD;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    button:hover {
+      background-color: #4e1d8b;
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="container">
+    <h1>Signaler cette publication</h1>
+    <form method="POST" action="{{ url_for('signaler_publication', id=publication_id) }}">
+      <label for="raison">Expliquez brièvement :</label>
+      <textarea name="raison" id="raison" placeholder="Raison du signalement..." required></textarea>
+      <button type="submit">🚩 Envoyer le signalement</button>
+    </form>
+  </div>
+
+</body>
+</html>
