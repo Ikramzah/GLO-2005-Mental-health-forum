@@ -143,7 +143,7 @@
       <a href="{{ url_for('modifier_publication', id=publication.id_publication) }}">
         <button class="btn-modifier">Modifier</button>
       </a>
-      <form action="{{ url_for('supprimer_publication', id=publication.id_publication) }}" method="POST" style="display:inline;">
+      <form action="{{ url_for('supprimer_publication', id_publication=publication.id_publication) }}" method="POST">
         <button class="btn-supprimer" onclick="return confirm('Supprimer cette publication ?')">Supprimer</button>
       </form>
     {% else %}
