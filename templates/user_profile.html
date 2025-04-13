@@ -211,9 +211,9 @@
         <a href="{{ url_for('mes_publications') }}" class="btn">📝 Mes publications</a>
         <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
         <a href="{{ url_for('demander_code_reset') }}" class="btn">🔑 Modifier mot de passe</a>
-        <a href="#" class="btn">📌 Modifier statut</a>
-        <a href="#" class="btn">📧 Modifier courriel</a>
-        <a href="#" class="btn">📍 Modifier lieu</a>
+        <a href="{{ url_for('modifier_statut') }}" class="btn">📌 Modifier statut</a>
+        <a href="{{ url_for('modifier_email') }}" class="btn">📧 Modifier courriel</a>
+        <a href="{{ url_for('modifier_lieu') }}" class="btn">📍 Modifier lieu</a>
         <button class="delete-account" onclick="confirmDelete()">❌ Supprimer le compte</button>
       </div>
     </div>
