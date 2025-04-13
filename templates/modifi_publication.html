@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier la publication</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6e6fa;
+      padding: 40px;
+    }
+    .form-container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+    }
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 25px;
+      background-color: #6F2DBD;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #4e1d8b;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="form-container">
+    <h2>Modifier votre publication</h2>
+    <form method="POST">
+      <label for="p_titre">Titre</label>
+      <input type="text" id="p_titre" name="p_titre" value="{{ publication.p_titre }}" required>
+
+      <label for="texte">Texte</label>
+      <textarea id="texte" name="texte" rows="6" required>{{ publication.texte }}</textarea>
+
+      <label for="statut">Statut</label>
+      <select id="statut" name="statut">
+        <option value="public" {% if publication.statut == 'public' %}selected{% endif %}>Public</option>
+        <option value="anonyme" {% if publication.statut == 'anonyme' %}selected{% endif %}>Anonyme</option>
+      </select>
+
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+  </div>
+</body>
+</html>
