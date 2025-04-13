@@ -40,10 +40,31 @@
           {% endif %}
         </div>
 
-        <div class="publication-text">{{ pub.texte|truncate(200) }}</div>
+        <div class="publication-text">{{ pub.texte|truncate(300) }}</div>
 
-        <div class="publication-stats">
-          Réponses : {{ pub.nb_reponses }} | Réactions : {{ pub.nb_reaction }}
+        <div class="publication-footer">
+          <div class="left-comments">
+              {{ pub.nb_reponses }} Commentaire{{ 's' if pub.nb_reponses > 1 }}
+          </div>
+          <div class="right-reactions">
+            {% if reactions[pub.id_publication] is defined %}
+              {% if reactions[pub.id_publication]['LIKE'] is defined %}
+                👍 {{ reactions[pub.id_publication]['LIKE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['LOVE'] is defined %}
+                ❤️ {{ reactions[pub.id_publication]['LOVE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['DISLIKE'] is defined %}
+                👎 {{ reactions[pub.id_publication]['DISLIKE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['SAD'] is defined %}
+                😢 {{ reactions[pub.id_publication]['SAD'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['ANGRY'] is defined %}
+                😡 {{ reactions[pub.id_publication]['ANGRY'] }}
+              {% endif %}
+            {% endif %}
+          </div>
         </div>
       </div>
       {% endfor %} {% else %}

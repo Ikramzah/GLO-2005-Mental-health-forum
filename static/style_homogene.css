@@ -362,3 +362,30 @@ button[type="submit"] {
     font-weight: bold;
     color: var(--couleur-1);
 }
+
+.publication-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 0.95rem;
+  }
+  
+  .left-comments a {
+    color: #6F2DBD;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .left-comments a:hover {
+    text-decoration: underline;
+  }
+  
+  .right-reactions {
+    display: flex;
+    gap: 12px;
+    font-size: 1rem;
+  }
+  

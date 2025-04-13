@@ -176,8 +176,23 @@ def publications():
             ORDER BY P.date DESC
         """)
         publications = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT id_publication, type_reaction, COUNT(*) AS nb
+            FROM Reagir_publication
+            GROUP BY id_publication, type_reaction
+        """)
+        reactions_data = cursor.fetchall()
+
     conn.close()
-    return render_template('publications.html', publications=publications)
+    reactions = {}
+    for r in reactions_data:
+        pub_id = r['id_publication']
+        if pub_id not in reactions:
+            reactions[pub_id] = {}
+        reactions[pub_id][r['type_reaction']] = r['nb']
+
+    return render_template('publications.html', publications=publications, reactions=reactions)
 
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
 def ajouter_indisponibilite():
@@ -256,8 +271,8 @@ def conseillers():
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
 
-@app.route('/mes_publications')
-def mes_publications():
+@app.route('/publications_utilisateur')
+def publications_utilisateur():
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -271,8 +286,27 @@ def mes_publications():
             ORDER BY P.date DESC
         """, (session['username'],))
         publications = cursor.fetchall()
+
+        # Ajout de la récupération des réactions comme pour /publications
+        cursor.execute("""
+            SELECT id_publication, type_reaction, COUNT(*) AS nb
+            FROM Reagir_publication
+            GROUP BY id_publication, type_reaction
+        """)
+        reactions_data = cursor.fetchall()
+
     conn.close()
-    return render_template('mes_publications.html', publications=publications)
+
+    # Dictionnaire structuré {id_publication: {type: count}}
+    reactions = {}
+    for r in reactions_data:
+        pub_id = r['id_publication']
+        if pub_id not in reactions:
+            reactions[pub_id] = {}
+        reactions[pub_id][r['type_reaction']] = r['nb']
+
+    return render_template('publications_utilisateur.html', publications=publications, reactions=reactions)
+
 
 @app.route('/mes_rendez_vous')
 def mes_rendez_vous():
