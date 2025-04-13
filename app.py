@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import pymysql
 import os
 from werkzeug.utils import secure_filename
-import base64
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -170,15 +169,46 @@ def logout():
 def publications():
     conn = get_connection()
     with conn.cursor() as cursor:
+        # Récupérer publications non supprimées et compter uniquement les commentaires non supprimés
         cursor.execute("""
-            SELECT P.*, U.username, U.photo_de_profil
+            SELECT P.*, U.photo_de_profil,
+            (
+                SELECT COUNT(*) 
+                FROM Commentaires C
+                WHERE C.id_publication = P.id_publication
+                  AND NOT EXISTS (
+                      SELECT 1 FROM Effacer E 
+                      WHERE E.id_commentaire = C.id_commentaire
+                  )
+            ) AS nb_reponses
             FROM Publications P
             JOIN Utilisateurs U ON P.username = U.username
+            WHERE NOT EXISTS (
+                SELECT 1 FROM Effacer E 
+                WHERE E.id_publication = P.id_publication
+            )
             ORDER BY P.date DESC
         """)
         publications = cursor.fetchall()
+
+        # Réactions
+        cursor.execute("""
+            SELECT id_publication, type_reaction, COUNT(*) AS nb
+            FROM Reagir_publication
+            GROUP BY id_publication, type_reaction
+        """)
+        reactions_data = cursor.fetchall()
+
     conn.close()
-    return render_template('publications.html', publications=publications)
+
+    reactions = {}
+    for r in reactions_data:
+        pub_id = r['id_publication']
+        if pub_id not in reactions:
+            reactions[pub_id] = {}
+        reactions[pub_id][r['type_reaction']] = r['nb']
+
+    return render_template('publications.html', publications=publications, reactions=reactions)
 
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
 def ajouter_indisponibilite():
@@ -212,13 +242,24 @@ def chercher_utilisateurs():
         conn = get_connection()
         with conn.cursor() as cursor:
             sql = """
-                SELECT U.username, U.nom, U.prenom, E.niveau_anonymat, U.email, U.photo_de_profil
+                SELECT 
+                    U.username, 
+                    U.nom, 
+                    U.prenom, 
+                    COALESCE(E.niveau_anonymat, 'public') AS niveau_anonymat,
+                    U.email, 
+                    U.photo_de_profil
                 FROM Utilisateurs U
-                INNER JOIN Etudiants E ON U.username = E.username
-                WHERE U.username LIKE %s OR U.nom LIKE %s OR U.prenom OR U.email LIKE %s
+                LEFT JOIN Etudiants E ON U.username = E.username
+                LEFT JOIN Conseillers C ON U.username = C.username
+                WHERE 
+                    U.username LIKE %s OR 
+                    U.nom LIKE %s OR 
+                    U.prenom LIKE %s OR 
+                    U.email LIKE %s
             """
-            wildcard = '%' + query + '%'
-            cursor.execute(sql, (wildcard, wildcard, wildcard))
+            wildcard = f"%{query}%"
+            cursor.execute(sql, (wildcard, wildcard, wildcard, wildcard))
             users = cursor.fetchall()
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
@@ -246,23 +287,51 @@ def conseillers():
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
 
-@app.route('/mes_publications')
-def mes_publications():
+@app.route('/publications_utilisateur')
+def publications_utilisateur():
     if 'username' not in session:
         return redirect(url_for('login'))
 
     conn = get_connection()
     with conn.cursor() as cursor:
         cursor.execute("""
-            SELECT P.*, U.photo_de_profil
+            SELECT P.*, U.photo_de_profil,
+            (
+                SELECT COUNT(*) FROM Commentaires C
+                WHERE C.id_publication = P.id_publication
+                  AND C.id_commentaire NOT IN (
+                      SELECT E.id_commentaire FROM Effacer E WHERE E.id_commentaire IS NOT NULL
+                  )
+            ) AS nb_reponses
             FROM Publications P
             JOIN Utilisateurs U ON P.username = U.username
             WHERE P.username = %s
+              AND P.id_publication NOT IN (
+                  SELECT id_publication FROM Effacer WHERE id_publication IS NOT NULL
+              )
             ORDER BY P.date DESC
         """, (session['username'],))
         publications = cursor.fetchall()
+
+        # Requêtes pour les réactions comme avant
+        cursor.execute("""
+            SELECT id_publication, type_reaction, COUNT(*) AS nb
+            FROM Reagir_publication
+            GROUP BY id_publication, type_reaction
+        """)
+        reactions_data = cursor.fetchall()
+
     conn.close()
-    return render_template('mes_publications.html', publications=publications)
+
+    reactions = {}
+    for r in reactions_data:
+        pub_id = r['id_publication']
+        if pub_id not in reactions:
+            reactions[pub_id] = {}
+        reactions[pub_id][r['type_reaction']] = r['nb']
+
+    return render_template('publications_utilisateur.html', publications=publications, reactions=reactions)
+
 
 @app.route('/mes_rendez_vous')
 def mes_rendez_vous():
@@ -412,27 +481,38 @@ def profil_utilisateur(username):
     conn = get_connection()
     utilisateur = None
     publications = []
+    est_conseiller = False
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT U.username, U.nom, U.prenom, U.email, U.photo_de_profil, E.niveau_anonymat
+                SELECT U.username, U.nom, U.prenom, U.email, U.photo_de_profil,
+                       COALESCE(E.niveau_anonymat, 'public') AS niveau_anonymat
                 FROM Utilisateurs U
-                JOIN Etudiants E ON U.username = E.username
+                LEFT JOIN Etudiants E ON U.username = E.username
                 WHERE U.username = %s
             """, (username,))
             utilisateur = cursor.fetchone()
 
-            if utilisateur and utilisateur['niveau_anonymat'] != 'anonyme':
-                cursor.execute("""
-                    SELECT * FROM Publications
-                    WHERE username = %s
-                    ORDER BY date DESC
-                """, (username,))
-                publications = cursor.fetchall()
+            if utilisateur:
+                cursor.execute("SELECT 1 FROM Conseillers WHERE username = %s", (username,))
+                est_conseiller = cursor.fetchone() is not None
+
+                if utilisateur['niveau_anonymat'] != 'anonyme':
+                    cursor.execute("""
+                        SELECT * FROM Publications
+                        WHERE username = %s
+                        ORDER BY date DESC
+                    """, (username,))
+                    publications = cursor.fetchall()
     finally:
         conn.close()
 
-    return render_template('profil_utilisateur.html', utilisateur=utilisateur, publications=publications)
+    return render_template(
+        'profil_utilisateur.html',
+        utilisateur=utilisateur,
+        publications=publications,
+        est_conseiller=est_conseiller
+    )
 
 @app.route('/modifier_photo', methods=['GET', 'POST'])
 def modifier_photo():
@@ -479,7 +559,7 @@ def afficher_une_publication(id):
     conn = get_connection()
     publication = None
     commentaires = []
-
+ 
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
@@ -489,22 +569,11 @@ def afficher_une_publication(id):
                 WHERE id_publication = %s
             """, (id,))
             publication = cursor.fetchone()
-
+ 
             if publication:
                 # Image de profil
-                profil_path = os.path.join("static", publication["photo_de_profil"])
-                if os.path.exists(profil_path):
-                    with open(profil_path, "rb") as img:
-                        publication["photo_profil_base64"] = base64.b64encode(img.read()).decode('utf-8')
-                else:
-                    publication["photo_profil_base64"] = ""
-
-                # Image de la publication
-                if publication.get("images"):
-                    publication["images_base64"] = base64.b64encode(publication["images"]).decode('utf-8')
-                else:
-                    publication["images_base64"] = None
-
+                publication["photo_profil_path"] = publication["photo_de_profil"]
+ 
             # Commentaires
             cursor.execute("""
                 SELECT C.contenu AS texte , C.date_creation AS date_et_heure, U.nom, U.prenom, E.niveau_anonymat
@@ -515,62 +584,62 @@ def afficher_une_publication(id):
                 ORDER BY C.date_creation ASC
             """, (id,))
             commentaires = cursor.fetchall()
-
+ 
     finally:
         conn.close()
-
+ 
     if not publication:
         return "Publication introuvable", 404
-    
+     
     print("Publication =", publication)
     print("Commentaires =", commentaires)
-
-
+ 
+ 
     return render_template('publication_affichage.html', publication=publication, commentaires=commentaires)
-
+ 
 @app.route('/modifier_publication/<int:id>', methods=['GET', 'POST'])
 def modifier_publication(id):
     if 'username' not in session:
         return redirect(url_for('login'))
-
+ 
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
             # Vérifier que la publication existe et appartient au user connecté
             cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id,))
             publication = cursor.fetchone()
-
+ 
             if not publication:
                 return "Publication introuvable", 404
-
+ 
             if publication['username'] != session['username']:
                 return "Accès non autorisé", 403
-
+ 
             if request.method == 'POST':
                 nouveau_titre = request.form['p_titre']
                 nouveau_texte = request.form['texte']
                 nouveau_statut = request.form['statut']
-
+ 
                 cursor.execute("""
                     UPDATE Publications
                     SET p_titre = %s, texte = %s, statut = %s
                     WHERE id_publication = %s
                 """, (nouveau_titre, nouveau_texte, nouveau_statut, id))
-
+ 
                 conn.commit()
                 return redirect(url_for('afficher_une_publication', id=id))
-
+ 
     finally:
         conn.close()
-
+ 
     return render_template('modifier_publication.html', publication=publication)
-
-
+ 
+ 
 @app.route('/signaler_publication/<int:id>', methods=['GET', 'POST'])
 def signaler_publication(id):
     if 'username' not in session:
         return redirect(url_for('login'))
-
+ 
     if request.method == 'POST':
         raison = request.form.get('raison', 'Raison non précisée')
         conn = get_connection()
@@ -582,10 +651,10 @@ def signaler_publication(id):
             conn.commit()
         conn.close()
         return redirect(url_for('publications'))
-
+ 
     return render_template('signaler_publication.html', publication_id=id)
-
-
+ 
+ 
 @app.route('/ajouter_commentaire/<int:id>', methods=['POST'])
 def ajouter_commentaire(id):
     if 'username' not in session:
@@ -600,10 +669,7 @@ def ajouter_commentaire(id):
         conn.commit()
     conn.close()
     return redirect(url_for('afficher_une_publication', id=id))
-
-
-
+ 
 
 if __name__ == '__main__':
     app.run(debug=True)
-

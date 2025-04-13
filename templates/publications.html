@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title>Publications</title>
   <!-- Lien vers ta feuille de style principale -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
   
 </head>
@@ -18,14 +17,15 @@
 
     <!-- Boucle sur la liste des publications -->
     {% for pub in publications %}
-    <div class="publication-card">
-      <!-- Profil utilisateur + Titre publication -->
-      <div style="display: flex; align-items: center;">
-        <div class="publication-meta" style="display: flex; align-items: center; gap: 10px;">
-          <img src="{{ url_for('static', filename=pub.photo_de_profil) }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
-        <h2 class="publication-title">{{ pub.p_titre }}</h2>
-      </div>
-      </div>
+    <a href="{{ url_for('afficher_une_publication', id=pub.id_publication) }}" style="text-decoration: none; color: inherit;">
+      <div class="publication-card">
+        <!-- Profil utilisateur + Titre publication -->
+        <div style="display: flex; align-items: center;">
+          <div class="publication-meta" style="display: flex; align-items: center; gap: 10px;">
+            <img src="{{ url_for('static', filename=pub.photo_de_profil) }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+            <h2 class="publication-title">{{ pub.p_titre }}</h2>
+          </div>
+        </div>
     
       <div class="publication-meta">
         Posté par <strong>{{ pub.username }}</strong>
@@ -64,6 +64,7 @@
         </div>
       </div>
     </div>
+    </a>
     {% endfor %}    
   </div>
 
