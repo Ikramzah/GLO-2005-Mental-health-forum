@@ -60,14 +60,8 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
     }
 
     #form-livre h2 {
@@ -149,68 +143,51 @@
 </head>
 <body>
 
-  {% include 'header.html' %}
+{% include 'header.html' %}
 
-  <!-- 🔹 Titre avec bouton -->
-  <div class="top-bar">
-    <h1>Livres Recommandés 📚</h1>
+<div class="top-bar">
+  <h1>Livres Recommandés 📚</h1>
+  {% if session.get('role') == 'conseiller' %}
     <button class="add-btn" onclick="toggleForm()">➕ Ajouter un livre</button>
+  {% endif %}
+</div>
+
+{% if session.get('role') == 'conseiller' %}
+<form id="form-livre" method="POST" enctype="multipart/form-data" action="{{ url_for('ajouter_livre') }}">
+  <h2>📘 Nouveau Livre</h2>
+  <input type="file" name="photo_livre" accept=".png,.jpg,.jpeg,.gif" required>
+  <input type="text" name="titre" placeholder="Titre du livre" required>
+  <input type="text" name="auteur" placeholder="Auteur" required>
+  <input type="date" name="date_publication" required>
+  <textarea name="description" placeholder="Pourquoi recommander ce livre ?" rows="3" required></textarea>
+  <input type="text" name="nom_conseiller" placeholder="Conseiller (ton nom)" required>
+  <button type="submit">📚 Ajouter à la liste</button>
+</form>
+{% endif %}
+
+<!-- 📚 Affichage dynamique de tous les livres -->
+{% for livre in livres %}
+<div class="book-card">
+  <img src="{{ url_for('static', filename=livre.photo_livre) }}" alt="Couverture du livre">
+  <div class="book-info">
+    <h2>{{ livre.nom_livre }}</h2>
+    <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
+    <p>{{ livre.description }}</p>
+    <p class="meta">📌 Recommandé par {{ livre.Conseiller }}</p>
   </div>
+</div>
+{% endfor %}
 
-  <!-- 📘 Formulaire d'ajout -->
-  <form id="form-livre" method="POST" enctype="multipart/form-data" action="{{ url_for('ajouter_livre') }}">
-    <h2>📘 Nouveau Livre</h2>
-    <input type="file" name="photo_livre" accept=".png,.jpg,.jpeg,.gif" required>
-    <input type="text" name="titre" placeholder="Titre du livre" required>
-    <input type="text" name="auteur" placeholder="Auteur" required>
-    <input type="date" name="date_publication" required>
-    <textarea name="description" placeholder="Pourquoi recommander ce livre ?" rows="3" required></textarea>
-    <input type="text" name="nom_conseiller" placeholder="Conseiller (ton nom)" required>
-    <button type="submit">📚 Ajouter à la liste</button>
-  </form>
-
-  <!-- 📚 Liste des livres -->
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Ta deuxième vie commence quand tu comprends que tu n’en as qu’une.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Ta deuxième vie commence quand tu comprends que tu n’en as qu’une</h2>
-      <p class="meta">Auteur : Raphaëlle Giordano | Publié le 17/06/2015</p>
-      <p>Un roman feel-good qui mêle développement personnel et fiction pour aider à mieux vivre.</p>
-      <p class="meta">📌 Recommandé par Amélie Deschamps</p>
-    </div>
-  </div>
-
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Imparfaits, libres et heureux.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Imparfaits, libres et heureux</h2>
-      <p class="meta">Auteur : Christophe André | Publié le 03/01/2006</p>
-      <p>Une invitation à s'accepter tel qu'on est et à cultiver la bienveillance envers soi-même.</p>
-      <p class="meta">📌 Recommandé par Yves Carpentier</p>
-    </div>
-  </div>
-
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Les Quatre Accords toltèques.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Les 4 accords toltèques</h2>
-      <p class="meta">Auteur : Don Miguel Ruiz | Publié le 01/05/2000</p>
-      <p>Un guide vers la liberté personnelle, basé sur la sagesse toltèque, simple et puissant.</p>
-      <p class="meta">📌 Recommandé par Patricia Robert</p>
-    </div>
-  </div>
-
-  <!-- 🔽 Script -->
-  <script>
-    function toggleForm() {
-      const form = document.getElementById("form-livre");
-      const isVisible = form.style.display === "block";
-      form.style.display = isVisible ? "none" : "block";
-      if (isVisible) {
-        form.reset();
-      }
+<script>
+  function toggleForm() {
+    const form = document.getElementById("form-livre");
+    const isVisible = form.style.display === "block";
+    form.style.display = isVisible ? "none" : "block";
+    if (isVisible) {
+      form.reset();
     }
-  </script>
+  }
+</script>
 
 </body>
 </html>

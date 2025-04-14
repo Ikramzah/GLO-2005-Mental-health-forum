@@ -1,64 +1,121 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Modifier le statut</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            background-color: #b8d0eb;
-            font-family: Arial, sans-serif;
-            padding: 50px;
-        }
+  <meta charset="UTF-8" />
+  <title>Modifier le statut</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ecd4ff, #d4b6ff);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
 
-        .form-container {
-            background-color: white;
-            max-width: 600px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      width: 160px;
+    }
 
-        label, select, button {
-            display: block;
-            width: 100%;
-            font-size: 1rem;
-        }
+    .box {
+      background: #f4dbff;
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: fadeIn 1s ease forwards;
+    }
 
-        select, button {
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
+    h2 {
+      margin-bottom: 20px;
+      color: #6f2dbd;
+    }
 
-        button {
-            background-color: #6f2dbd;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+    select {
+      width: 90%;
+      max-width: 300px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-        button:hover {
-            background-color: #4e1d8b;
-        }
-    </style>
+    button {
+      padding: 12px 30px;
+      background-color: #a14be7;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #8e35c9;
+      transform: translateY(-4px);
+    }
+
+    .retour-btn {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .retour-btn a {
+      display: inline-block;
+      background-color: #d4afff;
+      color: #4a0072;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .retour-btn a:hover {
+      background-color: #c287f4;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    {% include 'header.html' %}
-    <div class="form-container">
-        <h2>Modifier votre statut étudiant</h2>
-        <form method="POST">
-            <label for="statut_etudiant">Nouveau statut :</label>
-            <select name="statut_etudiant" id="statut_etudiant" required>
-                <option value="citoyen" {% if statut.statut_etudiant == 'citoyen' %}selected{% endif %}>Citoyen</option>
-                <option value="résident permanent" {% if statut.statut_etudiant == 'résident permanent' %}selected{% endif %}>Résident permanent</option>
-                <option value="international" {% if statut.statut_etudiant == 'international' %}selected{% endif %}>International</option>
-                <option value="en échange" {% if statut.statut_etudiant == 'en échange' %}selected{% endif %}>En échange</option>
-            </select>
-            <button type="submit">Enregistrer les modifications</button>
-        </form>
-    </div>
+
+  <!-- Logo -->
+  <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
+
+  <div class="box">
+    <h2>🎓 Modifier votre statut étudiant</h2>
+    <form method="POST">
+      <select name="statut_etudiant" id="statut_etudiant" required>
+        <option value="citoyen" {% if statut.statut_etudiant == 'citoyen' %}selected{% endif %}>Citoyen</option>
+        <option value="résident permanent" {% if statut.statut_etudiant == 'résident permanent' %}selected{% endif %}>Résident permanent</option>
+        <option value="international" {% if statut.statut_etudiant == 'international' %}selected{% endif %}>International</option>
+        <option value="en échange" {% if statut.statut_etudiant == 'en échange' %}selected{% endif %}>En échange</option>
+      </select>
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+  </div>
+
+  <!-- Retour -->
+  <div class="retour-btn">
+    <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
+  </div>
+
 </body>
 </html>

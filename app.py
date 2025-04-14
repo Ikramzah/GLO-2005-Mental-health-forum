@@ -10,6 +10,7 @@ import os
 import threading
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+
 load_dotenv(dotenv_path=".env")
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -19,8 +20,10 @@ from flask import jsonify
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 def send_email_async(email, code):
     threading.Thread(target=send_reset_code, args=(email, code)).start()
+
 
 app = Flask(__name__)
 app.secret_key = 'secret123'
@@ -59,6 +62,8 @@ countries = [
     "Turquie", "Ukraine", "Uruguay", "Vanuatu", "Vatican", "Venezuela", "Vietnam", "Yémen",
     "Zambie", "Zimbabwe"
 ]
+
+
 @app.context_processor
 def inject_user():
     if 'username' in session:
@@ -70,15 +75,17 @@ def inject_user():
         return dict(user=user)
     return dict(user=None)
 
+
 # Configuration de l'envoi d'email
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'samahghost@gmail.com'  # 🔁 Remplace par ton email
-app.config['MAIL_PASSWORD'] = 'ogizkvoawnzsmupz'   # 🔁 Mot de passe d'application Gmail
+app.config['MAIL_PASSWORD'] = 'ogizkvoawnzsmupz'  # 🔁 Mot de passe d'application Gmail
 app.config['MAIL_USE_TLS'] = True
 
 # Dictionnaire temporaire pour stocker les codes
 reset_codes = {}  # Code temporaire stocké en mémoire (ou utilise ta base SQL)
+
 
 def send_reset_code(email, code):
     sender = app.config['MAIL_USERNAME']
@@ -92,6 +99,7 @@ def send_reset_code(email, code):
         server.starttls()
         server.login(sender, password)
         server.send_message(msg)
+
 
 @app.route('/demander_code_reset', methods=['GET', 'POST'])
 def demander_code_reset():
@@ -113,6 +121,8 @@ def demander_code_reset():
         else:
             msg = "Adresse courriel inconnue."
     return render_template('reset_password_request.html', msg=msg)
+
+
 @app.route('/delete_account')
 def delete_account():
     if 'username' in session:
@@ -124,6 +134,8 @@ def delete_account():
         session.clear()
         return redirect(url_for('login'))
     return redirect(url_for('login'))
+
+
 @app.route('/ajouter_livre', methods=['POST'])
 def ajouter_livre():
     if 'username' not in session or session['role'] != 'conseiller':
@@ -161,6 +173,8 @@ def ajouter_livre():
         conn.close()
 
     return redirect(url_for('livres'))
+
+
 @app.route('/supprimer_livre/<int:id_livre>', methods=['POST'])
 def supprimer_livre(id_livre):
     if 'username' not in session or session.get('role') != 'conseiller':
@@ -192,6 +206,7 @@ def verifier_code():
             msg = "Code incorrect."
     return render_template('verify_code.html', msg=msg)
 
+
 @app.route('/set_new_password', methods=['GET', 'POST'])
 def set_new_password():
     msg = ''
@@ -212,9 +227,11 @@ def set_new_password():
             return redirect(url_for('login'))
     return render_template('set_new_password.html', msg=msg)
 
+
 @app.route('/')
 def accueil():
     return render_template('home.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -253,11 +270,13 @@ def signup():
                 ''', (username, nom, prenom, email, mot_de_passe_hash, date_de_naissance, lieu_de_residence))
 
                 if statut == 'etudiant':
-                    cursor.execute("INSERT INTO Etudiants (username, statut_etudiant) VALUES (%s, %s)", (username, 'citoyen'))
+                    cursor.execute("INSERT INTO Etudiants (username, statut_etudiant) VALUES (%s, %s)",
+                                   (username, 'citoyen'))
                 elif statut == 'conseiller':
                     cursor.execute("INSERT INTO Conseillers (username) VALUES (%s)", (username,))
                 elif statut == 'etudiant-conseiller':
-                    cursor.execute("INSERT INTO Etudiants (username, statut_etudiant) VALUES (%s, %s)", (username, 'citoyen'))
+                    cursor.execute("INSERT INTO Etudiants (username, statut_etudiant) VALUES (%s, %s)",
+                                   (username, 'citoyen'))
                     cursor.execute("INSERT INTO Conseillers (username) VALUES (%s)", (username,))
 
                 conn.commit()
@@ -267,6 +286,7 @@ def signup():
         conn.close()
 
     return render_template('signup.html', msg=msg, msg_type=msg_type, countries=countries)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -309,16 +329,19 @@ def login():
 
     return render_template('login.html', msg=msg, msg_type=msg_type)
 
+
 @app.route('/dashboard')
 def dashboard():
     if 'loggedin' in session:
         return render_template('dashboard.html')
     return redirect('/login')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/login')
+
 
 @app.route('/publications')
 def publications():
@@ -363,6 +386,7 @@ def publications():
 
     return render_template('publications.html', publications=publications, reactions=reactions)
 
+
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
 def ajouter_indisponibilite():
     if 'username' not in session:
@@ -386,6 +410,7 @@ def ajouter_indisponibilite():
         return redirect(url_for('dashboard'))  # ou une page de confirmation
 
     return render_template('ajouter_indisponibilite.html')
+
 
 @app.route('/chercher_utilisateurs', methods=['GET'])
 def chercher_utilisateurs():
@@ -417,6 +442,7 @@ def chercher_utilisateurs():
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
 
+
 @app.route('/livres')
 def livres():
     conn = get_connection()
@@ -431,14 +457,17 @@ def livres():
     conn.close()
     return render_template('livres.html', livres=livres)
 
+
 @app.route('/conseillers')
 def conseillers():
     conn = get_connection()  # ta fonction DB dans db_config.py
     with conn.cursor() as cursor:
-        cursor.execute("SELECT nom, prenom, photo_de_profil, username FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
+        cursor.execute(
+            "SELECT nom, prenom, photo_de_profil, username FROM Utilisateurs WHERE username IN (SELECT username FROM Conseillers);")
         conseillers_list = cursor.fetchall()
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
+
 
 @app.route('/publications_utilisateur')
 def publications_utilisateur():
@@ -600,7 +629,8 @@ def reserver(username, date, start_time):
                     (heure_debut >= %s AND heure_debut < %s) OR
                     (heure_fin > %s AND heure_fin <= %s)
                 )
-            """, (username, session['username'], date, end_time, start_time, start_time, end_time, start_time, end_time))
+            """, (
+            username, session['username'], date, end_time, start_time, start_time, end_time, start_time, end_time))
 
             reserved = cursor.fetchone()
 
@@ -618,16 +648,20 @@ def reserver(username, date, start_time):
 
     return redirect(url_for('rendez_vous', username=username, date=date, start_time=start_time))
 
+
 @app.route('/user_profile')
 def profile():
     conn = get_connection()
     with conn.cursor() as cursor:
-        cursor.execute("SELECT nom, prenom, photo_de_profil, username, lieu_de_residence,email FROM Utilisateurs WHERE username = %s;", (session['username'],))
+        cursor.execute(
+            "SELECT nom, prenom, photo_de_profil, username, lieu_de_residence,email FROM Utilisateurs WHERE username = %s;",
+            (session['username'],))
         current_user = cursor.fetchone()
         cursor.execute("SELECT statut_etudiant FROM Etudiants WHERE username = %s;", (session['username'],))
         statut = cursor.fetchone()
     conn.close()
     return render_template('user_profile.html', user=current_user, statut=statut)
+
 
 @app.route('/profil/<username>')
 def profil_utilisateur(username):
@@ -667,6 +701,7 @@ def profil_utilisateur(username):
         est_conseiller=est_conseiller
     )
 
+
 @app.route('/modifier_photo', methods=['GET', 'POST'])
 def modifier_photo():
     if 'loggedin' not in session:
@@ -703,9 +738,11 @@ def modifier_photo():
 
     return render_template('modifier_photo.html', msg=msg)
 
+
 @app.route('/apropos')
 def apropos():
     return render_template('apropos.html')
+
 
 @app.route('/publication/<int:id>')
 def afficher_une_publication(id):
@@ -779,45 +816,45 @@ def afficher_une_publication(id):
         commentaire_reactions=commentaire_reactions
     )
 
- 
+
 @app.route('/modifier_publication/<int:id>', methods=['GET', 'POST'])
 def modifier_publication(id):
     if 'username' not in session:
         return redirect(url_for('login'))
- 
+
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
             # Vérifier que la publication existe et appartient au user connecté
             cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id,))
             publication = cursor.fetchone()
- 
+
             if not publication:
                 return "Publication introuvable", 404
- 
+
             if publication['username'] != session['username']:
                 return "Accès non autorisé", 403
- 
+
             if request.method == 'POST':
                 nouveau_titre = request.form['p_titre']
                 nouveau_texte = request.form['texte']
                 nouveau_statut = request.form['statut']
- 
+
                 cursor.execute("""
                     UPDATE Publications
                     SET p_titre = %s, texte = %s, statut = %s
                     WHERE id_publication = %s
                 """, (nouveau_titre, nouveau_texte, nouveau_statut, id))
- 
+
                 conn.commit()
                 return redirect(url_for('afficher_une_publication', id=id))
- 
+
     finally:
         conn.close()
- 
+
     return render_template('modifier_publication.html', publication=publication)
- 
- 
+
+
 @app.route('/signaler_publication/<int:id>', methods=['GET', 'POST'])
 def signaler_publication(id):
     if 'username' not in session:
@@ -836,6 +873,7 @@ def signaler_publication(id):
         return redirect(url_for('publications'))
 
     return render_template('signaler_publication.html', publication_id=id)
+
 
 @app.route('/moderation')
 def moderation():
@@ -919,6 +957,7 @@ def approuver_signalement():
     conn.close()
     return redirect(url_for('moderation'))
 
+
 @app.route('/historique_signalements')
 def historique_signalements():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -951,6 +990,7 @@ def historique_signalements():
 
     return render_template('historique_signalements.html', signalements=signalements)
 
+
 @app.route('/rejeter_signalement', methods=['POST'])
 def rejeter_signalement():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -966,7 +1006,7 @@ def rejeter_signalement():
     conn.close()
     return redirect(url_for('moderation'))
 
- 
+
 @app.route('/ajouter_commentaire/<int:id>', methods=['POST'])
 def ajouter_commentaire(id):
     if 'username' not in session:
@@ -981,6 +1021,7 @@ def ajouter_commentaire(id):
         conn.commit()
     conn.close()
     return redirect(url_for('afficher_une_publication', id=id))
+
 
 @app.route('/modifier_lieu', methods=['GET', 'POST'])
 def modifier_lieu():
@@ -1007,6 +1048,7 @@ def modifier_lieu():
     conn.close()
     return render_template('modifier_lieu.html', lieu_actuel=user['lieu_de_residence'], countries=countries, msg=msg)
 
+
 @app.route('/modifier_email', methods=['GET', 'POST'])
 def modifier_email():
     if 'username' not in session:
@@ -1019,7 +1061,8 @@ def modifier_email():
             nouvel_email = request.form['email']
 
             # Vérifier que l’email n’est pas déjà pris
-            cursor.execute("SELECT * FROM Utilisateurs WHERE email = %s AND username != %s", (nouvel_email, session['username']))
+            cursor.execute("SELECT * FROM Utilisateurs WHERE email = %s AND username != %s",
+                           (nouvel_email, session['username']))
             email_existant = cursor.fetchone()
             if email_existant:
                 msg = "Cet email est déjà utilisé par un autre utilisateur."
@@ -1037,6 +1080,7 @@ def modifier_email():
         user = cursor.fetchone()
     conn.close()
     return render_template('modifier_email.html', email=user['email'], msg=msg)
+
 
 @app.route('/modifier_statut', methods=['GET', 'POST'])
 def modifier_statut():
@@ -1061,7 +1105,9 @@ def modifier_statut():
     conn.close()
     return render_template('modifier_statut.html', statut=statut)
 
+
 from flask import jsonify, request
+
 
 @app.route('/react_publication', methods=['POST'])
 def react_publication():
@@ -1110,6 +1156,7 @@ def react_publication():
 
     return jsonify({r['type_reaction']: r['nb'] for r in stats})
 
+
 @app.route('/react_commentaire', methods=['POST'])
 def react_commentaire():
     if 'username' not in session:
@@ -1157,6 +1204,7 @@ def react_commentaire():
 
     return jsonify({r['type_reaction']: r['nb'] for r in stats})
 
+
 @app.route('/creer_publication', methods=['GET', 'POST'])
 def creer_publication():
     if 'username' not in session:
@@ -1187,6 +1235,7 @@ def creer_publication():
         return redirect(url_for('publications'))
 
     return render_template('creer_publication.html')
+
 
 @app.route('/supprimer_publication/<int:id_publication>', methods=['POST'])
 def supprimer_publication(id_publication):
@@ -1222,6 +1271,7 @@ def supprimer_publication(id_publication):
 
     return redirect(url_for('publications'))
 
+
 @app.route('/supprimer_commentaire/<int:id>', methods=['POST'])
 def supprimer_commentaire(id):
     if 'username' not in session:
@@ -1246,6 +1296,7 @@ def supprimer_commentaire(id):
 
     conn.close()
     return redirect(request.referrer or url_for('publications'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

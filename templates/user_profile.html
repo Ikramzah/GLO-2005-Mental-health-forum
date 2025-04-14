@@ -58,7 +58,7 @@
 
     .container {
       display: flex;
-      height: calc(100vh - 64px); /* header height removed */
+      height: calc(100vh - 64px);
     }
 
     .sidebar {
@@ -155,47 +155,24 @@
   </style>
 </head>
 <body>
-<<<<<<< HEAD
-{% include 'header.html' %}
-<div class="container">
-    <div class="double_containers1">
-        <div class="image_container">
-            <img src="../static/images/affiche.svg" alt="Affiche" >
-        </div>
-        <div class ="list_of_options">
-            <ul>
-    <li class="list_element">Mes rendez_vous</li>
-    <li class="list_element">
-        <a href="{{ url_for('publications_utilisateur') }}" class="list_link">Mes publications</a>
-    </li>    
-    <li class="list_element">
-        <a href="{{ url_for('modifier_photo') }}" class="list_link">Modifier photo de profil</a>
-    </li>
-    <li class="list_element">Modifier mot de passe</li>
-    <li class="list_element">Modifier statut</li>
-    <li class="list_element">Modifier email email</li>
-    <li class="list_element">Modifier lieu de residence</li>
-</ul>
-=======
->>>>>>> 7f0c3b3 (authentification, modification de mot de pass, styling de modifier mot de pass, modifier photo et toucher un peu la page profil, Ajout d'un formulaire réservé au conseiller pour ajouter un livre)
 
   <!-- 🔹 Header -->
   <header>
     <div class="logo-header">
       <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo" />
+      UHealthForum
     </div>
     <nav>
-      <a href="{{ url_for('dashboard') }}"> Accueil</a>
-      <a href="{{ url_for('publications') }}"> Publications</a>
-      <a href="{{ url_for('livres') }}"> Livres</a>
-      <a href="{{ url_for('profile') }}"> Profil</a>
-      <a href="{{ url_for('logout') }}"> Déconnexion</a>
+      <a href="{{ url_for('dashboard') }}">Accueil</a>
+      <a href="{{ url_for('publications') }}">Publications</a>
+      <a href="{{ url_for('livres') }}">Livres</a>
+      <a href="{{ url_for('profile') }}">Profil</a>
+      <a href="{{ url_for('logout') }}">Déconnexion</a>
     </nav>
   </header>
 
   <!-- 🔸 Contenu -->
   <div class="container">
-
     <div class="sidebar">
       <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
       <p><strong>📌 Statut :</strong> {{ statut.statut_etudiant }}</p>
