@@ -4,12 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Publications</title>
-  <!-- Lien vers ta feuille de style principale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
-  
 </head>
 <body>
-  <!-- Inclusion du header -->
   {% include 'header.html' %}
 
   <div class="publications-container">
@@ -29,58 +26,63 @@
       </a>
     </div>
 
-    <!-- Boucle sur la liste des publications -->
     {% for pub in publications %}
     <a href="{{ url_for('afficher_une_publication', id=pub.id_publication) }}" style="text-decoration: none; color: inherit;">
       <div class="publication-card">
-        <!-- Profil utilisateur + Titre publication -->
         <div style="display: flex; align-items: center;">
           <div class="publication-meta" style="display: flex; align-items: center; gap: 10px;">
-            <img src="{{ url_for('static', filename=pub.photo_de_profil or 'user-icon.png') }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
-            <h2 class="publication-title">{{ pub.p_titre }}</h2>
+            {% if pub.statut == 'anonyme' %}
+              <img src="{{ url_for('static', filename='user-icon.png') }}" alt="Anonyme" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+              <h2 class="publication-title">{{ pub.p_titre }}</h2>
+            {% else %}
+              <img src="{{ url_for('static', filename=pub.photo_de_profil or 'user-icon.png') }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+              <h2 class="publication-title">{{ pub.p_titre }}</h2>
+            {% endif %}
           </div>
         </div>
-    
-      <div class="publication-meta">
-        Posté par <strong>{{ pub.username }}</strong>
-        le {{ pub['date'].strftime('%d/%m/%Y %H:%M') }}
-        {% if pub.statut == 'anonyme' %}
-          <em>(anonyme)</em>
-        {% endif %}
-      </div>
-    
-      <div class="publication-text">
-        {{ pub.texte|truncate(200) }}
-      </div>
-    
-      <div class="publication-footer">
-        <div class="left-comments">
-            {{ pub.nb_reponses }} Commentaire{{ 's' if pub.nb_reponses > 1 }}
-        </div>
-        <div class="right-reactions">
-          {% if reactions[pub.id_publication] is defined %}
-            {% if reactions[pub.id_publication]['LIKE'] is defined %}
-              👍 {{ reactions[pub.id_publication]['LIKE'] }}
-            {% endif %}
-            {% if reactions[pub.id_publication]['LOVE'] is defined %}
-              ❤️ {{ reactions[pub.id_publication]['LOVE'] }}
-            {% endif %}
-            {% if reactions[pub.id_publication]['DISLIKE'] is defined %}
-              👎 {{ reactions[pub.id_publication]['DISLIKE'] }}
-            {% endif %}
-            {% if reactions[pub.id_publication]['SAD'] is defined %}
-              😢 {{ reactions[pub.id_publication]['SAD'] }}
-            {% endif %}
-            {% if reactions[pub.id_publication]['ANGRY'] is defined %}
-              😡 {{ reactions[pub.id_publication]['ANGRY'] }}
-            {% endif %}
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    </a>
-    {% endfor %}    
-  </div>
 
+        <div class="publication-meta">
+          Posté par
+          {% if pub.statut == 'anonyme' %}
+            <em>Utilisateur anonyme</em>
+          {% else %}
+            <strong>{{ pub.username }}</strong>
+          {% endif %}
+          le {{ pub['date'].strftime('%d/%m/%Y %H:%M') }}
+        </div>
+
+        <div class="publication-text">
+          {{ pub.texte|truncate(200) }}
+        </div>
+
+        <div class="publication-footer">
+          <div class="left-comments">
+              {{ pub.nb_reponses }} Commentaire{{ 's' if pub.nb_reponses > 1 }}
+          </div>
+          <div class="right-reactions">
+            {% if reactions[pub.id_publication] is defined %}
+              {% if reactions[pub.id_publication]['LIKE'] is defined %}
+                👍 {{ reactions[pub.id_publication]['LIKE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['LOVE'] is defined %}
+                ❤️ {{ reactions[pub.id_publication]['LOVE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['DISLIKE'] is defined %}
+                👎 {{ reactions[pub.id_publication]['DISLIKE'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['SAD'] is defined %}
+                😢 {{ reactions[pub.id_publication]['SAD'] }}
+              {% endif %}
+              {% if reactions[pub.id_publication]['ANGRY'] is defined %}
+                😡 {{ reactions[pub.id_publication]['ANGRY'] }}
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </body>
 </html>
+
