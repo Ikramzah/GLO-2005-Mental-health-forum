@@ -186,7 +186,7 @@
           {% endfor %}
         </div>
 
-        {% if c.username == session['username'] or session['role'] == 'moderateur' %}
+        {% if c.username == session['username'] %}
           <form action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}" method="POST" style="margin-top: 10px;">
             <button type="submit" class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">Supprimer</button>
           </form>
