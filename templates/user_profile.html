@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <title>Profil de {{ user['prenom'] }} {{ user['nom'] }}</title>
   <style>
+    :root {
+      --cyan: #00cfe8;
+      --white: #fff;
+      --red: #ef4444;
+      --blue-btn: #3b82f6;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -12,197 +19,171 @@
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f3f3f3;
+      background-color: var(--cyan);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
 
     header {
+      width: 100%;
       background-color: #6f2dbd;
-      color: white;
       padding: 12px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
-      z-index: 999;
+      z-index: 100;
     }
 
-    header .logo-header {
-      font-weight: bold;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .logo-header img {
+      height: 60px;
     }
 
-    header .logo-header img {
-      width: 40px;
-      height: 40px;
-    }
-
-    nav {
+    .nav-links {
       display: flex;
       gap: 20px;
     }
 
-    nav a {
+    .nav-links a {
       color: white;
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s ease;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
     }
 
-    nav a:hover {
-      color: #d1c6f7;
+    .nav-links a:hover {
+      background-color: #ffffff33;
     }
 
     .container {
-      display: flex;
-      height: calc(100vh - 64px);
-    }
-
-    .sidebar {
-      width: 35%;
-      background-color: #6f2dbd;
-      color: white;
-      padding: 60px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .sidebar h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    .sidebar p {
-      font-size: 17px;
-      margin: 5px 0;
-    }
-
-    .main {
-      width: 65%;
-      background-color: #e1f7ff;
-      padding: 60px 40px;
+      max-width: 900px;
+      padding: 80px 30px 60px;
+      text-align: center;
+    <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
       position: relative;
+      margin-top: 100px;
     }
 
-    .logo {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      width: 120px;
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border: 6px solid white;
+  object-fit: cover;
+  background-color: white;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  margin: 60px auto 30px; /* ✅ espace au-dessus ajouté */
+  display: block;
+}
+
+
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      margin-top: 10px;
     }
 
-    .profile-pic {
-      position: absolute;
-      top: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 6px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    .info {
+      margin-top: 20px;
+    }
+
+    .info p {
+      margin: 8px 0;
+      font-size: 16px;
     }
 
     .buttons {
-      margin-top: 240px;
+      margin-top: 35px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
     }
 
     .btn {
-      background-color: #ffffff;
-      color: #6f2dbd;
+      background-color: var(--blue-btn);
+      color: white;
       font-weight: bold;
-      padding: 14px 24px;
-      border-radius: 12px;
+      padding: 12px 20px;
+      border-radius: 10px;
       text-decoration: none;
-      font-size: 17px;
-      width: 280px;
-      text-align: center;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      transition: transform 0.2s ease;
     }
 
     .btn:hover {
-      background-color: #6f2dbd;
-      color: white;
       transform: translateY(-4px);
+      background-color: #2563eb;
     }
 
     .delete-account {
       margin-top: 40px;
-      padding: 12px 24px;
+      padding: 10px 20px;
       background-color: transparent;
-      border: 2px solid #da4253;
-      color: #da4253;
+      border: 2px solid var(--red);
+      color: var(--red);
       font-weight: bold;
-      border-radius: 50px;
+      border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .delete-account:hover {
-      background-color: #fff0f0;
-      transform: translateY(-3px);
+      background-color: #ffe5e5;
+      color: #991b1b;
     }
   </style>
 </head>
 <body>
 
-  <!-- 🔹 Header -->
   <header>
     <div class="logo-header">
-      <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo" />
-      UHealthForum
+      <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" />
     </div>
-    <nav>
+    <div class="nav-links">
       <a href="{{ url_for('dashboard') }}">Accueil</a>
       <a href="{{ url_for('publications') }}">Publications</a>
       <a href="{{ url_for('livres') }}">Livres</a>
-      <a href="{{ url_for('profile') }}">Profil</a>
+      <a href="{{ url_for('mes_rendez_vous') }}">Mes rendez-vous</a>
       <a href="{{ url_for('logout') }}">Déconnexion</a>
-    </nav>
+    </div>
   </header>
 
-  <!-- 🔸 Contenu -->
   <div class="container">
-    <div class="sidebar">
-      <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
-      <p><strong>📌 Statut :</strong> {{ statut.statut_etudiant }}</p>
-      <p><strong>📧 Courriel :</strong> {{ user.email }}</p>
-      <p><strong>📍 Lieu :</strong> {{ user.lieu_de_residence }}</p>
+    <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
+
+    <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
+    <div class="info">
+      <p>📧 {{ user.email }}</p>
+      <p>📍 {{ user.lieu_de_residence }}</p>
+      <p>📌 Statut : {{ statut.statut_etudiant or 'Non précisé' }}</p>
     </div>
 
-    <div class="main">
-      <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo">
-      <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
-
-      <div class="buttons">
-        <a href="{{ url_for('publications_utilisateur') }}" class="btn">📝 Mes publications</a>
-        <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
-        <a href="{{ url_for('demander_code_reset') }}" class="btn">🔑 Modifier mot de passe</a>
-        <a href="{{ url_for('modifier_statut') }}" class="btn">📌 Modifier statut</a>
-        <a href="{{ url_for('modifier_email') }}" class="btn">📧 Modifier courriel</a>
-        <a href="{{ url_for('modifier_lieu') }}" class="btn">📍 Modifier lieu</a>
-        <button class="delete-account" onclick="confirmDelete()">❌ Supprimer le compte</button>
-      </div>
+    <div class="buttons">
+      <a href="{{ url_for('publications_utilisateur') }}" class="btn">📝 Mes publications</a>
+      <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
+      <a href="{{ url_for('demander_code_reset') }}" class="btn">🔐 Modifier mot de passe</a>
+      <a href="{{ url_for('modifier_statut') }}" class="btn">📌 Modifier statut</a>
+      <a href="{{ url_for('modifier_email') }}" class="btn">📧 Modifier courriel</a>
+      <a href="{{ url_for('modifier_lieu') }}" class="btn">📍 Modifier lieu</a>
     </div>
+
+    <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirmDelete()">
+      <button class="delete-account">❌ Supprimer mon compte</button>
+    </form>
   </div>
 
   <script>
     function confirmDelete() {
-      const confirmed = confirm("⚠️ Es-tu sûr(e) de vouloir supprimer ton compte ? Cette action est irréversible !");
-      if (confirmed) {
-        window.location.href = "{{ url_for('delete_account') }}";
-      }
+      return confirm("⚠️ Es-tu sûr(e) de vouloir supprimer ton compte ? Cette action est irréversible !");
     }
   </script>
+
 </body>
 </html>

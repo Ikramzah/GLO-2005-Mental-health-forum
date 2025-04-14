@@ -166,20 +166,18 @@
   <body>
     <!-- Header avec logo ULaval -->
     <header>
-      <img
-        src="{{ url_for('static', filename='background/logo de ulaval.png') }}"
-        alt="Université Laval"
-        class="logo-ulaval"
-      />
+  <img
+    src="{{ url_for('static', filename='background/logo de ulaval.png') }}"
+    alt="Université Laval"
+    class="logo-ulaval"
+  />
 
-      <div class="nav-right">
-        <a href="{{ url_for('profile') }}" title="Profil">
-          <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'user-icon.png')) }}"
-               alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
-        </a>
-        <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
-      </div>
-    </header>
+  <div class="nav-right">
+    <a href="{{ url_for('profile') }}" class="nav-link">Mon Profil</a>
+    <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
+  </div>
+</header>
+
 
     <!-- Contenu principal -->
     <div class="main-container">
