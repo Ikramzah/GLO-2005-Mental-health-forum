@@ -751,7 +751,7 @@ def afficher_une_publication(id):
 
     try:
         with conn.cursor() as cursor:
-            #  Publication
+            # Récupération de la publication
             cursor.execute("""
                 SELECT P.*, U.nom, U.prenom, U.photo_de_profil
                 FROM Publications P
@@ -763,24 +763,23 @@ def afficher_une_publication(id):
             if not publication:
                 return "Publication introuvable", 404
 
-            publication["photo_profil_path"] = publication["photo_de_profil"]
+            # Gestion de l'image de profil
+            publication["photo_profil_path"] = publication["photo_de_profil"] or 'user-icon.png'
 
-            #  Commentaires visibles (non effacés)
+            # Récupération des commentaires visibles (non supprimés)
             cursor.execute("""
                 SELECT C.id_commentaire, C.contenu AS texte, C.date_creation AS date_et_heure,
                        U.nom, U.prenom, E.niveau_anonymat
                 FROM Commentaires C
                 JOIN Utilisateurs U ON C.username = U.username
-                JOIN Etudiants E ON U.username = E.username
+                LEFT JOIN Etudiants E ON U.username = E.username
                 WHERE C.id_publication = %s
-                  AND NOT EXISTS (
-                    SELECT 1 FROM Effacer EFF WHERE EFF.id_commentaire = C.id_commentaire
-                  )
+                  AND C.status_suppression = FALSE
                 ORDER BY C.date_creation ASC
             """, (id,))
             commentaires = cursor.fetchall()
 
-            #  Réactions sur la publication
+            # Réactions à la publication
             cursor.execute("""
                 SELECT id_publication, type_reaction, COUNT(*) AS nb
                 FROM Reagir_publication
@@ -790,7 +789,7 @@ def afficher_une_publication(id):
             for r in cursor.fetchall():
                 reactions.setdefault(r['id_publication'], {})[r['type_reaction']] = r['nb']
 
-            #  Réactions sur commentaires
+            # Réactions sur les commentaires
             cursor.execute("""
                 SELECT C.id_commentaire, RC.type_reaction, COUNT(*) AS nb
                 FROM Commentaires C
