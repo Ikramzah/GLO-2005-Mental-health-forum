@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Historique des signalements</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="publications-container">
+    <h1>Historique des signalements traités</h1>
+
+    {% for sig in signalements %}
+    <div class="publication-card">
+      {% if sig.id_publication %}
+        <a href="{{ url_for('afficher_une_publication', id=sig.id_publication) }}" style="text-decoration: none; color: inherit;">
+          <div class="publication-meta">
+            <img src="{{ url_for('static', filename=sig.photo_de_profil) }}" class="profile-pic" alt="profil">
+            <div>
+              <h2>{{ sig.p_titre }}</h2>
+              <p>Posté le {{ sig.date_publication.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+          </div>
+          <div class="publication-text">{{ sig.texte|truncate(200) }}</div>
+        </a>
+      {% elif sig.id_commentaire %}
+        <div class="publication-meta">
+          <img src="{{ url_for('static', filename=sig.photo_de_profil) }}" class="profile-pic" alt="profil">
+          <div>
+            <p><strong>Commentaire signalé :</strong> {{ sig.contenu_commentaire }}</p>
+            <p>Posté le {{ sig.date_commentaire.strftime('%d/%m/%Y %H:%M') }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      <div style="margin-top: 10px;">
+        <p><strong>Signalé par :</strong> 
+          <a href="{{ url_for('profil_utilisateur', username=sig.username) }}" style="color: var(--couleur-1);">
+            {{ sig.username }}
+          </a>
+        </p>
+        <p><strong>Raison :</strong> {{ sig.raison }}</p>
+        <p><strong>Date du signalement :</strong> {{ sig.date.strftime('%d/%m/%Y %H:%M') }}</p>
+
+        <p><strong>Décision :</strong>
+          {% if sig.approuve %}
+            <span style="color: green;">✅ Approuvé (contenu supprimé)</span>
+          {% elif sig.est_traite %}
+            <span style="color: red;">❌ Rejeté (contenu conservé)</span>
+          {% else %}
+            <span style="color: orange;">🕒 En attente</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

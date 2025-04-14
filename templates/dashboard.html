@@ -107,7 +107,7 @@
       }
 
       .util-btn {
-        background-color: #9d6bff; /* violet */
+        background-color: #B9FAF8; /* violet */
         color: white;
       }
 
@@ -116,7 +116,15 @@
       }
 
       .rdv-btn {
-        background-color: #6f2dbd;
+        background-color: #a663cc;
+      }
+
+      .signal-btn {
+        background-color: #d8b4f8;;
+      }
+
+      .historique-btn {
+        background-color: #B8D0EB;
       }
 
       .floating-text {
@@ -165,12 +173,9 @@
       />
 
       <div class="nav-right">
-        <a href="{{ url_for('profile') }}">
-          <img
-            src="{{ url_for('static', filename='images/photo de profil default.png') }}"
-            alt="Profil"
-            class="profile-pic"
-          />
+        <a href="{{ url_for('profile') }}" title="Profil">
+          <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'user-icon.png')) }}"
+               alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
         </a>
         <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
       </div>
@@ -194,6 +199,12 @@
         {% if session['role'] == 'conseiller' %}
         <a href="{{ url_for('ajouter_indisponibilite') }}" class="rdv-btn">🕐 Mes indisponibilités</a>
         <a href="{{ url_for('mes_rendez_vous') }}" class="livres-btn">📆 Mes rendez-vous</a>
+        {% elif session['role'] == 'moderateur' %}
+        <a href="{{ url_for('moderation') }}" class="signal-btn">signalement</a>
+        <a href="{{ url_for('historique_signalements') }}" class="historique-btn">📜 Historique des signalements</a>
+        {% endif %}
+
+        {% if session['role'] == 'admin' %}
         {% endif %}
       </div>
     </div>

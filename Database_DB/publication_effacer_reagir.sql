@@ -11,6 +11,7 @@ CREATE TABLE Publications (
     nb_reponses INT DEFAULT 0 CHECK (nb_reponses >= 0),
     nb_reaction INT DEFAULT 0 CHECK (nb_reaction >= 0),
     images LONGBLOB,
+    status_suppression BOOLEAN DEFAULT FALSE, 
     FOREIGN KEY (username) REFERENCES Utilisateurs(username) 
         ON DELETE CASCADE ON UPDATE CASCADE
 );

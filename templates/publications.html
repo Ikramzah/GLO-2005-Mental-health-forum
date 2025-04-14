@@ -15,6 +15,20 @@
   <div class="publications-container">
     <h1>Liste des publications</h1>
 
+    <div style="text-align: right; margin-bottom: 20px;">
+      <a href="{{ url_for('creer_publication') }}">
+        <button style="
+          padding: 10px 20px;
+          background-color: #6f2dbd;
+          color: white;
+          border: none;
+          border-radius: 20px;
+          font-weight: bold;
+          cursor: pointer;
+        ">+ Nouvelle publication</button>
+      </a>
+    </div>
+
     <!-- Boucle sur la liste des publications -->
     {% for pub in publications %}
     <a href="{{ url_for('afficher_une_publication', id=pub.id_publication) }}" style="text-decoration: none; color: inherit;">
