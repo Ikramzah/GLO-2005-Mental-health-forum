@@ -131,16 +131,25 @@
   </style>
 </head>
 <body>
+{% include 'header.html' %}
 <div class="page-container">
 
   <!-- Publication -->
   <div class="publication-card">
     <div class="publication-meta">
-      <img src="{{ url_for('static', filename=publication.photo_profil_path or 'user-icon.png') }}" alt="Profil">
-      <div>
-        <strong>{{ publication.nom }} {{ publication.prenom }}</strong><br>
-        <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
-      </div>
+      {% if publication.statut == 'anonyme' %}
+        <img src="{{ url_for('static', filename='user-icon.png') }}" alt="Anonyme">
+        <div>
+          <strong>Auteur anonyme</strong><br>
+          <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+      {% else %}
+        <img src="{{ url_for('static', filename=publication.photo_profil_path or 'user-icon.png') }}" alt="Profil">
+        <div>
+          <strong>{{ publication.nom }} {{ publication.prenom }}</strong><br>
+          <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+      {% endif %}
     </div>
 
     <h2 style="color: #6f2dbd;">{{ publication.p_titre }}</h2>
@@ -186,7 +195,7 @@
           {% endfor %}
         </div>
 
-        {% if c.username == session['username'] %}
+        {% if c.username == session['username'] or session['role'] == 'moderateur' %}
           <form action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}" method="POST" style="margin-top: 10px;">
             <button type="submit" class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">Supprimer</button>
           </form>
