@@ -36,7 +36,7 @@
         <!-- Profil utilisateur + Titre publication -->
         <div style="display: flex; align-items: center;">
           <div class="publication-meta" style="display: flex; align-items: center; gap: 10px;">
-            <img src="{{ url_for('static', filename=pub.photo_de_profil) }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+            <img src="{{ url_for('static', filename=pub.photo_de_profil or 'user-icon.png') }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
             <h2 class="publication-title">{{ pub.p_titre }}</h2>
           </div>
         </div>
