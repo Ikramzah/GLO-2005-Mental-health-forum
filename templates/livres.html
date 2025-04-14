@@ -4,27 +4,35 @@
   <meta charset="UTF-8">
   <title>Livres Recommandés</title>
   <style>
-    :root { --primary: #6F2DBD; }
+    :root {
+      --primary: #6F2DBD;
+    }
+
     body {
       font-family: 'Arial', sans-serif;
       min-height: 100vh;
       padding-top: 100px;
+      margin: 0;
       background-image: url("{{ url_for('static', filename='background/le_back_du_back.png') }}");
       background-size: cover;
       background-attachment: fixed;
     }
+
     .top-bar {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 20px;
+      flex-wrap: wrap;
     }
+
     h1 {
       color: var(--primary);
       margin: 40px 0;
     }
+
     .add-btn {
       background-color: #6f2dbd;
       color: white;
@@ -36,8 +44,13 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       cursor: pointer;
       transition: transform 0.2s ease;
+      margin-bottom: 20px;
     }
-    .add-btn:hover { transform: scale(1.05); }
+
+    .add-btn:hover {
+      transform: scale(1.05);
+    }
+
     #form-livre {
       max-width: 600px;
       background: rgba(255, 255, 255, 0.95);
@@ -48,36 +61,63 @@
       display: none;
       animation: fadeIn 0.4s ease-in-out;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to   { opacity: 1; transform: scale(1); }
     }
-    #form-livre input, #form-livre textarea {
-      width: 100%; padding: 10px; margin: 10px 0 15px;
-      border-radius: 6px; border: 1px solid #ccc; font-size: 15px;
+
+    #form-livre input,
+    #form-livre textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
     }
+
     #form-livre button {
-      background-color: #6f2dbd; color: white; padding: 10px 20px;
-      border: none; font-weight: bold; border-radius: 8px; cursor: pointer;
+      background-color: #6f2dbd;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    #form-livre button:hover { background-color: #5822a8; }
+
+    #form-livre button:hover {
+      background-color: #5822a8;
+    }
+
+    /* 📚 Grille des livres */
+    .book-container {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 30px 20px;
+    }
+
     .book-card {
       background-color: rgba(111, 45, 189, 0.7);
       border-left: 8px solid white;
-      margin: 30px auto;
-      padding: 20px;
       border-radius: 12px;
-      max-width: 850px;
+      padding: 20px;
       display: flex;
       gap: 20px;
-      align-items: center;
+      align-items: flex-start;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .book-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
     }
+
     .book-card img {
       height: 160px;
       width: 120px;
@@ -85,13 +125,27 @@
       object-fit: cover;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
+
     .book-info {
       flex: 1;
       color: white;
     }
-    .book-info h2 { margin: 0; font-size: 22px; }
-    .book-info p { margin: 8px 0; font-size: 15px; }
-    .book-info .meta { font-size: 0.9em; color: #e0e0e0; }
+
+    .book-info h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .book-info p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .book-info .meta {
+      font-size: 0.9em;
+      color: #e0e0e0;
+    }
+
   </style>
 </head>
 <body>
@@ -118,60 +172,59 @@
 </form>
 {% endif %}
 
-<!-- 🔹 Livres codés en dur -->
-<div class="book-card">
-  <img src="{{ url_for('static', filename='Livres/Ta deuxième vie commence quand tu comprends que tu n’en as qu’une.png') }}" alt="Couverture du livre">
-  <div class="book-info">
-    <h2>Ta deuxième vie commence quand tu comprends que tu n’en as qu’une</h2>
-    <p class="meta">Auteur : Raphaëlle Giordano | Publié le 17/06/2015</p>
-    <p>Un roman feel-good qui mêle développement personnel et fiction pour aider à mieux vivre.</p>
-    <p class="meta">📌 Recommandé par Amélie Deschamps</p>
-  </div>
-</div>
-
-<div class="book-card">
-  <img src="{{ url_for('static', filename='Livres/Imparfaits, libres et heureux.png') }}" alt="Couverture du livre">
-  <div class="book-info">
-    <h2>Imparfaits, libres et heureux</h2>
-    <p class="meta">Auteur : Christophe André | Publié le 03/01/2006</p>
-    <p>Une invitation à s'accepter tel qu'on est et à cultiver la bienveillance envers soi-même.</p>
-    <p class="meta">📌 Recommandé par Yves Carpentier</p>
-  </div>
-</div>
-
-<div class="book-card">
-  <img src="{{ url_for('static', filename='Livres/Les Quatre Accords toltèques.png') }}" alt="Couverture du livre">
-  <div class="book-info">
-    <h2>Les 4 accords toltèques</h2>
-    <p class="meta">Auteur : Don Miguel Ruiz | Publié le 01/05/2000</p>
-    <p>Un guide vers la liberté personnelle, basé sur la sagesse toltèque, simple et puissant.</p>
-    <p class="meta">📌 Recommandé par Patricia Robert</p>
-  </div>
-</div>
-
-<!-- 🔹 Livres ajoutés dynamiquement -->
-{% for livre in livres %}
+<!-- 📚 Liste des livres -->
+<div class="book-container">
   <div class="book-card">
-    {% if livre.photo_livre %}
-      <img src="{{ url_for('static', filename=livre.photo_livre) }}" alt="Couverture du livre">
-    {% else %}
-      <img src="{{ url_for('static', filename='images/photo de profil defaut.png') }}" alt="Image par défaut">
-    {% endif %}
+    <img src="{{ url_for('static', filename='Livres/Cessez d’être gentil, soyez vrai !.png') }}" alt="Couverture du livre">
     <div class="book-info">
-      <h2>{{ livre.nom_livre }}</h2>
-      <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
-      <p>{{ livre.description }}</p>
-      <p class="meta">📌 Recommandé par {{ livre.Conseiller }}</p>
+      <h2>Cessez d’être gentil, soyez vrai !</h2>
+      <p class="meta">Auteur : Thomas d’Ansembourg | Publié le 12/09/2004</p>
+      <p>Un guide vers une communication authentique et la connaissance de soi.</p>
+      <p class="meta">📌 Recommandé par Monique Dupuis</p>
     </div>
   </div>
-{% endfor %}
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Le pouvoir du moment présent.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Le pouvoir du moment présent</h2>
+      <p class="meta">Auteur : Eckhart Tolle | Publié le 29/08/1997</p>
+      <p>Un guide vers la pleine conscience et l’instant présent.</p>
+      <p class="meta">📌 Recommandé par Daniel Morin</p>
+    </div>
+  </div>
+
+  <div class="book-card">
+    <img src="{{ url_for('static', filename='Livres/Imparfaits, libres et heureux.png') }}" alt="Couverture du livre">
+    <div class="book-info">
+      <h2>Imparfaits, libres et heureux</h2>
+      <p class="meta">Auteur : Christophe André | Publié le 03/01/2006</p>
+      <p>Pratique de l’estime de soi à travers la psychologie positive.</p>
+      <p class="meta">📌 Recommandé par Patricia Robert</p>
+    </div>
+  </div>
+
+  <!-- 📘 Livres dynamiques avec photo -->
+  {% for livre in livres %}
+    {% if livre.photo_livre and livre.photo_livre != "images/photo de profil defaut.png" %}
+      <div class="book-card">
+        <img src="{{ url_for('static', filename=livre.photo_livre) }}" alt="Couverture du livre">
+        <div class="book-info">
+          <h2>{{ livre.nom_livre }}</h2>
+          <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
+          <p>{{ livre.description }}</p>
+          <p class="meta">📌 Recommandé par {{ livre.Conseiller or "Un conseiller inconnu" }}</p>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
 
 <script>
   function toggleForm() {
     const form = document.getElementById("form-livre");
-    const isVisible = form.style.display === "block";
-    form.style.display = isVisible ? "none" : "block";
-    if (isVisible) form.reset();
+    form.style.display = form.style.display === "block" ? "none" : "block";
+    if (form.style.display === "none") form.reset();
   }
 </script>
 
