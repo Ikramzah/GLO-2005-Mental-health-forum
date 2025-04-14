@@ -12,10 +12,10 @@
       font-family: 'Arial', sans-serif;
       min-height: 100vh;
       padding-top: 100px;
-      margin: 0;
       background-image: url("{{ url_for('static', filename='background/le_back_du_back.png') }}");
       background-size: cover;
       background-attachment: fixed;
+      margin: 0;
     }
 
     .top-bar {
@@ -25,7 +25,6 @@
       justify-content: space-between;
       align-items: center;
       padding: 0 20px;
-      flex-wrap: wrap;
     }
 
     h1 {
@@ -44,7 +43,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       cursor: pointer;
       transition: transform 0.2s ease;
-      margin-bottom: 20px;
     }
 
     .add-btn:hover {
@@ -91,43 +89,41 @@
       background-color: #5822a8;
     }
 
-    /* 📚 Grille des livres */
-    .book-container {
-      max-width: 1200px;
-      margin: auto;
+    .books-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 30px;
-      padding: 30px 20px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
     .book-card {
       background-color: rgba(111, 45, 189, 0.7);
       border-left: 8px solid white;
-      border-radius: 12px;
       padding: 20px;
+      border-radius: 12px;
       display: flex;
-      gap: 20px;
-      align-items: flex-start;
+      flex-direction: column;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      transition: transform 0.3s ease;
     }
 
     .book-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
     }
 
     .book-card img {
-      height: 160px;
-      width: 120px;
+      height: 180px;
+      width: 130px;
       border-radius: 8px;
       object-fit: cover;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
     }
 
     .book-info {
-      flex: 1;
       color: white;
     }
 
@@ -146,6 +142,24 @@
       color: #e0e0e0;
     }
 
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .delete-btn img {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.2s ease;
+    }
+
+    .delete-btn:hover img {
+      transform: rotate(20deg) scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -172,50 +186,26 @@
 </form>
 {% endif %}
 
-<!-- 📚 Liste des livres -->
-<div class="book-container">
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Cessez d’être gentil, soyez vrai !.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Cessez d’être gentil, soyez vrai !</h2>
-      <p class="meta">Auteur : Thomas d’Ansembourg | Publié le 12/09/2004</p>
-      <p>Un guide vers une communication authentique et la connaissance de soi.</p>
-      <p class="meta">📌 Recommandé par Monique Dupuis</p>
-    </div>
-  </div>
-
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Le pouvoir du moment présent.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Le pouvoir du moment présent</h2>
-      <p class="meta">Auteur : Eckhart Tolle | Publié le 29/08/1997</p>
-      <p>Un guide vers la pleine conscience et l’instant présent.</p>
-      <p class="meta">📌 Recommandé par Daniel Morin</p>
-    </div>
-  </div>
-
-  <div class="book-card">
-    <img src="{{ url_for('static', filename='Livres/Imparfaits, libres et heureux.png') }}" alt="Couverture du livre">
-    <div class="book-info">
-      <h2>Imparfaits, libres et heureux</h2>
-      <p class="meta">Auteur : Christophe André | Publié le 03/01/2006</p>
-      <p>Pratique de l’estime de soi à travers la psychologie positive.</p>
-      <p class="meta">📌 Recommandé par Patricia Robert</p>
-    </div>
-  </div>
-
-  <!-- 📘 Livres dynamiques avec photo -->
+<div class="books-grid">
+  <!-- 📚 Affichage dynamique des livres -->
   {% for livre in livres %}
     {% if livre.photo_livre and livre.photo_livre != "images/photo de profil defaut.png" %}
-      <div class="book-card">
-        <img src="{{ url_for('static', filename=livre.photo_livre) }}" alt="Couverture du livre">
-        <div class="book-info">
-          <h2>{{ livre.nom_livre }}</h2>
-          <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
-          <p>{{ livre.description }}</p>
-          <p class="meta">📌 Recommandé par {{ livre.Conseiller or "Un conseiller inconnu" }}</p>
-        </div>
+    <div class="book-card">
+      <img src="{{ url_for('static', filename=livre.photo_livre) }}" alt="Couverture du livre">
+      <div class="book-info">
+        <h2>{{ livre.nom_livre }}</h2>
+        <p class="meta">Auteur : {{ livre.auteur }} | Publié le {{ livre.date_publication.strftime('%d/%m/%Y') }}</p>
+        <p>{{ livre.description }}</p>
+        <p class="meta">📌 Recommandé par {{ livre.Conseiller or 'Un conseiller inconnu' }}</p>
       </div>
+      {% if session.get('role') == 'conseiller' %}
+      <form method="POST" action="{{ url_for('supprimer_livre', id_livre=livre.id_livre) }}" onsubmit="return confirmSuppression(event)">
+        <button type="submit" class="delete-btn">
+          <img src="{{ url_for('static', filename='images/trash-animated.svg') }}" alt="Supprimer">
+        </button>
+      </form>
+      {% endif %}
+    </div>
     {% endif %}
   {% endfor %}
 </div>
@@ -225,6 +215,14 @@
     const form = document.getElementById("form-livre");
     form.style.display = form.style.display === "block" ? "none" : "block";
     if (form.style.display === "none") form.reset();
+  }
+
+  function confirmSuppression(event) {
+    if (!confirm("❗ Veux-tu vraiment supprimer ce livre ?")) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
   }
 </script>
 

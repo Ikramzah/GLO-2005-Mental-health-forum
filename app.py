@@ -173,25 +173,18 @@ def ajouter_livre():
         conn.close()
 
     return redirect(url_for('livres'))
-
-
 @app.route('/supprimer_livre/<int:id_livre>', methods=['POST'])
 def supprimer_livre(id_livre):
-    if 'username' not in session or session.get('role') != 'conseiller':
-        return redirect(url_for('login'))
-
     conn = get_connection()
-    try:
-        with conn.cursor() as cursor:
-            # Supprimer d'abord la recommandation (si existe)
-            cursor.execute("DELETE FROM Recommander WHERE id_livre = %s", (id_livre,))
-            # Ensuite, supprimer le livre lui-même
-            cursor.execute("DELETE FROM Livre WHERE id_livre = %s", (id_livre,))
-            conn.commit()
-    finally:
-        conn.close()
-
+    cur = conn.cursor()
+    cur.execute("DELETE FROM Recommander WHERE id_livre = %s", (id_livre,))
+    cur.execute("DELETE FROM Livre WHERE id_livre = %s", (id_livre,))
+    conn.commit()
+    cur.close()
+    conn.close()
     return redirect(url_for('livres'))
+
+
 
 
 @app.route('/verifier_code', methods=['GET', 'POST'])
