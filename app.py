@@ -1241,23 +1241,41 @@ def supprimer_publication(id_publication):
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            # Vérifie si l’utilisateur est bien l’auteur
+            # Récupérer la publication
             cursor.execute("SELECT username FROM Publications WHERE id_publication = %s", (id_publication,))
             publication = cursor.fetchone()
-            if publication and publication['username'] == session['username']:
-                # Masquer la publication
-                cursor.execute("UPDATE Publications SET status_suppression = TRUE WHERE id_publication = %s", (id_publication,))
-                # Historiser
-                raison = "Suppression par l'auteur de la publication"
+
+            if not publication:
+                return "Publication introuvable", 404
+
+            # Autorisation si utilisateur = auteur OU utilisateur est modérateur
+            if publication['username'] == session['username'] or session.get('role') == 'moderateur':
+                # Marquer la publication comme supprimée
+                cursor.execute("""
+                    UPDATE Publications 
+                    SET status_suppression = TRUE 
+                    WHERE id_publication = %s
+                """, (id_publication,))
+
+                # Historiser dans Effacer
+                raison = "Suppression par " + ("modérateur" if session.get('role') == 'moderateur' else "l'auteur")
                 cursor.execute("""
                     INSERT INTO Effacer (id_publication, username, type_effacement, raison)
-                    VALUES (%s, %s, 'utilisateur', %s)
-                """, (id_publication, session['username'], raison))
+                    VALUES (%s, %s, %s, %s)
+                """, (
+                    id_publication,
+                    session['username'],
+                    'moderateur' if session.get('role') == 'moderateur' else 'utilisateur',
+                    raison
+                ))
                 conn.commit()
+            else:
+                return "Accès non autorisé", 403
     finally:
         conn.close()
 
     return redirect(url_for('publications'))
+
 
 
 @app.route('/supprimer_commentaire/<int:id_commentaire>', methods=['POST'])
@@ -1268,20 +1286,31 @@ def supprimer_commentaire(id_commentaire):
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            # Vérifie si le commentaire appartient à l'utilisateur
             cursor.execute("SELECT username FROM Commentaires WHERE id_commentaire = %s", (id_commentaire,))
             commentaire = cursor.fetchone()
-            if commentaire and commentaire['username'] == session['username']:
+
+            if not commentaire:
+                return "Commentaire introuvable", 404
+
+            # Autorisé si l'utilisateur est l'auteur ou un modérateur
+            if commentaire['username'] == session['username'] or session.get('role') == 'moderateur':
                 cursor.execute("""
                     INSERT INTO Effacer (id_commentaire, username, type_effacement, raison)
-                    VALUES (%s, %s, 'utilisateur', 'Suppression par l\'auteur du commentaire')
-                """, (id_commentaire, session['username']))
+                    VALUES (%s, %s, %s, %s)
+                """, (
+                    id_commentaire,
+                    session['username'],
+                    'moderateur' if session.get('role') == 'moderateur' else 'utilisateur',
+                    'Suppression par modérateur' if session.get('role') == 'moderateur' else 'Suppression par l\'auteur'
+                ))
                 conn.commit()
+            else:
+                return "Accès non autorisé", 403
     finally:
         conn.close()
 
-    # Retourne à la page précédente
     return redirect(request.referrer or url_for('publications'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
