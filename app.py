@@ -340,26 +340,29 @@ def logout():
 def publications():
     conn = get_connection()
     with conn.cursor() as cursor:
-        #  Récupère les publications non supprimées
+        # Récupérer les publications sans doublons
         cursor.execute("""
             SELECT 
                 P.*, 
                 U.photo_de_profil,
-                COUNT(C.id_commentaire) AS nb_reponses
+                (
+                    SELECT COUNT(*) 
+                    FROM Commentaires C
+                    WHERE C.id_publication = P.id_publication
+                      AND NOT EXISTS (
+                          SELECT 1 
+                          FROM Effacer E 
+                          WHERE E.id_commentaire = C.id_commentaire
+                      )
+                ) AS nb_reponses
             FROM Publications P
             JOIN Utilisateurs U ON P.username = U.username
-            LEFT JOIN Commentaires C 
-                ON P.id_publication = C.id_publication 
-                AND C.status_suppression = FALSE
-            LEFT JOIN Effacer E 
-                ON E.id_commentaire = C.id_commentaire
-            WHERE E.id_publication IS NULL
-            GROUP BY P.id_publication
+            WHERE P.status_suppression = FALSE
             ORDER BY P.date DESC
         """)
         publications = cursor.fetchall()
 
-        #  Réactions par type pour chaque publication
+        # Réactions par type pour chaque publication
         cursor.execute("""
             SELECT id_publication, type_reaction, COUNT(*) AS nb
             FROM Reagir_publication
@@ -369,7 +372,7 @@ def publications():
 
     conn.close()
 
-    #  Structuration des réactions
+    # Structurer les réactions par publication
     reactions = {}
     for r in reactions_data:
         pub_id = r['id_publication']
@@ -378,6 +381,7 @@ def publications():
         reactions[pub_id][r['type_reaction']] = r['nb']
 
     return render_template('publications.html', publications=publications, reactions=reactions)
+
 
 
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
@@ -1102,6 +1106,8 @@ def modifier_statut():
 from flask import jsonify, request
 
 
+from flask import jsonify, request
+
 @app.route('/react_publication', methods=['POST'])
 def react_publication():
     if 'username' not in session:
@@ -1197,7 +1203,6 @@ def react_commentaire():
 
     return jsonify({r['type_reaction']: r['nb'] for r in stats})
 
-
 @app.route('/creer_publication', methods=['GET', 'POST'])
 def creer_publication():
     if 'username' not in session:
@@ -1228,8 +1233,7 @@ def creer_publication():
         return redirect(url_for('publications'))
 
     return render_template('creer_publication.html')
-
-
+    
 @app.route('/supprimer_publication/<int:id_publication>', methods=['POST'])
 def supprimer_publication(id_publication):
     if 'username' not in session:
@@ -1238,58 +1242,47 @@ def supprimer_publication(id_publication):
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            # Vérifie que la publication appartient bien à l'utilisateur
-            cursor.execute("SELECT * FROM Publications WHERE id_publication = %s", (id_publication,))
+            # Vérifie si l’utilisateur est bien l’auteur
+            cursor.execute("SELECT username FROM Publications WHERE id_publication = %s", (id_publication,))
             publication = cursor.fetchone()
-
-            if not publication:
-                return "Publication introuvable", 404
-            if publication['username'] != session['username']:
-                return "Action non autorisée", 403
-
-            # Insertion dans Effacer avec une raison explicite
-            cursor.execute("""
-                INSERT INTO Effacer (id_publication, username, raison, type_effacement)
-                VALUES (%s, %s, %s, %s)
-            """, (
-                id_publication,
-                session['username'],
-                "Suppression par l'utilisateur",
-                "utilisateur"
-            ))
-
-            conn.commit()
+            if publication and publication['username'] == session['username']:
+                # Masquer la publication
+                cursor.execute("UPDATE Publications SET status_suppression = TRUE WHERE id_publication = %s", (id_publication,))
+                # Historiser
+                raison = "Suppression par l'auteur de la publication"
+                cursor.execute("""
+                    INSERT INTO Effacer (id_publication, username, type_effacement, raison)
+                    VALUES (%s, %s, 'utilisateur', %s)
+                """, (id_publication, session['username'], raison))
+                conn.commit()
     finally:
         conn.close()
 
     return redirect(url_for('publications'))
 
 
-@app.route('/supprimer_commentaire/<int:id>', methods=['POST'])
-def supprimer_commentaire(id):
+@app.route('/supprimer_commentaire/<int:id_commentaire>', methods=['POST'])
+def supprimer_commentaire(id_commentaire):
     if 'username' not in session:
         return redirect(url_for('login'))
 
     conn = get_connection()
-    with conn.cursor() as cursor:
-        cursor.execute("""
-            SELECT * FROM Commentaires WHERE id_commentaire = %s AND username = %s
-        """, (id, session['username']))
-        commentaire = cursor.fetchone()
+    try:
+        with conn.cursor() as cursor:
+            # Vérifie si le commentaire appartient à l'utilisateur
+            cursor.execute("SELECT username FROM Commentaires WHERE id_commentaire = %s", (id_commentaire,))
+            commentaire = cursor.fetchone()
+            if commentaire and commentaire['username'] == session['username']:
+                cursor.execute("""
+                    INSERT INTO Effacer (id_commentaire, username, type_effacement, raison)
+                    VALUES (%s, %s, 'utilisateur', 'Suppression par l\'auteur du commentaire')
+                """, (id_commentaire, session['username']))
+                conn.commit()
+    finally:
+        conn.close()
 
-        if not commentaire:
-            return "Non autorisé ou commentaire inexistant.", 403
-
-        # Marquer comme supprimé
-        cursor.execute("""
-            INSERT INTO Effacer (id_commentaire, username, type_effacement)
-            VALUES (%s, %s, 'utilisateur')
-        """, (id, session['username']))
-        conn.commit()
-
-    conn.close()
+    # Retourne à la page précédente
     return redirect(request.referrer or url_for('publications'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
