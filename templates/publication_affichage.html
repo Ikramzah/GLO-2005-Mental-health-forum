@@ -146,7 +146,7 @@
     <h2 style="color: #6f2dbd;">{{ publication.p_titre }}</h2>
     <p>{{ publication.texte }}</p>
 
-    {% if publication.username == session['username'] %}
+    {% if publication.username == session['username'] or session['role'] == 'moderateur' %}
       <a href="{{ url_for('modifier_publication', id=publication.id_publication) }}">
         <button class="btn-modifier">Modifier</button>
       </a>
@@ -186,7 +186,7 @@
           {% endfor %}
         </div>
 
-        {% if c.username == session['username'] %}
+        {% if c.username == session['username'] or session['role'] == 'moderateur' %}
           <form action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}" method="POST" style="margin-top: 10px;">
             <button type="submit" class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">Supprimer</button>
           </form>
