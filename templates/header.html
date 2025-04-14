@@ -47,17 +47,27 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
-  .main-header a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    margin-right: 20px;
-  }
-
   .main-header nav {
     display: flex;
     gap: 25px;
     margin-left: 20px;
+  }
+
+  .profile-btn {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    font-weight: bold;
+    padding: 8px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .profile-btn:hover {
+    background-color: white;
+    color: var(--couleur-1);
+    transform: scale(1.05);
   }
 </style>
 
@@ -68,20 +78,18 @@
     <a href="{{ url_for('chercher_utilisateurs') }}" class="nav-link">Utilisateurs</a>
     <a href="{{ url_for('livres') }}" class="nav-link">Livres</a>
     <a href="{{ url_for('conseillers') }}" class="nav-link">Rendez-vous</a>
+
     {% if session['role'] == 'conseiller' %}
       <a href="{{ url_for('ajouter_indisponibilite') }}" class="nav-link">Mes indisponibilités</a>
       <a href="{{ url_for('mes_rendez_vous') }}" class="nav-link">Mes rendez-vous</a>
     {% elif session['role'] == 'moderateur' %}
-      <a href="{{ url_for('moderation') }}" class="nav-link">signalement</a>
-      <a href="{{ url_for('historique_signalements') }}">Historique des signalements</a>
+      <a href="{{ url_for('moderation') }}" class="nav-link">Signalement</a>
+      <a href="{{ url_for('historique_signalements') }}" class="nav-link">Historique</a>
     {% endif %}
   </nav>
 
   <div style="display: flex; gap: 20px; align-items: center; margin-right: 20px">
-    <a href="{{ url_for('profile') }}" title="Profil">
-      <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'user-icon.png')) }}"
-           alt="Profil" style="width: 35px; height: 35px; border-radius: 50%;">
-    </a>
+    <a href="{{ url_for('profile') }}" class="profile-btn">Profil</a>
     <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
   </div>
 </header>
