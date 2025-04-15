@@ -1,257 +1,311 @@
 {% include 'header.html' %}
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>{{ publication.p_titre }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
-  <style>
-    .page-container {
-      max-width: 900px;
-      margin: auto;
-      margin-top: 40px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ publication.p_titre }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style_homogene.css') }}"
+    />
+    <style>
+      .page-container {
+        max-width: 900px;
+        margin: auto;
+        margin-top: 40px;
+      }
 
-    .publication-card {
-      background-color: #d4faff;
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 30px;
-    }
+      .publication-card {
+        background-color: #d4faff;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+      }
 
-    .publication-meta {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
+      .publication-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
 
-    .publication-meta img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+      .publication-meta img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-    .reaction-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
+      .reaction-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
 
-    .reaction-btn {
-      background-color: #eee;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.9em;
-      color: #6f2dbd;
-      cursor: pointer;
-    }
+      .reaction-btn {
+        background-color: #eee;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        color: #6f2dbd;
+        cursor: pointer;
+      }
 
-    .reaction-btn:hover {
-      background-color: #ddd;
-    }
+      .reaction-btn:hover {
+        background-color: #ddd;
+      }
 
-    .comment-section {
-      margin-top: 40px;
-    }
+      .comment-section {
+        margin-top: 40px;
+      }
 
-    .comment-card {
-      background-color: #e1edff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
+      .comment-card {
+        background-color: #e1edff;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      }
 
-    .comment-meta {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+      .comment-meta {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
 
-    .comment-reactions {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-    }
+      .comment-reactions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
 
-    textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
 
-    .comment-form {
-      margin-top: 30px;
-    }
+      .comment-form {
+        margin-top: 30px;
+      }
 
-    .btn-primary {
-      background-color: #6f2dbd;
-      color: white;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+      .btn-primary {
+        background-color: #6f2dbd;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
 
-    .btn-modifier,
-    .btn-signaler {
-      margin-top: 10px;
-      margin-right: 10px;
-      font-size: 0.85em;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: none;
-      background-color: #6f2dbd;
-      color: white;
-      cursor: pointer;
-    }
+      .btn-modifier,
+      .btn-signaler {
+        margin-top: 10px;
+        margin-right: 10px;
+        font-size: 0.85em;
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: none;
+        background-color: #6f2dbd;
+        color: white;
+        cursor: pointer;
+      }
 
-    .btn-signaler {
-      background-color: #ff6b6b;
-    }
+      .btn-signaler {
+        background-color: #ff6b6b;
+      }
 
-    .btn-supprimer {
-      background-color: #999;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 15px;
-      font-size: 0.85em;
-      cursor: pointer;
-    }
+      .btn-supprimer {
+        background-color: #999;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.85em;
+        cursor: pointer;
+      }
 
-    .btn-supprimer:hover {
-      background-color: #666;
-    }
-  </style>
-</head>
-<body>
-{% include 'header.html' %}
-<div class="page-container">
-
-  <!-- Publication -->
-  <div class="publication-card">
-    <div class="publication-meta">
-      {% if publication.statut == 'anonyme' %}
-        <img src="{{ url_for('static', filename='user-icon.png') }}" alt="Anonyme">
-        <div>
-          <strong>Auteur anonyme</strong><br>
-          <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
-        </div>
-      {% else %}
-        <img src="{{ url_for('static', filename=publication.photo_profil_path or 'user-icon.png') }}" alt="Profil">
-        <div>
-          <strong>{{ publication.nom }} {{ publication.prenom }}</strong><br>
-          <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
-        </div>
-      {% endif %}
-    </div>
-
-    <h2 style="color: #6f2dbd;">{{ publication.p_titre }}</h2>
-    <p>{{ publication.texte }}</p>
-
-    {% if publication.username == session['username'] or session['role'] == 'moderateur' %}
-      <a href="{{ url_for('modifier_publication', id=publication.id_publication) }}">
-        <button class="btn-modifier">Modifier</button>
-      </a>
-      <form action="{{ url_for('supprimer_publication', id_publication=publication.id_publication) }}" method="POST" style="display:inline;">
-        <button class="btn-supprimer" onclick="return confirm('Confirmer la suppression de la publication ?')">Supprimer</button>
-      </form>
-    {% else %}
-      <a href="{{ url_for('signaler_publication', id=publication.id_publication) }}">
-        <button class="btn-signaler">Signaler</button>
-      </a>
-    {% endif %}
-
-    <div class="reaction-group">
-      {% for reaction in ['LIKE', 'LOVE', 'SAD', 'ANGRY', 'DISLIKE'] %}
-        <button class="reaction-btn" onclick="reactToPublication({{ publication.id_publication }}, '{{ reaction }}')">
-          {{ reaction }} <span id="pub-{{ publication.id_publication }}-{{ reaction }}">
-            {{ reactions.get(publication.id_publication, {}).get(reaction, 0) }}
-          </span>
-        </button>
-      {% endfor %}
-    </div>
-  </div>
-
-  <!-- Commentaires -->
-  <div class="comment-section">
-    <h3 style="color: #6f2dbd;">Commentaires</h3>
-
-    {% for c in commentaires %}
-      <div class="comment-card">
-        <div class="comment-meta">
-          {% if c.niveau_anonymat == 'anonyme' %}
-            Utilisateur anonyme - {{ c.date_et_heure }}
+      .btn-supprimer:hover {
+        background-color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'header.html' %}
+    <div class="page-container">
+      <!-- Publication -->
+      <div class="publication-card">
+        <div class="publication-meta">
+          {% if publication.statut == 'anonyme' %}
+          <img
+            src="{{ url_for('static', filename='user-icon.png') }}"
+            alt="Anonyme"
+          />
+          <div>
+            <strong>Auteur anonyme</strong><br />
+            <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
+          </div>
           {% else %}
-            {{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}
+          <img
+            src="{{ url_for('static', filename=publication.photo_profil_path or 'user-icon.png') }}"
+            alt="Profil"
+          />
+          <div>
+            <strong>{{ publication.nom }} {{ publication.prenom }}</strong
+            ><br />
+            <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
+          </div>
           {% endif %}
         </div>
-        <div class="comment-text">{{ c.texte }}</div>
 
-        <div class="comment-reactions">
-          {% for reaction in ['LIKE', 'LOVE', 'SAD', 'ANGRY', 'DISLIKE'] %}
-            <button class="reaction-btn" onclick="reactToCommentaire({{ c.id_commentaire }}, '{{ reaction }}')">
-              {{ reaction }} <span id="comm-{{ c.id_commentaire }}-{{ reaction }}">
-              {{ commentaire_reactions.get(c.id_commentaire, {}).get(reaction, 0) }}</span>
-            </button>
+        <h2 style="color: #6f2dbd">{{ publication.p_titre }}</h2>
+        <p>{{ publication.texte }}</p>
+
+        {% if publication.username == session['username'] or session['role'] ==
+        'moderateur' %}
+        <a
+          href="{{ url_for('modifier_publication', id=publication.id_publication) }}"
+        >
+          <button class="btn-modifier">Modifier</button>
+        </a>
+        <form
+          action="{{ url_for('supprimer_publication', id_publication=publication.id_publication) }}"
+          method="POST"
+          style="display: inline"
+        >
+          <button
+            class="btn-supprimer"
+            onclick="return confirm('Confirmer la suppression de la publication ?')"
+          >
+            Supprimer
+          </button>
+        </form>
+        {% else %}
+        <a
+          href="{{ url_for('signaler_publication', id=publication.id_publication) }}"
+        >
+          <button class="btn-signaler">Signaler</button>
+        </a>
+        {% endif %}
+
+        <div class="reaction-group">
+          {% set emojis = {'LIKE': '👍', 'LOVE': '❤️', 'SAD': '😢', 'ANGRY':
+          '😠', 'DISLIKE': '👎'} %} {% for reaction in emojis %}
+          <button
+            class="reaction-btn"
+            onclick="reactToPublication({{ publication.id_publication }}, '{{ reaction }}')"
+          >
+            {{ emojis[reaction] }}
+            <span id="pub-{{ publication.id_publication }}-{{ reaction }}">
+              {{ reactions.get(publication.id_publication, {}).get(reaction, 0)
+              }}
+            </span>
+          </button>
           {% endfor %}
         </div>
-
-        {% if c.username == session['username'] or session['role'] == 'moderateur' %}
-          <form action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}" method="POST" style="margin-top: 10px;">
-            <button type="submit" class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">Supprimer</button>
-          </form>
-        {% endif %}
       </div>
-    {% endfor %}
 
-    <!-- Formulaire ajout commentaire -->
-    <form action="{{ url_for('ajouter_commentaire', id=publication.id_publication) }}" method="POST" class="comment-form">
-      <label for="texte">Ajouter un commentaire :</label><br>
-      <textarea name="texte" rows="4" required></textarea><br>
-      <button type="submit" class="btn-primary">Commenter</button>
-    </form>
-  </div>
-</div>
+      <!-- Commentaires -->
+      <div class="comment-section">
+        <h3 style="color: #6f2dbd">Commentaires</h3>
 
-<script>
-  function reactToPublication(id, type) {
-    fetch("/react_publication", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id_publication: id, type_reaction: type })
-    })
-    .then(res => res.json())
-    .then(data => {
-      for (const [reaction, count] of Object.entries(data.reactions)) {
-        const el = document.getElementById(`pub-${id}-${reaction}`);
-        if (el) el.textContent = count;
+        {% for c in commentaires %}
+        <div class="comment-card">
+          <div class="comment-meta">
+            {% if c.niveau_anonymat == 'anonyme' %} Utilisateur anonyme - {{
+            c.date_et_heure }} {% else %} {{ c.nom }} {{ c.prenom }} - {{
+            c.date_et_heure }} {% endif %}
+          </div>
+          <div class="comment-text">{{ c.texte }}</div>
+
+          <div class="comment-reactions">
+            {% set emojis = {'LIKE': '👍', 'LOVE': '❤️', 'SAD': '😢', 'ANGRY':
+            '😠', 'DISLIKE': '👎'} %} {% for reaction in emojis %}
+            <button
+              class="reaction-btn"
+              onclick="reactToCommentaire({{ c.id_commentaire }}, '{{ reaction }}')"
+            >
+              {{ emojis[reaction] }}
+              <span id="comm-{{ c.id_commentaire }}-{{ reaction }}">
+                {{ commentaire_reactions.get(c.id_commentaire, {}).get(reaction,
+                0) }}
+              </span>
+            </button>
+            {% endfor %}
+          </div>
+
+          {% if c.username == session['username'] or session['role'] ==
+          'moderateur' %}
+          <form
+            action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}"
+            method="POST"
+            style="margin-top: 10px"
+          >
+            <button
+              type="submit"
+              class="btn-supprimer"
+              onclick="return confirm('Supprimer ce commentaire ?')"
+            >
+              Supprimer
+            </button>
+          </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Formulaire ajout commentaire -->
+        <form
+          action="{{ url_for('ajouter_commentaire', id=publication.id_publication) }}"
+          method="POST"
+          class="comment-form"
+        >
+          <label for="texte">Ajouter un commentaire :</label><br />
+          <textarea name="texte" rows="4" required></textarea><br />
+          <button type="submit" class="btn-primary">Commenter</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function reactToPublication(id, type) {
+        fetch("/react_publication", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id_publication: id, type_reaction: type }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            for (const [reaction, count] of Object.entries(data.reactions)) {
+              const el = document.getElementById(`pub-${id}-${reaction}`);
+              if (el) el.textContent = count;
+            }
+          });
       }
-    });
-  }
 
-  function reactToCommentaire(id_commentaire, type) {
-    fetch("/react_commentaire", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id_commentaire: id_commentaire, type_reaction: type })
-    })
-    .then(res => res.json())
-    .then(data => {
-      for (const [reaction, count] of Object.entries(data.reactions)) {
-        const el = document.getElementById(`comm-${id_commentaire}-${reaction}`);
-        if (el) el.textContent = count;
+      function reactToCommentaire(id_commentaire, type) {
+        fetch("/react_commentaire", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_commentaire: id_commentaire,
+            type_reaction: type,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            for (const [reaction, count] of Object.entries(data.reactions)) {
+              const el = document.getElementById(
+                `comm-${id_commentaire}-${reaction}`
+              );
+              if (el) el.textContent = count;
+            }
+          });
       }
-    });
-  }
-</script>
-</body>
+    </script>
+  </body>
 </html>
