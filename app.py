@@ -1118,30 +1118,19 @@ def react_publication():
 
     conn = get_connection()
     with conn.cursor() as cursor:
-        # Vérifie si une réaction existe déjà
+        
         cursor.execute("""
-            SELECT * FROM Reagir_publication
+            DELETE FROM Reagir_publication
             WHERE id_publication = %s AND username = %s
         """, (pub_id, username))
-        existing = cursor.fetchone()
 
-        if existing:
-            # Met à jour la réaction
-            cursor.execute("""
-                UPDATE Reagir_publication
-                SET type_reaction = %s, timestamp = NOW()
-                WHERE id_publication = %s AND username = %s
-            """, (reaction, pub_id, username))
-        else:
-            # Insère une nouvelle réaction
-            cursor.execute("""
-                INSERT INTO Reagir_publication (id_publication, username, type_reaction)
-                VALUES (%s, %s, %s)
-            """, (pub_id, username, reaction))
+        
+        cursor.execute("""
+            INSERT INTO Reagir_publication (id_publication, username, type_reaction)
+            VALUES (%s, %s, %s)
+        """, (pub_id, username, reaction))
 
-        conn.commit()
-
-        # Recalcule tous les types de réaction
+        
         cursor.execute("""
             SELECT type_reaction, COUNT(*) as nb
             FROM Reagir_publication
@@ -1149,57 +1138,51 @@ def react_publication():
             GROUP BY type_reaction
         """, (pub_id,))
         stats = cursor.fetchall()
+
+    conn.commit()
     conn.close()
 
     return jsonify({r['type_reaction']: r['nb'] for r in stats})
+
 
 
 @app.route('/react_commentaire', methods=['POST'])
 def react_commentaire():
     if 'username' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
+        return jsonify({}), 403
 
     data = request.get_json()
-    com_id = data.get('id_commentaire')
-    reaction = data.get('type_reaction')
-    username = session['username']
+    id_commentaire = data.get('id_commentaire')
+    type_reaction = data.get('type_reaction')
 
     conn = get_connection()
     with conn.cursor() as cursor:
-        # Vérifie si une réaction existe déjà
+        
         cursor.execute("""
-            SELECT * FROM Reagir_commentaire
-            WHERE id_commentaire = %s AND username = %s
-        """, (com_id, username))
-        existing = cursor.fetchone()
+            DELETE FROM Reagir_commentaire
+            WHERE username = %s AND id_commentaire = %s
+        """, (session['username'], id_commentaire))
 
-        if existing:
-            # Met à jour la réaction
-            cursor.execute("""
-                UPDATE Reagir_commentaire
-                SET type_reaction = %s, date_reaction = NOW()
-                WHERE id_commentaire = %s AND username = %s
-            """, (reaction, com_id, username))
-        else:
-            # Insère une nouvelle réaction
-            cursor.execute("""
-                INSERT INTO Reagir_commentaire (id_commentaire, username, type_reaction)
-                VALUES (%s, %s, %s)
-            """, (com_id, username, reaction))
-
-        conn.commit()
-
-        # Recalcule tous les types de réaction
+        
         cursor.execute("""
-            SELECT type_reaction, COUNT(*) as nb
+            INSERT INTO Reagir_commentaire (username, id_commentaire, type_reaction)
+            VALUES (%s, %s, %s)
+        """, (session['username'], id_commentaire, type_reaction))
+
+        
+        cursor.execute("""
+            SELECT type_reaction, COUNT(*) AS nb
             FROM Reagir_commentaire
             WHERE id_commentaire = %s
             GROUP BY type_reaction
-        """, (com_id,))
-        stats = cursor.fetchall()
+        """, (id_commentaire,))
+        resultats = cursor.fetchall()
+
+    conn.commit()
     conn.close()
 
-    return jsonify({r['type_reaction']: r['nb'] for r in stats})
+    
+    return jsonify({r['type_reaction']: r['nb'] for r in resultats})
 
 @app.route('/creer_publication', methods=['GET', 'POST'])
 def creer_publication():
