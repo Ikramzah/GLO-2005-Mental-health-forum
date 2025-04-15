@@ -1111,38 +1111,42 @@ def react_publication():
     if 'username' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    data = request.get_json()
-    pub_id = data.get('id_publication')
-    reaction = data.get('type_reaction')
-    username = session['username']
+    try:
+        data = request.get_json()
+        pub_id = data.get('id_publication')
+        reaction = data.get('type_reaction')
+        username = session['username']
 
-    conn = get_connection()
-    with conn.cursor() as cursor:
-        
-        cursor.execute("""
-            DELETE FROM Reagir_publication
-            WHERE id_publication = %s AND username = %s
-        """, (pub_id, username))
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            
+            cursor.execute("""
+                DELETE FROM Reagir_publication
+                WHERE id_publication = %s AND username = %s
+            """, (pub_id, username))
 
-        
-        cursor.execute("""
-            INSERT INTO Reagir_publication (id_publication, username, type_reaction)
-            VALUES (%s, %s, %s)
-        """, (pub_id, username, reaction))
+           
+            cursor.execute("""
+                INSERT INTO Reagir_publication (id_publication, username, type_reaction)
+                VALUES (%s, %s, %s)
+            """, (pub_id, username, reaction))
 
-        
-        cursor.execute("""
-            SELECT type_reaction, COUNT(*) as nb
-            FROM Reagir_publication
-            WHERE id_publication = %s
-            GROUP BY type_reaction
-        """, (pub_id,))
-        stats = cursor.fetchall()
+            
+            cursor.execute("""
+                SELECT type_reaction, COUNT(*) as nb
+                FROM Reagir_publication
+                WHERE id_publication = %s
+                GROUP BY type_reaction
+            """, (pub_id,))
+            stats = cursor.fetchall()
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return jsonify({r['type_reaction']: r['nb'] for r in stats})
+        return jsonify({r['type_reaction']: r['nb'] for r in stats})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 
