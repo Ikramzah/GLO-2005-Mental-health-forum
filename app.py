@@ -1111,42 +1111,55 @@ def react_publication():
     if 'username' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    try:
-        data = request.get_json()
-        pub_id = data.get('id_publication')
-        reaction = data.get('type_reaction')
-        username = session['username']
+    data = request.get_json()
+    pub_id = data.get('id_publication')
+    reaction = data.get('type_reaction')
+    username = session['username']
 
-        conn = get_connection()
-        with conn.cursor() as cursor:
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        
+        cursor.execute("""
+            SELECT type_reaction FROM Reagir_publication
+            WHERE id_publication = %s AND username = %s
+        """, (pub_id, username))
+        existing = cursor.fetchone()
+
+        if existing:
+            if existing['type_reaction'] == reaction:
+                
+                cursor.execute("""
+                    DELETE FROM Reagir_publication
+                    WHERE id_publication = %s AND username = %s
+                """, (pub_id, username))
+            else:
+                
+                cursor.execute("""
+                    UPDATE Reagir_publication
+                    SET type_reaction = %s, timestamp = CURRENT_TIMESTAMP
+                    WHERE id_publication = %s AND username = %s
+                """, (reaction, pub_id, username))
+        else:
             
-            cursor.execute("""
-                DELETE FROM Reagir_publication
-                WHERE id_publication = %s AND username = %s
-            """, (pub_id, username))
-
-           
             cursor.execute("""
                 INSERT INTO Reagir_publication (id_publication, username, type_reaction)
                 VALUES (%s, %s, %s)
             """, (pub_id, username, reaction))
 
-            
-            cursor.execute("""
-                SELECT type_reaction, COUNT(*) as nb
-                FROM Reagir_publication
-                WHERE id_publication = %s
-                GROUP BY type_reaction
-            """, (pub_id,))
-            stats = cursor.fetchall()
+        
+        cursor.execute("""
+            SELECT type_reaction, COUNT(*) as nb
+            FROM Reagir_publication
+            WHERE id_publication = %s
+            GROUP BY type_reaction
+        """, (pub_id,))
+        stats = cursor.fetchall()
 
-        conn.commit()
-        conn.close()
+    conn.commit()
+    conn.close()
 
-        return jsonify({r['type_reaction']: r['nb'] for r in stats})
+    return jsonify({'reactions': {r['type_reaction']: r['nb'] for r in stats}})
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 
@@ -1158,20 +1171,37 @@ def react_commentaire():
     data = request.get_json()
     id_commentaire = data.get('id_commentaire')
     type_reaction = data.get('type_reaction')
+    username = session['username']
 
     conn = get_connection()
     with conn.cursor() as cursor:
         
         cursor.execute("""
-            DELETE FROM Reagir_commentaire
+            SELECT type_reaction FROM Reagir_commentaire
             WHERE username = %s AND id_commentaire = %s
-        """, (session['username'], id_commentaire))
+        """, (username, id_commentaire))
+        existing = cursor.fetchone()
 
-        
-        cursor.execute("""
-            INSERT INTO Reagir_commentaire (username, id_commentaire, type_reaction)
-            VALUES (%s, %s, %s)
-        """, (session['username'], id_commentaire, type_reaction))
+        if existing:
+            if existing['type_reaction'] == type_reaction:
+                
+                cursor.execute("""
+                    DELETE FROM Reagir_commentaire
+                    WHERE username = %s AND id_commentaire = %s
+                """, (username, id_commentaire))
+            else:
+                
+                cursor.execute("""
+                    UPDATE Reagir_commentaire
+                    SET type_reaction = %s, date_reaction = CURRENT_TIMESTAMP
+                    WHERE username = %s AND id_commentaire = %s
+                """, (type_reaction, username, id_commentaire))
+        else:
+            
+            cursor.execute("""
+                INSERT INTO Reagir_commentaire (username, id_commentaire, type_reaction)
+                VALUES (%s, %s, %s)
+            """, (username, id_commentaire, type_reaction))
 
         
         cursor.execute("""
@@ -1185,8 +1215,9 @@ def react_commentaire():
     conn.commit()
     conn.close()
 
-    
-    return jsonify({r['type_reaction']: r['nb'] for r in resultats})
+    return jsonify({'reactions': {r['type_reaction']: r['nb'] for r in resultats}})
+
+
 
 @app.route('/creer_publication', methods=['GET', 'POST'])
 def creer_publication():
