@@ -169,7 +169,9 @@
     <div class="reaction-group">
       {% for reaction in ['LIKE', 'LOVE', 'SAD', 'ANGRY', 'DISLIKE'] %}
         <button class="reaction-btn" onclick="reactToPublication({{ publication.id_publication }}, '{{ reaction }}')">
-          {{ reaction }} <span id="pub-{{ reaction }}">{{ reactions.get(publication.id_publication, {}).get(reaction, 0) }}</span>
+          {{ reaction }} <span id="pub-{{ publication.id_publication }}-{{ reaction }}">
+            {{ reactions.get(publication.id_publication, {}).get(reaction, 0) }}
+          </span>
         </button>
       {% endfor %}
     </div>
@@ -181,13 +183,13 @@
 
     {% for c in commentaires %}
       <div class="comment-card">
-<div class="comment-meta">
-  {% if c.anonyme %}
-    Utilisateur anonyme - {{ c.date_et_heure }}
-  {% else %}
-    {{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}
-  {% endif %}
-</div>
+        <div class="comment-meta">
+          {% if c.niveau_anonymat == 'anonyme' %}
+            Utilisateur anonyme - {{ c.date_et_heure }}
+          {% else %}
+            {{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}
+          {% endif %}
+        </div>
         <div class="comment-text">{{ c.texte }}</div>
 
         <div class="comment-reactions">
@@ -228,7 +230,7 @@
     .then(res => res.json())
     .then(data => {
       for (const [reaction, count] of Object.entries(data.reactions)) {
-        const el = document.getElementById(`pub-${reaction}`);
+        const el = document.getElementById(`pub-${id}-${reaction}`);
         if (el) el.textContent = count;
       }
     });
