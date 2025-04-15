@@ -132,7 +132,6 @@
     </style>
   </head>
   <body>
-    {% include 'header.html' %}
     <div class="page-container">
       <!-- Publication -->
       <div class="publication-card">
@@ -152,8 +151,7 @@
             alt="Profil"
           />
           <div>
-            <strong>{{ publication.nom }} {{ publication.prenom }}</strong
-            ><br />
+            <strong>{{ publication.nom }} {{ publication.prenom }}</strong><br />
             <small>{{ publication.date.strftime('%d/%m/%Y %H:%M') }}</small>
           </div>
           {% endif %}
@@ -162,11 +160,8 @@
         <h2 style="color: #6f2dbd">{{ publication.p_titre }}</h2>
         <p>{{ publication.texte }}</p>
 
-        {% if publication.username == session['username'] or session['role'] ==
-        'moderateur' %}
-        <a
-          href="{{ url_for('modifier_publication', id=publication.id_publication) }}"
-        >
+        {% if publication.username == session['username'] or session['role'] == 'moderateur' %}
+        <a href="{{ url_for('modifier_publication', id=publication.id_publication) }}">
           <button class="btn-modifier">Modifier</button>
         </a>
         <form
@@ -174,32 +169,23 @@
           method="POST"
           style="display: inline"
         >
-          <button
-            class="btn-supprimer"
-            onclick="return confirm('Confirmer la suppression de la publication ?')"
-          >
+          <button class="btn-supprimer" onclick="return confirm('Confirmer la suppression de la publication ?')">
             Supprimer
           </button>
         </form>
         {% else %}
-        <a
-          href="{{ url_for('signaler_publication', id=publication.id_publication) }}"
-        >
+        <a href="{{ url_for('signaler_publication', id=publication.id_publication) }}">
           <button class="btn-signaler">Signaler</button>
         </a>
         {% endif %}
 
         <div class="reaction-group">
-          {% set emojis = {'LIKE': '👍', 'LOVE': '❤️', 'SAD': '😢', 'ANGRY':
-          '😠', 'DISLIKE': '👎'} %} {% for reaction in emojis %}
-          <button
-            class="reaction-btn"
-            onclick="reactToPublication({{ publication.id_publication }}, '{{ reaction }}')"
-          >
+          {% set emojis = {'LIKE': '👍', 'LOVE': '❤️', 'SAD': '😢', 'ANGRY': '😠', 'DISLIKE': '👎'} %}
+          {% for reaction in emojis %}
+          <button class="reaction-btn" onclick="reactToPublication({{ publication.id_publication }}, '{{ reaction }}')">
             {{ emojis[reaction] }}
             <span id="pub-{{ publication.id_publication }}-{{ reaction }}">
-              {{ reactions.get(publication.id_publication, {}).get(reaction, 0)
-              }}
+              {{ reactions.get(publication.id_publication, {}).get(reaction, 0) }}
             </span>
           </button>
           {% endfor %}
@@ -213,40 +199,28 @@
         {% for c in commentaires %}
         <div class="comment-card">
           <div class="comment-meta">
-            {% if c.niveau_anonymat == 'anonyme' %} Utilisateur anonyme - {{
-            c.date_et_heure }} {% else %} {{ c.nom }} {{ c.prenom }} - {{
-            c.date_et_heure }} {% endif %}
+            {% if c.anonyme %}Utilisateur anonyme - {{ c.date_et_heure }}{% else %}{{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}{% endif %}
           </div>
           <div class="comment-text">{{ c.texte }}</div>
 
           <div class="comment-reactions">
-            {% set emojis = {'LIKE': '👍', 'LOVE': '❤️', 'SAD': '😢', 'ANGRY':
-            '😠', 'DISLIKE': '👎'} %} {% for reaction in emojis %}
-            <button
-              class="reaction-btn"
-              onclick="reactToCommentaire({{ c.id_commentaire }}, '{{ reaction }}')"
-            >
+            {% for reaction in emojis %}
+            <button class="reaction-btn" onclick="reactToCommentaire({{ c.id_commentaire }}, '{{ reaction }}')">
               {{ emojis[reaction] }}
               <span id="comm-{{ c.id_commentaire }}-{{ reaction }}">
-                {{ commentaire_reactions.get(c.id_commentaire, {}).get(reaction,
-                0) }}
+                {{ commentaire_reactions.get(c.id_commentaire, {}).get(reaction, 0) }}
               </span>
             </button>
             {% endfor %}
           </div>
 
-          {% if c.username == session['username'] or session['role'] ==
-          'moderateur' %}
+          {% if c.username == session['username'] or session['role'] == 'moderateur' %}
           <form
             action="{{ url_for('supprimer_commentaire', id_commentaire=c.id_commentaire) }}"
             method="POST"
             style="margin-top: 10px"
           >
-            <button
-              type="submit"
-              class="btn-supprimer"
-              onclick="return confirm('Supprimer ce commentaire ?')"
-            >
+            <button type="submit" class="btn-supprimer" onclick="return confirm('Supprimer ce commentaire ?')">
               Supprimer
             </button>
           </form>
@@ -299,9 +273,7 @@
           .then((res) => res.json())
           .then((data) => {
             for (const [reaction, count] of Object.entries(data.reactions)) {
-              const el = document.getElementById(
-                `comm-${id_commentaire}-${reaction}`
-              );
+              const el = document.getElementById(`comm-${id_commentaire}-${reaction}`);
               if (el) el.textContent = count;
             }
           });

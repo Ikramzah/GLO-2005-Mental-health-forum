@@ -23,7 +23,7 @@ CREATE TABLE Utilisateurs (
     anonyme BOOLEAN DEFAULT FALSE
 );
 
--- Table Conseillers
+-- Table Conseiller
 CREATE TABLE Conseillers (
     username VARCHAR(50) PRIMARY KEY,
     specialisation VARCHAR(100),

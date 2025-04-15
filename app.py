@@ -886,7 +886,8 @@ def changer_anonymat():
         conn.commit()
     conn.close()
 
-    return '', 204  # Réponse vide sans redirection
+    return '', 204  # ✅ Réponse vide sans redirection
+
 
 
 @app.route('/moderation')
