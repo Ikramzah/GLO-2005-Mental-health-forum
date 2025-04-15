@@ -66,23 +66,20 @@
       max-width: 900px;
       padding: 80px 30px 60px;
       text-align: center;
-    <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
       position: relative;
       margin-top: 100px;
     }
 
-.profile-pic {
-  width: 150px;
-  height: 150px;
-  border: 6px solid white;
-  object-fit: cover;
-  background-color: white;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-  margin: 60px auto 30px; /* ✅ espace au-dessus ajouté */
-  display: block;
-}
-
-
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border: 6px solid white;
+      object-fit: cover;
+      background-color: white;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      margin: 60px auto 30px;
+      display: block;
+    }
 
     h2 {
       font-size: 28px;
@@ -138,6 +135,81 @@
       background-color: #ffe5e5;
       color: #991b1b;
     }
+
+    .toggle-form {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .switch-label {
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .label-text {
+      margin-right: 6px;
+    }
+
+    .label-state {
+      color: gold;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin-left: 12px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "🙈";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 26px;
+      font-size: 16px;
+    }
+
+    input:checked + .slider {
+      background-color: #10b981;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+      content: "👁️";
+    }
   </style>
 </head>
 <body>
@@ -159,6 +231,7 @@
     <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
 
     <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
+
     <div class="info">
       <p>📧 {{ user.email }}</p>
       <p>📍 {{ user.lieu_de_residence }}</p>
@@ -174,6 +247,19 @@
       <a href="{{ url_for('modifier_lieu') }}" class="btn">📍 Modifier lieu</a>
     </div>
 
+    <!-- Bascule Anonymat -->
+    <form method="POST" action="{{ url_for('changer_anonymat') }}" class="toggle-form">
+      <label class="switch-label">
+        <span class="label-text">👤 Mode affichage :</span>
+        <span class="label-state">{{ 'Anonyme' if user.anonyme else 'Public' }}</span>
+        <label class="switch">
+          <input type="checkbox" name="anonyme" onchange="this.form.submit()" {{ 'checked' if user.anonyme else '' }}>
+          <span class="slider"></span>
+        </label>
+      </label>
+    </form>
+
+    <!-- Suppression compte -->
     <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirmDelete()">
       <button class="delete-account">❌ Supprimer mon compte</button>
     </form>

@@ -765,13 +765,15 @@ def afficher_une_publication(id):
             # Gestion de l'image de profil
             publication["photo_profil_path"] = publication["photo_de_profil"] or 'user-icon.png'
 
-            # Récupération des commentaires visibles (non supprimés)
+            # Récupération des commentaires visibles avec anonymat
             cursor.execute("""
-                SELECT C.id_commentaire, C.contenu AS texte, C.date_creation AS date_et_heure,
-                       U.nom, U.prenom, E.niveau_anonymat
+                SELECT 
+                    C.id_commentaire, 
+                    C.contenu AS texte, 
+                    C.date_creation AS date_et_heure,
+                    U.nom, U.prenom, U.anonyme
                 FROM Commentaires C
                 JOIN Utilisateurs U ON C.username = U.username
-                LEFT JOIN Etudiants E ON U.username = E.username
                 WHERE C.id_publication = %s
                   AND C.status_suppression = FALSE
                 ORDER BY C.date_creation ASC
@@ -810,7 +812,6 @@ def afficher_une_publication(id):
         reactions=reactions,
         commentaire_reactions=commentaire_reactions
     )
-
 
 @app.route('/modifier_publication/<int:id>', methods=['GET', 'POST'])
 def modifier_publication(id):
@@ -869,6 +870,21 @@ def signaler_publication(id):
 
     return render_template('signaler_publication.html', publication_id=id)
 
+@app.route('/changer_anonymat', methods=['POST'])
+def changer_anonymat():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Le checkbox "anonyme" est coché = affiché dans form
+    anonyme = 'anonyme' in request.form
+
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("UPDATE Utilisateurs SET anonyme = %s WHERE username = %s", (anonyme, session['username']))
+        conn.commit()
+    conn.close()
+
+    return redirect(url_for('profile'))
 
 @app.route('/moderation')
 def moderation():

@@ -20,6 +20,7 @@ CREATE TABLE Utilisateurs (
     date_inscription DATE NOT NULL,
     date_de_naissance DATE,
     lieu_de_residence VARCHAR(100)
+    anonyme BOOLEAN DEFAULT FALSE;
 );
 
 -- Table Conseillers

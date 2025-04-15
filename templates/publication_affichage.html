@@ -181,7 +181,13 @@
 
     {% for c in commentaires %}
       <div class="comment-card">
-        <div class="comment-meta">{{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}</div>
+<div class="comment-meta">
+  {% if c.anonyme %}
+    Utilisateur anonyme - {{ c.date_et_heure }}
+  {% else %}
+    {{ c.nom }} {{ c.prenom }} - {{ c.date_et_heure }}
+  {% endif %}
+</div>
         <div class="comment-text">{{ c.texte }}</div>
 
         <div class="comment-reactions">
