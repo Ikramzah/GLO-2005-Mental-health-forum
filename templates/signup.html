@@ -145,7 +145,6 @@
     <label for="date_naissance">Date de naissance</label>
     <input type="date" id="date_de_naissance" name="date_de_naissance">
 
-
     <label for="pays">Pays de résidence</label>
     <select name="pays" id="pays" required>
       <option value="">-- Sélectionnez un pays --</option>
@@ -161,6 +160,24 @@
       <option value="conseiller">Conseiller</option>
       <option value="etudiant-conseiller">Étudiant-Conseiller</option>
       <option value="invite">Invité</option>
+    </select>
+
+    <!-- 🔥 Ajout orientation sexuelle -->
+    <label for="Genre">Genre</label>
+    <select name="Genre" id="Genre" required>
+      <option value="">-- Choisir votre Genre --</option>
+      <option value="masculin">Masculin</option>
+      <option value="feminin">Féminin</option>
+      <option value="pansexuel">Pansexuel</option>
+      <option value="je_prefere_pas_repondre">Je préfère ne pas répondre</option>
+    </select>
+
+    <!-- 🔥 Ajout anonymat -->
+    <label for="visibilite">Visibilité du profil</label>
+    <select name="visibilite" id="visibilite" required>
+      <option value="">-- Choisir une visibilité --</option>
+      <option value="anonyme">Anonyme</option>
+      <option value="public">Public</option>
     </select>
 
     <label for="mot_de_passe">Mot de passe</label>
