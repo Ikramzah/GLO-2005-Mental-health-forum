@@ -346,15 +346,14 @@ def publications():
                 P.*, 
                 U.photo_de_profil,
                 (
+                   
                     SELECT COUNT(*) 
                     FROM Commentaires C
                     WHERE C.id_publication = P.id_publication
-                      AND NOT EXISTS (
-                          SELECT 1 
-                          FROM Effacer E 
-                          WHERE E.id_commentaire = C.id_commentaire
-                      )
-                ) AS nb_reponses
+                    AND C.status_suppression = FALSE
+                    
+
+                ) AS nb_reponses_visibles
             FROM Publications P
             JOIN Utilisateurs U ON P.username = U.username
             WHERE P.status_suppression = FALSE

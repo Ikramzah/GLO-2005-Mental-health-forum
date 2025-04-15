@@ -564,3 +564,20 @@ VALUES
 (3, 'conseil03'),
 (4, 'conseil04'),
 (5, 'conseil05');
+
+DELIMITER $$
+CREATE TRIGGER update_nb_reponses_on_suppression
+AFTER UPDATE ON Commentaires
+FOR EACH ROW
+BEGIN
+  IF OLD.status_suppression = FALSE AND NEW.status_suppression = TRUE THEN
+    UPDATE Publications
+    SET nb_reponses = nb_reponses - 1
+    WHERE id_publication = NEW.id_publication;
+  ELSEIF OLD.status_suppression = TRUE AND NEW.status_suppression = FALSE THEN
+    UPDATE Publications
+    SET nb_reponses = nb_reponses + 1
+    WHERE id_publication = NEW.id_publication;
+  END IF;
+END$$
+DELIMITER ;
