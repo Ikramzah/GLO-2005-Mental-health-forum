@@ -221,7 +221,7 @@
     })
     .then(res => res.json())
     .then(data => {
-      for (const [reaction, count] of Object.entries(data)) {
+      for (const [reaction, count] of Object.entries(data.reactions)) {
         const el = document.getElementById(`pub-${reaction}`);
         if (el) el.textContent = count;
       }
@@ -238,7 +238,7 @@
     })
     .then(res => res.json())
     .then(data => {
-      for (const [reaction, count] of Object.entries(data)) {
+      for (const [reaction, count] of Object.entries(data.reactions)) {
         const el = document.getElementById(`comm-${id_commentaire}-${reaction}`);
         if (el) el.textContent = count;
       }
