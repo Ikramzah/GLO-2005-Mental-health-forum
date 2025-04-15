@@ -19,8 +19,8 @@ CREATE TABLE Utilisateurs (
     photo_de_profil VARCHAR(100),
     date_inscription DATE NOT NULL,
     date_de_naissance DATE,
-    lieu_de_residence VARCHAR(100)
-    anonyme BOOLEAN DEFAULT FALSE;
+    lieu_de_residence VARCHAR(100),
+    anonyme BOOLEAN DEFAULT FALSE
 );
 
 -- Table Conseillers
