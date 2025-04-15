@@ -72,8 +72,12 @@ def inject_user():
             cursor.execute("SELECT * FROM Utilisateurs WHERE username = %s", (session['username'],))
             user = cursor.fetchone()
         conn.close()
+
+        session['anonyme'] = user['anonyme']  # Ajoute ça
         return dict(user=user)
     return dict(user=None)
+
+
 
 
 # Configuration de l'envoi d'email
@@ -875,7 +879,6 @@ def changer_anonymat():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # Le checkbox "anonyme" est coché = affiché dans form
     anonyme = 'anonyme' in request.form
 
     conn = get_connection()
@@ -884,6 +887,7 @@ def changer_anonymat():
         conn.commit()
     conn.close()
 
+    session['anonyme'] = anonyme  # Ajoute cette ligne pour usage immédiat dans l’interface
     return redirect(url_for('profile'))
 
 @app.route('/moderation')

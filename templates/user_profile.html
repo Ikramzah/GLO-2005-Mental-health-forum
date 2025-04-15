@@ -9,6 +9,8 @@
       --white: #fff;
       --red: #ef4444;
       --blue-btn: #3b82f6;
+      --green: #10b981;
+      --grey: #ccc;
     }
 
     * {
@@ -153,11 +155,8 @@
       gap: 10px;
     }
 
-    .label-text {
-      margin-right: 6px;
-    }
-
     .label-state {
+      font-weight: bold;
       color: gold;
     }
 
@@ -166,7 +165,7 @@
       display: inline-block;
       width: 60px;
       height: 34px;
-      margin-left: 12px;
+      margin-left: 10px;
     }
 
     .switch input {
@@ -182,14 +181,14 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #ccc;
+      background-color: var(--grey);
       transition: .4s;
       border-radius: 34px;
     }
 
     .slider:before {
       position: absolute;
-      content: "🙈";
+      content: "";
       height: 26px;
       width: 26px;
       left: 4px;
@@ -197,23 +196,18 @@
       background-color: white;
       transition: .4s;
       border-radius: 50%;
-      text-align: center;
-      line-height: 26px;
-      font-size: 16px;
     }
 
     input:checked + .slider {
-      background-color: #10b981;
+      background-color: var(--green);
     }
 
     input:checked + .slider:before {
       transform: translateX(26px);
-      content: "👁️";
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo-header">
       <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" />
@@ -229,7 +223,6 @@
 
   <div class="container">
     <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
-
     <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
 
     <div class="info">
@@ -239,37 +232,48 @@
     </div>
 
     <div class="buttons">
-      <a href="{{ url_for('publications_utilisateur') }}" class="btn">📝 Mes publications</a>
-      <a href="{{ url_for('modifier_photo') }}" class="btn">📷 Modifier photo</a>
-      <a href="{{ url_for('demander_code_reset') }}" class="btn">🔐 Modifier mot de passe</a>
-      <a href="{{ url_for('modifier_statut') }}" class="btn">📌 Modifier statut</a>
-      <a href="{{ url_for('modifier_email') }}" class="btn">📧 Modifier courriel</a>
-      <a href="{{ url_for('modifier_lieu') }}" class="btn">📍 Modifier lieu</a>
+      <a href="{{ url_for('publications_utilisateur') }}" class="btn">Mes publications</a>
+      <a href="{{ url_for('modifier_photo') }}" class="btn">Modifier photo</a>
+      <a href="{{ url_for('demander_code_reset') }}" class="btn">Modifier mot de passe</a>
+      <a href="{{ url_for('modifier_statut') }}" class="btn">Modifier statut</a>
+      <a href="{{ url_for('modifier_email') }}" class="btn">Modifier courriel</a>
+      <a href="{{ url_for('modifier_lieu') }}" class="btn">Modifier lieu</a>
     </div>
 
-    <!-- Bascule Anonymat -->
-    <form method="POST" action="{{ url_for('changer_anonymat') }}" class="toggle-form">
+    <!-- ✅ Switch Anonymat amélioré -->
+    <div class="toggle-form">
       <label class="switch-label">
-        <span class="label-text">👤 Mode affichage :</span>
-        <span class="label-state">{{ 'Anonyme' if user.anonyme else 'Public' }}</span>
-        <label class="switch">
-          <input type="checkbox" name="anonyme" onchange="this.form.submit()" {{ 'checked' if user.anonyme else '' }}>
+        Mode affichage : <span class="label-state" id="labelEtat">{{ 'Anonyme' if user.anonyme else 'Public' }}</span>
+        <div class="switch">
+          <input type="checkbox" id="toggleAnonyme" {% if user.anonyme %}checked{% endif %}>
           <span class="slider"></span>
-        </label>
+        </div>
       </label>
-    </form>
+    </div>
 
-    <!-- Suppression compte -->
+    <!-- Supprimer compte -->
     <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirmDelete()">
-      <button class="delete-account">❌ Supprimer mon compte</button>
+      <button class="delete-account">Supprimer mon compte</button>
     </form>
   </div>
 
   <script>
+    document.getElementById("toggleAnonyme").addEventListener("change", function () {
+      const isChecked = this.checked;
+      fetch("{{ url_for('changer_anonymat') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "anonyme=" + (isChecked ? "on" : "")
+      }).then(() => {
+        document.getElementById("labelEtat").textContent = isChecked ? "Anonyme" : "Public";
+      });
+    });
+
     function confirmDelete() {
       return confirm("⚠️ Es-tu sûr(e) de vouloir supprimer ton compte ? Cette action est irréversible !");
     }
   </script>
-
 </body>
 </html>
