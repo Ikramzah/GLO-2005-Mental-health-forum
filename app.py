@@ -72,8 +72,6 @@ def inject_user():
             cursor.execute("SELECT * FROM Utilisateurs WHERE username = %s", (session['username'],))
             user = cursor.fetchone()
         conn.close()
-
-        session['anonyme'] = user['anonyme']  # Ajoute ça
         return dict(user=user)
     return dict(user=None)
 
@@ -653,15 +651,17 @@ def reserver(username, date, start_time):
 def profile():
     conn = get_connection()
     with conn.cursor() as cursor:
-        cursor.execute(
-            "SELECT nom, prenom, photo_de_profil, username, lieu_de_residence,email FROM Utilisateurs WHERE username = %s;",
-            (session['username'],))
+        cursor.execute("""
+            SELECT nom, prenom, photo_de_profil, username, lieu_de_residence, email, anonyme
+            FROM Utilisateurs
+            WHERE username = %s;
+        """, (session['username'],))
         current_user = cursor.fetchone()
+
         cursor.execute("SELECT statut_etudiant FROM Etudiants WHERE username = %s;", (session['username'],))
         statut = cursor.fetchone()
     conn.close()
     return render_template('user_profile.html', user=current_user, statut=statut)
-
 
 @app.route('/profil/<username>')
 def profil_utilisateur(username):
