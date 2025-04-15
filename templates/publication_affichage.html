@@ -139,7 +139,7 @@
         <div class="publication-meta">
           {% if publication.statut == 'anonyme' %}
           <img
-            src="{{ url_for('static', filename='user-icon.png') }}"
+            src="{{ url_for('static', filename='images/photo de profil defaut.png') }}"
             alt="Anonyme"
           />
           <div>
@@ -148,7 +148,7 @@
           </div>
           {% else %}
           <img
-            src="{{ url_for('static', filename=publication.photo_profil_path or 'user-icon.png') }}"
+            src="{{ url_for('static', filename=publication.photo_profil_path or 'images/photo de profil defaut.png') }}"
             alt="Profil"
           />
           <div>

@@ -31,7 +31,7 @@
       <div class="resultats-utilisateurs">
         {% for user in users %}
           <div class="user-card" onclick="window.location='{{ url_for('profil_utilisateur', username=user.username) }}'" tabindex="0">
-            <img class="user-avatar" src="{{ url_for('static', filename=user.photo_de_profil or 'images/user-icon.png') }}" alt="Photo de profil">
+            <img class="user-avatar" src="{{ url_for('static', filename=user.photo_de_profil or 'images/photo de profil defaut.png') }}" alt="Photo de profil">
             <div class="user-info">
               <p class="username">@{{ user.username }}</p>
               {% if user.niveau_anonymat == 'anonyme' %}
