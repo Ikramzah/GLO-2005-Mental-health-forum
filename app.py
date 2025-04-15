@@ -879,16 +879,15 @@ def changer_anonymat():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    anonyme = 'anonyme' in request.form
-
+    anonyme = request.form.get('anonyme') == '1'  # ✅ '1' pour True, '0' pour False
     conn = get_connection()
     with conn.cursor() as cursor:
         cursor.execute("UPDATE Utilisateurs SET anonyme = %s WHERE username = %s", (anonyme, session['username']))
         conn.commit()
     conn.close()
 
-    session['anonyme'] = anonyme  # Ajoute cette ligne pour usage immédiat dans l’interface
-    return redirect(url_for('profile'))
+    return '', 204  # Réponse vide sans redirection
+
 
 @app.route('/moderation')
 def moderation():

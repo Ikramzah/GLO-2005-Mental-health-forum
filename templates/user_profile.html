@@ -258,22 +258,25 @@
   </div>
 
   <script>
-    document.getElementById("toggleAnonyme").addEventListener("change", function () {
-      const isChecked = this.checked;
-      fetch("{{ url_for('changer_anonymat') }}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "anonyme=" + (isChecked ? "on" : "")
-      }).then(() => {
-        document.getElementById("labelEtat").textContent = isChecked ? "Anonyme" : "Public";
-      });
-    });
+  const toggle = document.getElementById("toggleAnonyme");
+  const label = document.getElementById("labelEtat");
 
-    function confirmDelete() {
-      return confirm("⚠️ Es-tu sûr(e) de vouloir supprimer ton compte ? Cette action est irréversible !");
-    }
-  </script>
+  toggle.addEventListener("change", function () {
+    const isChecked = this.checked;
+    const formData = new URLSearchParams();
+    formData.append("anonyme", isChecked ? "1" : "0");
+
+    fetch("{{ url_for('changer_anonymat') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData.toString()
+    }).then(() => {
+      label.textContent = isChecked ? "Anonyme" : "Public";
+    });
+  });
+</script>
+
 </body>
 </html>
