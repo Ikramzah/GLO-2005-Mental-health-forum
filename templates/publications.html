@@ -32,10 +32,10 @@
         <div style="display: flex; align-items: center;">
           <div class="publication-meta" style="display: flex; align-items: center; gap: 10px;">
             {% if pub.statut == 'anonyme' %}
-              <img src="{{ url_for('static', filename='images/photo de profil defaut.png') }}" alt="Anonyme" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+              <img src="{{ url_for('static', filename='user-icon.png') }}" alt="Anonyme" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
               <h2 class="publication-title">{{ pub.p_titre }}</h2>
             {% else %}
-              <img src="{{ url_for('static', filename=pub.photo_de_profil or 'images/photo de profil defaut.png') }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+              <img src="{{ url_for('static', filename=pub.photo_de_profil or 'user-icon.png') }}" alt="Photo de profil" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
               <h2 class="publication-title">{{ pub.p_titre }}</h2>
             {% endif %}
           </div>
@@ -57,7 +57,7 @@
 
         <div class="publication-footer">
           <div class="left-comments">
-              {{ pub.nb_reponses_visibles }} Commentaire{{ 's' if pub.nb_reponses_visibles > 1 }}
+              {{ pub.nb_reponses }} Commentaire{{ 's' if pub.nb_reponses > 1 }}
           </div>
           <div class="right-reactions">
             {% if reactions[pub.id_publication] is defined %}
@@ -85,4 +85,3 @@
   </div>
 </body>
 </html>
-
