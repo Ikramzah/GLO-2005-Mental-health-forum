@@ -57,7 +57,7 @@
 
         <div class="publication-footer">
           <div class="left-comments">
-              {{ pub.nb_reponses }} Commentaire{{ 's' if pub.nb_reponses > 1 }}
+              {{ pub.nb_reponses_visibles }} Commentaire{{ 's' if pub.nb_reponses_visibles > 1 }}
           </div>
           <div class="right-reactions">
             {% if reactions[pub.id_publication] is defined %}
