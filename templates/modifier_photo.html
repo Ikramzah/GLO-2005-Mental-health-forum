@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8" />
   <title>Modifier ma photo de profil</title>
+
+  <!-- Styles internes -->
   <style>
+    /* Mise en page générale avec fond pastel */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -16,6 +21,7 @@
       position: relative;
     }
 
+    /* Logo positionné en haut à gauche */
     .logo {
       position: absolute;
       top: 20px;
@@ -23,6 +29,7 @@
       width: 160px;
     }
 
+    /* Bouton de retour */
     .back-btn {
       position: absolute;
       top: 200px;
@@ -43,6 +50,7 @@
       transform: translateY(-2px);
     }
 
+    /* Conteneur du formulaire */
     .box {
       background: #f4dbff;
       padding: 40px 35px;
@@ -57,11 +65,13 @@
       color: #6f2dbd;
     }
 
+    /* Input de type fichier */
     input[type="file"] {
       margin: 20px 0;
       font-size: 16px;
     }
 
+    /* Bouton de soumission */
     button {
       padding: 12px 30px;
       background-color: #a14be7;
@@ -80,30 +90,34 @@
       transform: translateY(-4px);
     }
 
+    /* Message d'erreur ou de feedback */
     .msg {
       color: red;
       font-weight: bold;
       margin-top: 10px;
     }
 
+    /* Animation d'apparition */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Logo -->
+  <!-- Logo décoratif -->
   <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo USafeForum" class="logo" />
 
-  <!-- 🔙 Retour -->
+  <!-- Lien retour vers le profil -->
   <a href="{{ url_for('profile') }}" class="back-btn">← Retour au profil</a>
 
-  <!-- 📸 Formulaire -->
+  <!-- Formulaire d’envoi d’une nouvelle photo -->
   <div class="box">
     <h2>📷 Modifier ma photo de profil</h2>
 
+    <!-- Message d’erreur ou de succès -->
     {% if msg %}
       <p class="msg">{{ msg }}</p>
     {% endif %}
