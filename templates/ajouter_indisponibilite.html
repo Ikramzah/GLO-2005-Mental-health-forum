@@ -1,38 +1,53 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
+    <!-- Encodage des caractères -->
     <meta charset="UTF-8">
+    
+    <!-- Titre de la page -->
     <title>Ajouter une indisponibilité</title>
+
+    <!-- Feuille de style externe -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
 </head>
 <body>
 
+<!-- En-tête du site (menu/navigation) -->
 {% include 'header.html' %}
 
 <div class="container">
     <h1>Ajouter une indisponibilité</h1>
 
+    <!-- Formulaire d'ajout -->
     <form method="POST" action="{{ url_for('ajouter_indisponibilite') }}">
+        
+        <!-- Champ : Date -->
         <div style="margin-bottom: 20px;">
             <label for="date"><strong>Date :</strong></label><br>
             <input type="date" name="date" required style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%;">
         </div>
 
+        <!-- Champ : Heure de début -->
         <div style="margin-bottom: 20px;">
             <label for="heure_debut"><strong>Heure de début :</strong></label><br>
             <input type="time" name="heure_debut" required style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%;">
         </div>
 
+        <!-- Champ : Heure de fin -->
         <div style="margin-bottom: 20px;">
             <label for="heure_fin"><strong>Heure de fin :</strong></label><br>
             <input type="time" name="heure_fin" required style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%;">
         </div>
 
+        <!-- Champ : Raison (facultatif) -->
         <div style="margin-bottom: 30px;">
             <label for="raison"><strong>Raison (optionnelle) :</strong></label><br>
             <input type="text" name="raison" placeholder="Ex: Réunion, congé, urgence..." style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%;">
         </div>
 
+        <!-- Bouton de soumission -->
         <button type="submit" class="btn">Ajouter l'indisponibilité</button>
     </form>
 </div>
