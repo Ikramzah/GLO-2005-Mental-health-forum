@@ -103,6 +103,7 @@ def send_reset_code(email, code):
         server.send_message(msg)
 
 
+# Demander un code de réinitialisation
 @app.route('/demander_code_reset', methods=['GET', 'POST'])
 def demander_code_reset():
     msg = ''
@@ -124,7 +125,7 @@ def demander_code_reset():
             msg = "Adresse courriel inconnue."
     return render_template('reset_password_request.html', msg=msg)
 
-
+# Supprimer son compte
 @app.route('/delete_account')
 def delete_account():
     if 'username' in session:
@@ -137,7 +138,7 @@ def delete_account():
         return redirect(url_for('login'))
     return redirect(url_for('login'))
 
-
+# Ajouter un livre recommandé
 @app.route('/ajouter_livre', methods=['POST'])
 def ajouter_livre():
     if 'username' not in session or session['role'] != 'conseiller':
@@ -175,6 +176,8 @@ def ajouter_livre():
         conn.close()
 
     return redirect(url_for('livres'))
+
+# Supprimer un livre
 @app.route('/supprimer_livre/<int:id_livre>', methods=['POST'])
 def supprimer_livre(id_livre):
     conn = get_connection()
@@ -188,7 +191,7 @@ def supprimer_livre(id_livre):
 
 
 
-
+# Vérifier le code reçu par courriel
 @app.route('/verifier_code', methods=['GET', 'POST'])
 def verifier_code():
     msg = ''
@@ -201,7 +204,7 @@ def verifier_code():
             msg = "Code incorrect."
     return render_template('verify_code.html', msg=msg)
 
-
+# Définir un nouveau mot de passe
 @app.route('/set_new_password', methods=['GET', 'POST'])
 def set_new_password():
     msg = ''
@@ -222,12 +225,12 @@ def set_new_password():
             return redirect(url_for('login'))
     return render_template('set_new_password.html', msg=msg)
 
-
+# Route d'accueil
 @app.route('/')
 def accueil():
     return render_template('home.html')
 
-
+# Inscription d'un nouvel utilisateur
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     msg = ''
@@ -282,7 +285,7 @@ def signup():
 
     return render_template('signup.html', msg=msg, msg_type=msg_type, countries=countries)
 
-
+# Connexion d'un utilisateur
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
@@ -332,12 +335,13 @@ def dashboard():
     return redirect('/login')
 
 
+# Déconnexion de l'utilisateur
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/login')
 
-
+# Liste des publications visibles
 @app.route('/publications')
 def publications():
     conn = get_connection()
@@ -385,6 +389,7 @@ def publications():
 
 
 
+# Ajouter une indisponibilité pour un conseiller
 @app.route('/ajouter_indisponibilite', methods=['GET', 'POST'])
 def ajouter_indisponibilite():
     if 'username' not in session:
@@ -409,7 +414,7 @@ def ajouter_indisponibilite():
 
     return render_template('ajouter_indisponibilite.html')
 
-
+# Rechercher des utilisateurs
 @app.route('/chercher_utilisateurs', methods=['GET'])
 def chercher_utilisateurs():
     query = request.args.get('q', '')
@@ -440,7 +445,7 @@ def chercher_utilisateurs():
         conn.close()
     return render_template('chercher_utilisateurs.html', users=users, query=query)
 
-
+# Voir les livres recommandés
 @app.route('/livres')
 def livres():
     conn = get_connection()
@@ -455,7 +460,7 @@ def livres():
     conn.close()
     return render_template('livres.html', livres=livres)
 
-
+# Voir la liste des conseillers
 @app.route('/conseillers')
 def conseillers():
     conn = get_connection()  # ta fonction DB dans db_config.py
@@ -466,7 +471,7 @@ def conseillers():
     conn.close()
     return render_template('conseillers.html', conseillers=conseillers_list)
 
-
+# Voir ses propres publications
 @app.route('/publications_utilisateur')
 def publications_utilisateur():
     if 'username' not in session:
@@ -513,6 +518,7 @@ def publications_utilisateur():
     return render_template('publications_utilisateur.html', publications=publications, reactions=reactions)
 
 
+# Voir ses rendez-vous (pour les conseillers)
 @app.route('/mes_rendez_vous')
 def mes_rendez_vous():
     if 'username' not in session or session.get('role') != 'conseiller':
@@ -535,6 +541,7 @@ def mes_rendez_vous():
     return render_template('mes_rendez_vous.html', rendez_vous=rendez_vous)
 
 
+# Consulter les disponibilités d’un conseiller
 @app.route('/rendez_vous/<username>', methods=['GET', 'POST'])
 def rendez_vous(username):
     connection = get_connection()
@@ -605,7 +612,7 @@ def rendez_vous(username):
     finally:
         connection.close()
 
-
+# Réserver un créneau horaire
 @app.route('/reserver/<username>/<date>/<start_time>', methods=['POST'])
 def reserver(username, date, start_time):
     raison = request.form.get('raison', '')
@@ -647,6 +654,7 @@ def reserver(username, date, start_time):
     return redirect(url_for('rendez_vous', username=username, date=date, start_time=start_time))
 
 
+# Afficher le profil de l'utilisateur connecté
 @app.route('/user_profile')
 def profile():
     conn = get_connection()
@@ -701,7 +709,7 @@ def profil_utilisateur(username):
         est_conseiller=est_conseiller
     )
 
-
+# Modifier la photo de profil
 @app.route('/modifier_photo', methods=['GET', 'POST'])
 def modifier_photo():
     if 'loggedin' not in session:
@@ -743,7 +751,7 @@ def modifier_photo():
 def apropos():
     return render_template('apropos.html')
 
-
+# Afficher une publication avec commentaires
 @app.route('/publication/<int:id>')
 def afficher_une_publication(id):
     conn = get_connection()
@@ -816,7 +824,7 @@ def afficher_une_publication(id):
         reactions=reactions,
         commentaire_reactions=commentaire_reactions
     )
-
+# Modifier une publication
 @app.route('/modifier_publication/<int:id>', methods=['GET', 'POST'])
 def modifier_publication(id):
     if 'username' not in session:
@@ -854,7 +862,7 @@ def modifier_publication(id):
 
     return render_template('modifier_publication.html', publication=publication)
 
-
+# Signaler une publication
 @app.route('/signaler_publication/<int:id>', methods=['GET', 'POST'])
 def signaler_publication(id):
     if 'username' not in session:
@@ -873,23 +881,24 @@ def signaler_publication(id):
         return redirect(url_for('publications'))
 
     return render_template('signaler_publication.html', publication_id=id)
-
+    
+# Changer le statut d'anonymat de l'utilisateur
 @app.route('/changer_anonymat', methods=['POST'])
 def changer_anonymat():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    anonyme = request.form.get('anonyme') == '1'  # ✅ '1' pour True, '0' pour False
+    anonyme = request.form.get('anonyme') == '1'  #  '1' pour True, '0' pour False
     conn = get_connection()
     with conn.cursor() as cursor:
         cursor.execute("UPDATE Utilisateurs SET anonyme = %s WHERE username = %s", (anonyme, session['username']))
         conn.commit()
     conn.close()
 
-    return '', 204  # ✅ Réponse vide sans redirection
+    return '', 204  #  Réponse vide sans redirection
 
 
-
+# Page de modération (modérateur uniquement)
 @app.route('/moderation')
 def moderation():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -943,6 +952,7 @@ def moderation():
     return render_template('moderation.html', signalements=signalements, reactions=reactions)
 
 
+# Approuver un signalement (suppression modérée)
 @app.route('/approuver_signalement', methods=['POST'])
 def approuver_signalement():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -972,7 +982,7 @@ def approuver_signalement():
     conn.close()
     return redirect(url_for('moderation'))
 
-
+# Historique des signalements
 @app.route('/historique_signalements')
 def historique_signalements():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -1005,7 +1015,7 @@ def historique_signalements():
 
     return render_template('historique_signalements.html', signalements=signalements)
 
-
+# Rejeter un signalement
 @app.route('/rejeter_signalement', methods=['POST'])
 def rejeter_signalement():
     if 'username' not in session or session.get('role') != 'moderateur':
@@ -1021,7 +1031,7 @@ def rejeter_signalement():
     conn.close()
     return redirect(url_for('moderation'))
 
-
+# Ajouter un commentaire
 @app.route('/ajouter_commentaire/<int:id>', methods=['POST'])
 def ajouter_commentaire(id):
     if 'username' not in session:
@@ -1037,7 +1047,7 @@ def ajouter_commentaire(id):
     conn.close()
     return redirect(url_for('afficher_une_publication', id=id))
 
-
+# Modifier le lieu de résidence
 @app.route('/modifier_lieu', methods=['GET', 'POST'])
 def modifier_lieu():
     if 'username' not in session:
@@ -1063,7 +1073,7 @@ def modifier_lieu():
     conn.close()
     return render_template('modifier_lieu.html', lieu_actuel=user['lieu_de_residence'], countries=countries, msg=msg)
 
-
+# Modifier l'email de l'utilisateur
 @app.route('/modifier_email', methods=['GET', 'POST'])
 def modifier_email():
     if 'username' not in session:
@@ -1096,7 +1106,7 @@ def modifier_email():
     conn.close()
     return render_template('modifier_email.html', email=user['email'], msg=msg)
 
-
+# Modifier le statut étudiant
 @app.route('/modifier_statut', methods=['GET', 'POST'])
 def modifier_statut():
     if 'username' not in session:
@@ -1126,6 +1136,7 @@ from flask import jsonify, request
 
 from flask import jsonify, request
 
+# Réagir à une publication (AJAX)
 @app.route('/react_publication', methods=['POST'])
 def react_publication():
     if 'username' not in session:
@@ -1182,7 +1193,7 @@ def react_publication():
 
 
 
-
+# Réagir à un commentaire (AJAX)
 @app.route('/react_commentaire', methods=['POST'])
 def react_commentaire():
     if 'username' not in session:
@@ -1238,7 +1249,7 @@ def react_commentaire():
     return jsonify({'reactions': {r['type_reaction']: r['nb'] for r in resultats}})
 
 
-
+# Créer une nouvelle publication
 @app.route('/creer_publication', methods=['GET', 'POST'])
 def creer_publication():
     if 'username' not in session:
@@ -1270,6 +1281,7 @@ def creer_publication():
 
     return render_template('creer_publication.html')
     
+# Supprimer une publication    
 @app.route('/supprimer_publication/<int:id_publication>', methods=['POST'])
 def supprimer_publication(id_publication):
     if 'username' not in session:
@@ -1315,6 +1327,7 @@ def supprimer_publication(id_publication):
 
 
 
+# Supprimer un commentaire
 @app.route('/supprimer_commentaire/<int:id_commentaire>', methods=['POST'])
 def supprimer_commentaire(id_commentaire):
     if 'username' not in session:
