@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8" />
   <title>Modifier le lieu de résidence</title>
+
+  <!-- Styles internes -->
   <style>
+    /* Mise en page générale avec fond dégradé */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -16,6 +21,7 @@
       position: relative;
     }
 
+    /* Logo en haut à gauche */
     .logo {
       position: absolute;
       top: 20px;
@@ -23,6 +29,7 @@
       width: 160px;
     }
 
+    /* Conteneur du formulaire */
     .box {
       background: #f4dbff;
       padding: 40px 35px;
@@ -37,6 +44,7 @@
       color: #6f2dbd;
     }
 
+    /* Liste déroulante des lieux de résidence */
     select {
       width: 90%;
       max-width: 300px;
@@ -48,6 +56,7 @@
       text-align: center;
     }
 
+    /* Bouton d'enregistrement */
     button {
       padding: 12px 30px;
       background-color: #a14be7;
@@ -66,6 +75,7 @@
       transform: translateY(-4px);
     }
 
+    /* Bouton de retour */
     .retour-btn {
       margin-top: 30px;
       text-align: center;
@@ -88,20 +98,25 @@
       background-color: #c287f4;
     }
 
+    /* Animation d’apparition de la boîte */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Logo -->
+  <!-- Logo décoratif -->
   <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
 
+  <!-- Formulaire de sélection du lieu de résidence -->
   <div class="box">
     <h2>📍 Modifier votre lieu de résidence</h2>
+
     <form method="POST">
+      <!-- Liste des pays passée dynamiquement depuis Flask -->
       <select name="lieu_de_residence" id="lieu_de_residence" required>
         {% for country in countries %}
           <option value="{{ country }}" {% if country == lieu_actuel %}selected{% endif %}>{{ country }}</option>
@@ -111,6 +126,7 @@
     </form>
   </div>
 
+  <!-- Lien de retour au profil -->
   <div class="retour-btn">
     <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
   </div>
