@@ -1,39 +1,54 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
   <head>
+    <!-- Encodage des caractères -->
     <meta charset="UTF-8" />
     <title>Profil utilisateur</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style_homogene.css') }}"
-    />
+
+    <!-- Feuille de style principale -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}" />
   </head>
+
   <body>
+    <!-- Barre de navigation -->
     {% include 'header.html' %}
 
+    <!-- Conteneur principal du profil -->
     <div class="container profil-container">
+
+      <!-- Si aucun utilisateur trouvé -->
       {% if not utilisateur %}
       <p class="anonyme-msg">Utilisateur introuvable.</p>
+
+      <!-- Si l'utilisateur a un niveau d'anonymat total -->
       {% elif utilisateur.niveau_anonymat == 'anonyme' %}
       <p class="anonyme-msg">
         Cet utilisateur a choisi de rester totalement anonyme.
       </p>
+
+      <!-- Sinon, affichage du profil -->
       {% else %}
       <div class="profil-header">
+        <!-- Photo de profil -->
         <img
           src="{{ url_for('static', filename=utilisateur.photo_de_profil) }}"
           alt="Photo de profil"
           class="profile-photo"
         />
+
+        <!-- Informations utilisateur -->
         <div class="infos-utilisateur">
           <p><strong>Nom d’utilisateur :</strong> {{ utilisateur.username }}</p>
           <p><strong>Prénom :</strong> {{ utilisateur.prenom }}</p>
           <p><strong>Nom :</strong> {{ utilisateur.nom }}</p>
-      
+
+          <!-- Courriel visible uniquement si niveau d'anonymat = public -->
           {% if utilisateur.niveau_anonymat == 'public' %}
           <p><strong>Adresse courriel :</strong> {{ utilisateur.email }}</p>
           {% endif %}
-      
+
+          <!-- Bouton pour prendre un rendez-vous (si utilisateur est conseiller) -->
           {% if est_conseiller %}
           <a
             href="{{ url_for('rendez_vous', username=utilisateur.username) }}"
@@ -45,21 +60,28 @@
           {% endif %}
         </div>
       </div>
-      
 
+      <!-- Publications uniquement si l'utilisateur est public -->
       {% if utilisateur.niveau_anonymat == 'public' %}
       <h2 class="page-title">📚 Publications de l'utilisateur</h2>
-      {% if publications %} {% for pub in publications %}
-      <div class="publication-card">
-        <div class="publication-meta">
-          {{ pub.date.strftime('%d/%m/%Y %H:%M') }}
+
+      {% if publications %}
+        <!-- Liste des publications de l’utilisateur -->
+        {% for pub in publications %}
+        <div class="publication-card">
+          <div class="publication-meta">
+            {{ pub.date.strftime('%d/%m/%Y %H:%M') }}
+          </div>
+          <div class="publication-title">{{ pub.p_titre }}</div>
+          <div class="publication-text">{{ pub.texte|truncate(150) }}</div>
         </div>
-        <div class="publication-title">{{ pub.p_titre }}</div>
-        <div class="publication-text">{{ pub.texte|truncate(150) }}</div>
-      </div>
-      {% endfor %} {% else %}
-      <p class="no-data">Aucune publication disponible.</p>
-      {% endif %} {% endif %} {% endif %}
+        {% endfor %}
+      {% else %}
+        <p class="no-data">Aucune publication disponible.</p>
+      {% endif %}
+      {% endif %}
+
+      {% endif %}
     </div>
   </body>
 </html>
