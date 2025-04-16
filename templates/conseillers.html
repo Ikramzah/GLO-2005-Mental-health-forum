@@ -1,11 +1,17 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+    <!-- Encodage des caractères -->
     <meta charset="UTF-8">
     <title>Nos conseillers</title>
+
+    <!-- Police d'accent pour le titre -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
 
+    <!-- Styles CSS internes -->
     <style>
+        /* Réglages de base */
         body {
             margin: 0;
             padding: 0;
@@ -13,6 +19,7 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
+        /* Conteneur principal : flex horizontal */
         .container {
             display: flex;
             align-items: center;
@@ -22,6 +29,7 @@
             min-height: 100vh;
         }
 
+        /* Colonne de gauche (image + titre) */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -44,6 +52,7 @@
             text-align: center;
         }
 
+        /* Grille de cartes des conseillers */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -52,6 +61,7 @@
             justify-content: center;
         }
 
+        /* Carte d’un conseiller */
         .card {
             border-radius: 20px;
             padding: 30px 20px;
@@ -66,6 +76,7 @@
             align-items: center;
         }
 
+        /* Bouton + pour prendre rendez-vous */
         .card .plus {
             position: absolute;
             top: 12px;
@@ -84,6 +95,7 @@
             cursor: pointer;
         }
 
+        /* Photo de profil circulaire */
         .photo-profil {
             width: 80px;
             height: 80px;
@@ -93,7 +105,7 @@
             border: 2px solid white;
         }
 
-        /* Couleurs cycliques */
+        /* Couleurs de fond alternées pour les cartes */
         .couleur-1 { background-color: #6F2DBD; color: #fff; }
         .couleur-2 { background-color: #A663CC; color: #fff; }
         .couleur-3 { background-color: #B298DC; color: #fff; }
@@ -102,21 +114,34 @@
     </style>
 </head>
 <body>
+
+<!-- Inclusion de l'en-tête global -->
 {% include 'header.html' %}
 
+<!-- Contenu principal : titre + liste des conseillers -->
 <div class="container">
+
+    <!-- Partie gauche avec illustration et titre -->
     <div class="sidebar">
         <img src="{{ url_for('static', filename='images/Image-rdv1.svg') }}" alt="Livre">
         <h2>Nos<br>conseillers</h2>
     </div>
 
+    <!-- Grille des cartes de conseillers -->
     <div class="grid">
         {% set couleurs = ['couleur-1', 'couleur-2', 'couleur-3', 'couleur-4', 'couleur-5'] %}
         {% for conseiller in conseillers %}
         {% set couleur = couleurs[loop.index0 % 5] %}
+        
+        <!-- Carte d’un conseiller avec couleur cyclique -->
         <div class="card {{ couleur }}">
+            <!-- Bouton + menant à la prise de rendez-vous -->
             <a href="{{ url_for('rendez_vous', username=conseiller['username']) }}" class="plus">+</a>
+
+            <!-- Photo de profil du conseiller -->
             <img src="{{ url_for('static', filename=conseiller['photo_de_profil'] or 'user-icon.png') }}" alt="Photo de {{ conseiller['prenom'] }}" class="photo-profil">
+
+            <!-- Nom et prénom -->
             {{ conseiller['nom'] }}<br>{{ conseiller['prenom'] }}
         </div>
         {% endfor %}
