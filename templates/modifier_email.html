@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Modifier mon email</title>
+
+  <!-- Styles internes -->
   <style>
+    /* Mise en page générale avec fond dégradé */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -16,6 +21,7 @@
       position: relative;
     }
 
+    /* Logo positionné en haut à gauche */
     .logo {
       position: absolute;
       top: 20px;
@@ -23,6 +29,7 @@
       width: 160px;
     }
 
+    /* Boîte contenant le formulaire */
     .box {
       background: #f4dbff;
       padding: 40px 35px;
@@ -37,6 +44,7 @@
       color: #6f2dbd;
     }
 
+    /* Champ email */
     input[type="email"] {
       padding: 12px;
       width: 90%;
@@ -48,6 +56,7 @@
       text-align: center;
     }
 
+    /* Bouton de soumission */
     button {
       padding: 12px 30px;
       background-color: #a14be7;
@@ -66,6 +75,7 @@
       transform: translateY(-4px);
     }
 
+    /* Bouton retour */
     .retour-btn {
       margin-top: 30px;
       text-align: center;
@@ -88,6 +98,7 @@
       background-color: #c287f4;
     }
 
+    /* Message d'erreur ou d'information */
     .msg {
       color: red;
       font-size: 0.95rem;
@@ -95,27 +106,35 @@
       margin-bottom: 15px;
     }
 
+    /* Animation d’apparition de la boîte */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
 
+  <!-- Logo illustratif -->
   <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
 
+  <!-- Formulaire de modification -->
   <div class="box">
     <h2>📧 Modifier votre adresse courriel</h2>
+
+    <!-- Message dynamique (succès ou erreur) -->
     {% if msg %}
       <div class="msg">{{ msg }}</div>
     {% endif %}
+
     <form method="POST">
       <input type="email" name="email" id="email" value="{{ email }}" placeholder="nouvel@email.com" required>
       <button type="submit">Enregistrer</button>
     </form>
   </div>
 
+  <!-- Lien de retour vers le profil -->
   <div class="retour-btn">
     <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
   </div>
