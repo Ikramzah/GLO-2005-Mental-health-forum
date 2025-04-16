@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Connexion</title>
+
+  <!-- Styles internes -->
   <style>
+    /* Couleurs personnalisées */
     :root {
       --primary: #6F2DBD;
       --light-purple: #B298DC;
@@ -11,6 +16,7 @@
       --ulaval-blue-hover: #0051cc;
     }
 
+    /* Fond général avec image ULaval */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -21,6 +27,7 @@
       background-position: center;
     }
 
+    /* En-tête avec logo */
     header {
       display: flex;
       align-items: center;
@@ -32,6 +39,7 @@
       height: 50px;
     }
 
+    /* Boîte du formulaire centrée */
     form {
       max-width: 500px;
       margin: 80px auto;
@@ -40,7 +48,7 @@
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px); /* effet flou */
     }
 
     h2 {
@@ -56,6 +64,7 @@
       color: white;
     }
 
+    /* Champs de saisie */
     input[type="email"],
     input[type="password"] {
       width: 100%;
@@ -67,6 +76,7 @@
       background-color: rgba(255, 255, 255, 0.85);
     }
 
+    /* Bouton de soumission */
     button {
       width: 100%;
       padding: 15px;
@@ -84,6 +94,7 @@
       background-color: var(--ulaval-blue-hover);
     }
 
+    /* Paragraphes (texte centré) */
     p {
       text-align: center;
       font-size: 14px;
@@ -100,6 +111,7 @@
       text-decoration: underline;
     }
 
+    /* Messages de statut */
     .success {
       color: lightgreen;
       font-weight: bold;
@@ -111,12 +123,15 @@
     }
   </style>
 </head>
+
 <body>
 
+  <!-- En-tête ULaval -->
   <header>
     <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
   </header>
 
+  <!-- Lien retour accueil -->
   <a href="{{ url_for('accueil') }}" style="
     display: block;
     color: #6F2DBD;
@@ -127,6 +142,7 @@
     text-decoration: none;
   ">← Retour à la page d'accueil</a>
 
+  <!-- Formulaire de connexion -->
   <form method="POST">
     <h2>Connexion</h2>
 
@@ -138,15 +154,18 @@
 
     <button type="submit">Se connecter</button>
 
+    <!-- Lien vers inscription -->
     <div style="text-align: center; margin-top: 15px;">
       <span style="color: white;">Pas de compte ? </span>
       <a href="{{ url_for('signup') }}">Créer un compte</a>
     </div>
   </form>
 
+  <!-- Message d'erreur ou de succès -->
   {% if msg %}
     <p class="{{ msg_type }}">{{ msg }}</p>
   {% endif %}
 
 </body>
 </html>
+
