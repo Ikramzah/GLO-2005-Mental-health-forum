@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>Vérification du code</title>
+
+  <!--  Style général et animations -->
   <style>
+    /* Mise en page globale */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -16,6 +19,7 @@
       position: relative;
     }
 
+    /* Logo positionné en haut à gauche */
     .logo {
       position: absolute;
       top: 20px;
@@ -23,6 +27,7 @@
       width: 160px;
     }
 
+    /* Conteneur principal avec style arrondi */
     .box {
       background: #f4dbff;
       padding: 40px 35px;
@@ -32,17 +37,20 @@
       animation: fadeIn 1s ease forwards;
     }
 
+    /* Titre principal */
     h2 {
       margin-bottom: 12px;
       color: #6f2dbd;
     }
 
+    /* Description d'instruction */
     p.description {
       color: #333;
       font-size: 14px;
       margin-bottom: 20px;
     }
 
+    /* Champ pour entrer le code */
     input[type="text"] {
       padding: 12px;
       width: 90%;
@@ -54,6 +62,7 @@
       text-align: center;
     }
 
+    /* Bouton de validation */
     button {
       padding: 12px 30px;
       background-color: #a14be7;
@@ -72,6 +81,7 @@
       transform: translateY(-4px);
     }
 
+    /* Message d’attente avec animation spinner */
     #waitingSection {
       color: #6f2dbd;
       font-size: 18px;
@@ -96,16 +106,19 @@
       }
     }
 
+    /* Animation d’apparition */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Formulaire caché au début */
     #verifyForm {
       display: none;
       margin-top: 20px;
     }
 
+    /* Bouton de retour vers le profil */
     .retour-btn {
       margin-top: 25px;
       text-align: center;
@@ -129,37 +142,46 @@
   </style>
 </head>
 <body>
+
+  <!--  Logo UHealthForum -->
   <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
 
+  <!--  Contenu principal -->
   <div class="box">
     <h2>📩 Vérification du code</h2>
     <p class="description">Un code a été envoyé à ton adresse. Entre-le ci-dessous pour continuer.</p>
 
+    <!--  Section de chargement initial -->
     <div id="waitingSection">
       ⏳ Veuillez patienter... Envoi du code en cours...
       <div class="spinner"></div>
     </div>
 
+    <!--  Formulaire de saisie du code -->
     <form id="verifyForm" method="POST">
       <input type="text" name="code" placeholder="Entrez le code ici" required />
       <br>
       <button type="submit">✅ Valider</button>
     </form>
 
+    <!--  Message d'erreur affiché si le code est incorrect -->
     {% if msg %}
       <p style="color: red; font-weight: bold; margin-top: 15px;">{{ msg }}</p>
     {% endif %}
 
+    <!--  Bouton retour -->
     <div class="retour-btn">
       <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
     </div>
   </div>
 
+  <!--  Script pour afficher le formulaire après délai -->
   <script>
     setTimeout(() => {
       document.getElementById("waitingSection").style.display = "none";
       document.getElementById("verifyForm").style.display = "block";
     }, 5000);
   </script>
+
 </body>
 </html>
