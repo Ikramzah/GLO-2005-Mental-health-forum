@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Profil de {{ user['prenom'] }} {{ user['nom'] }}</title>
+
+  <!-- Déclaration des variables CSS et mise en page principale -->
   <style>
     :root {
       --cyan: #00cfe8;
@@ -13,12 +15,14 @@
       --grey: #ccc;
     }
 
+    /* Réinitialisation et base */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    /* Fond général et texte */
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: var(--cyan);
@@ -29,6 +33,7 @@
       min-height: 100vh;
     }
 
+    /* Barre de navigation (sticky) */
     header {
       width: 100%;
       background-color: #6f2dbd;
@@ -41,10 +46,12 @@
       z-index: 100;
     }
 
+    /* Logo dans l'en-tête */
     .logo-header img {
       height: 60px;
     }
 
+    /* Liens de navigation à droite */
     .nav-links {
       display: flex;
       gap: 20px;
@@ -64,6 +71,7 @@
       background-color: #ffffff33;
     }
 
+    /* Conteneur principal du profil */
     .container {
       max-width: 900px;
       padding: 80px 30px 60px;
@@ -72,6 +80,7 @@
       margin-top: 100px;
     }
 
+    /* Photo de profil */
     .profile-pic {
       width: 150px;
       height: 150px;
@@ -83,12 +92,14 @@
       display: block;
     }
 
+    /* Nom de l'utilisateur */
     h2 {
       font-size: 28px;
       margin-bottom: 12px;
       margin-top: 10px;
     }
 
+    /* Informations supplémentaires (email, statut...) */
     .info {
       margin-top: 20px;
     }
@@ -98,6 +109,7 @@
       font-size: 16px;
     }
 
+    /* Boutons d'action du profil */
     .buttons {
       margin-top: 35px;
       display: flex;
@@ -121,6 +133,7 @@
       background-color: #2563eb;
     }
 
+    /* Bouton de suppression du compte */
     .delete-account {
       margin-top: 40px;
       padding: 10px 20px;
@@ -138,6 +151,7 @@
       color: #991b1b;
     }
 
+    /* Switch d'anonymat (bloc + label + curseur) */
     .toggle-form {
       margin-top: 40px;
       display: flex;
@@ -208,6 +222,8 @@
   </style>
 </head>
 <body>
+
+  <!-- En-tête du site avec navigation -->
   <header>
     <div class="logo-header">
       <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" />
@@ -221,16 +237,22 @@
     </div>
   </header>
 
+  <!-- Contenu principal du profil -->
   <div class="container">
+    <!-- Affichage de la photo de profil -->
     <img src="{{ url_for('static', filename=(user['photo_de_profil'] if user and user['photo_de_profil'] else 'images/user-icon.png')) }}" class="profile-pic" alt="Photo de profil">
+
+    <!-- Nom complet -->
     <h2>{{ user['prenom'] }} {{ user['nom'] }}</h2>
 
+    <!-- Informations personnelles -->
     <div class="info">
       <p>📧 {{ user.email }}</p>
       <p>📍 {{ user.lieu_de_residence }}</p>
       <p>📌 Statut : {{ statut.statut_etudiant or 'Non précisé' }}</p>
     </div>
 
+    <!-- Boutons de navigation du profil -->
     <div class="buttons">
       <a href="{{ url_for('publications_utilisateur') }}" class="btn">Mes publications</a>
       <a href="{{ url_for('modifier_photo') }}" class="btn">Modifier photo</a>
@@ -240,7 +262,7 @@
       <a href="{{ url_for('modifier_lieu') }}" class="btn">Modifier lieu</a>
     </div>
 
-    <!-- ✅ Switch Anonymat amélioré -->
+    <!-- Commutateur d'anonymat (public/anonyme) -->
     <div class="toggle-form">
       <label class="switch-label">
         Mode affichage : <span class="label-state" id="labelEtat">{{ 'Anonyme' if user.anonyme else 'Public' }}</span>
@@ -251,32 +273,33 @@
       </label>
     </div>
 
-    <!-- Supprimer compte -->
+    <!-- Formulaire de suppression de compte -->
     <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirmDelete()">
       <button class="delete-account">Supprimer mon compte</button>
     </form>
   </div>
 
+  <!-- Script JS pour changer le statut d'anonymat dynamiquement -->
   <script>
-  const toggle = document.getElementById("toggleAnonyme");
-  const label = document.getElementById("labelEtat");
+    const toggle = document.getElementById("toggleAnonyme");
+    const label = document.getElementById("labelEtat");
 
-  toggle.addEventListener("change", function () {
-    const isChecked = this.checked;
-    const formData = new URLSearchParams();
-    formData.append("anonyme", isChecked ? "1" : "0");
+    toggle.addEventListener("change", function () {
+      const isChecked = this.checked;
+      const formData = new URLSearchParams();
+      formData.append("anonyme", isChecked ? "1" : "0");
 
-    fetch("{{ url_for('changer_anonymat') }}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: formData.toString()
-    }).then(() => {
-      label.textContent = isChecked ? "Anonyme" : "Public";
+      fetch("{{ url_for('changer_anonymat') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formData.toString()
+      }).then(() => {
+        label.textContent = isChecked ? "Anonyme" : "Public";
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 </html>
