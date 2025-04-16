@@ -1,17 +1,28 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Historique des signalements</title>
+
+  <!-- Lien vers la feuille de style principale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
 </head>
 <body>
+
+  <!-- Inclusion de l'en-tête de navigation -->
   {% include 'header.html' %}
+
+  <!-- Conteneur principal des signalements -->
   <div class="publications-container">
     <h1>Historique des signalements traités</h1>
 
+    <!-- Boucle sur les signalements traités -->
     {% for sig in signalements %}
     <div class="publication-card">
+      
+      <!-- Si c'est une publication signalée -->
       {% if sig.id_publication %}
         <a href="{{ url_for('afficher_une_publication', id=sig.id_publication) }}" style="text-decoration: none; color: inherit;">
           <div class="publication-meta">
@@ -21,8 +32,11 @@
               <p>Posté le {{ sig.date_publication.strftime('%d/%m/%Y %H:%M') }}</p>
             </div>
           </div>
+          <!-- Aperçu du texte de la publication -->
           <div class="publication-text">{{ sig.texte|truncate(200) }}</div>
         </a>
+
+      <!-- Sinon, si c'est un commentaire signalé -->
       {% elif sig.id_commentaire %}
         <div class="publication-meta">
           <img src="{{ url_for('static', filename=sig.photo_de_profil) }}" class="profile-pic" alt="profil">
@@ -33,6 +47,7 @@
         </div>
       {% endif %}
 
+      <!-- Détails du signalement -->
       <div style="margin-top: 10px;">
         <p><strong>Signalé par :</strong> 
           <a href="{{ url_for('profil_utilisateur', username=sig.username) }}" style="color: var(--couleur-1);">
@@ -42,6 +57,7 @@
         <p><strong>Raison :</strong> {{ sig.raison }}</p>
         <p><strong>Date du signalement :</strong> {{ sig.date.strftime('%d/%m/%Y %H:%M') }}</p>
 
+        <!-- Statut de la décision -->
         <p><strong>Décision :</strong>
           {% if sig.approuve %}
             <span style="color: green;">✅ Approuvé (contenu supprimé)</span>
