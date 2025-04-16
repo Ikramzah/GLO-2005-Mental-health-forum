@@ -1,9 +1,15 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage des caractères -->
   <meta charset="UTF-8">
   <title>Nouvelle publication</title>
+
+  <!-- Lien vers la feuille de style globale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
+
+  <!-- Style spécifique pour le formulaire -->
   <style>
     .form-container {
       max-width: 700px;
@@ -61,27 +67,36 @@
 </head>
 <body>
 
+  <!-- Inclusion de l'en-tête commun -->
   {% include 'header.html' %}
 
+  <!-- Conteneur du formulaire -->
   <div class="form-container">
     <h2>Créer une nouvelle publication</h2>
 
+    <!-- Formulaire de création de publication -->
     <form action="{{ url_for('creer_publication') }}" method="POST" enctype="multipart/form-data">
+      
+      <!-- Titre obligatoire -->
       <label for="titre">Titre <span style="color: red;">*</span></label>
       <input type="text" id="p_titre" name="p_titre" required>
 
+      <!-- Contenu obligatoire -->
       <label for="texte">Texte <span style="color: red;">*</span></label>
       <textarea id="texte" name="texte" rows="8" required></textarea>
 
+      <!-- Choix du statut de visibilité -->
       <label for="statut">Visibilité</label>
       <select id="statut" name="statut" required>
         <option value="public">Public</option>
         <option value="anonyme">Anonyme</option>
       </select>
 
+      <!-- Image optionnelle -->
       <label for="image">Ajouter une image (optionnel)</label>
       <input type="file" id="image" name="image" accept="image/*">
 
+      <!-- Bouton de soumission -->
       <button type="submit" class="btn-publier">Publier</button>
     </form>
   </div>
