@@ -1,9 +1,11 @@
 <style>
+  /* Variables CSS pour les couleurs */
   :root {
     --couleur-1: rgba(111, 45, 189, 0.9);
     --white: #fff;
   }
 
+  /* Style des liens de navigation */
   .nav-link {
     color: white;
     text-decoration: none;
@@ -12,11 +14,13 @@
     position: relative;
   }
 
+  /* Animation légère au survol */
   .nav-link:hover {
     transform: translateY(-3px);
     color: #fff;
   }
 
+  /* Barre animée sous le lien au survol */
   .nav-link::after {
     content: "";
     position: absolute;
@@ -32,6 +36,7 @@
     width: 100%;
   }
 
+  /* Conteneur principal du header */
   .main-header {
     position: fixed;
     top: 0;
@@ -47,12 +52,14 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
+  /* Menu de navigation à gauche */
   .main-header nav {
     display: flex;
     gap: 25px;
     margin-left: 20px;
   }
 
+  /* Bouton de profil à droite */
   .profile-btn {
     background-color: transparent;
     border: 2px solid white;
@@ -71,7 +78,9 @@
   }
 </style>
 
+<!-- Barre de navigation fixe en haut de page -->
 <header class="main-header">
+  <!-- Menu principal -->
   <nav>
     <a href="{{ url_for('dashboard') }}" class="nav-link">Accueil</a>
     <a href="{{ url_for('publications') }}" class="nav-link">Publications</a>
@@ -79,6 +88,7 @@
     <a href="{{ url_for('livres') }}" class="nav-link">Livres</a>
     <a href="{{ url_for('conseillers') }}" class="nav-link">Rendez-vous</a>
 
+    <!-- Liens spécifiques selon le rôle -->
     {% if session['role'] == 'conseiller' %}
       <a href="{{ url_for('ajouter_indisponibilite') }}" class="nav-link">Mes indisponibilités</a>
       <a href="{{ url_for('mes_rendez_vous') }}" class="nav-link">Mes rendez-vous</a>
@@ -88,6 +98,7 @@
     {% endif %}
   </nav>
 
+  <!-- Boutons profil et déconnexion à droite -->
   <div style="display: flex; gap: 20px; align-items: center; margin-right: 20px">
     <a href="{{ url_for('profile') }}" class="profile-btn">Profil</a>
     <a href="{{ url_for('logout') }}" class="nav-link">Se déconnecter</a>
