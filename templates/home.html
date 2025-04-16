@@ -1,16 +1,24 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Accueil | U SafeForum</title>
+
+  <!-- Lien vers la feuille de style externe -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <!-- Styles internes spécifiques à la page d'accueil -->
   <style>
+    /* Réinitialisation des marges et boîtes */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    /* Style général du body avec image de fond */
     body {
       font-family: 'Segoe UI', sans-serif;
       background-image: url('{{ url_for('static', filename='background/login page.png') }}');
@@ -21,6 +29,7 @@
       color: white;
     }
 
+    /* En-tête avec logo et menu */
     header {
       display: flex;
       justify-content: space-between;
@@ -29,6 +38,7 @@
       background-color: rgba(111, 45, 189, 0.7);
     }
 
+    /* Bloc du logo (image + nom du site) */
     .logo {
       display: flex;
       align-items: center;
@@ -46,6 +56,7 @@
       animation: floatLogo 4s ease-in-out infinite;
     }
 
+    /* Liens de navigation */
     nav a {
       color: white;
       text-decoration: none;
@@ -59,6 +70,7 @@
       color: #B9FAF8;
     }
 
+    /* Section centrale d’accueil */
     .hero {
       text-align: center;
       margin-top: 15vh;
@@ -84,6 +96,7 @@
       margin-bottom: 30px;
     }
 
+    /* Bouton principal : Se connecter */
     .btn-start {
       background-color: #B9FAF8;
       color: #333;
@@ -106,27 +119,22 @@
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) inset;
     }
 
+    /* Animation du texte d’accueil */
     @keyframes floatText {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-8px);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
+    /* Animation du logo */
     @keyframes floatLogo {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-4px);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
   </style>
 </head>
 <body>
 
+  <!-- En-tête avec logo et lien vers la page À propos -->
   <header>
     <div class="logo">
       <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
@@ -137,6 +145,7 @@
     </nav>
   </header>
 
+  <!-- Section de bienvenue / accroche -->
   <div class="hero">
     <h1>Votre espace de bien-être universitaire 🌿</h1>
     <p>U SafeForum vous connecte avec des ressources, des conseillers et une communauté pour soutenir votre santé mentale et émotionnelle.</p>
