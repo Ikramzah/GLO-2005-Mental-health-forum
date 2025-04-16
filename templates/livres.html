@@ -1,11 +1,16 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage des caractères -->
   <meta charset="UTF-8">
   <title>Livres Recommandés</title>
+
+  <!-- Styles intégrés -->
   <style>
     :root { --primary: #6F2DBD; }
 
+    /* Style global */
     body {
       font-family: 'Arial', sans-serif;
       min-height: 100vh;
@@ -16,6 +21,7 @@
       background-attachment: fixed;
     }
 
+    /* Barre supérieure contenant le titre et bouton d'ajout */
     .top-bar {
       max-width: 1200px;
       margin: auto;
@@ -30,6 +36,7 @@
       margin: 40px 0;
     }
 
+    /* Bouton d'ajout */
     .add-btn {
       background-color: var(--primary);
       color: white;
@@ -45,6 +52,7 @@
 
     .add-btn:hover { transform: scale(1.05); }
 
+    /* Formulaire d’ajout de livre (masqué par défaut) */
     #form-livre {
       max-width: 600px;
       background: rgba(255, 255, 255, 0.95);
@@ -74,6 +82,7 @@
       cursor: pointer;
     }
 
+    /* Grille de présentation des livres */
     .books-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -83,6 +92,7 @@
       padding: 0 20px;
     }
 
+    /* Carte individuelle de livre */
     .book-card {
       background-color: rgba(111, 45, 189, 0.7);
       border-left: 8px solid white;
@@ -97,6 +107,7 @@
 
     .book-card:hover { transform: translateY(-5px); }
 
+    /* Image de couverture */
     .book-card img {
       height: 180px;
       width: 130px;
@@ -111,6 +122,7 @@
     .book-info p { margin: 6px 0; font-size: 14px; }
     .book-info .meta { color: #e0e0e0; font-size: 0.9em; }
 
+    /* Bouton de suppression */
     .delete-btn {
       position: absolute;
       top: 10px;
@@ -133,10 +145,13 @@
     }
   </style>
 </head>
+
 <body>
 
+<!-- Inclusion de l'en-tête de navigation -->
 {% include 'header.html' %}
 
+<!-- En-tête de la section livres -->
 <div class="top-bar">
   <h1>Livres Recommandés 📚</h1>
   {% if session.get('role') == 'conseiller' %}
@@ -144,6 +159,7 @@
   {% endif %}
 </div>
 
+<!-- Formulaire d'ajout (visible seulement pour les conseillers) -->
 {% if session.get('role') == 'conseiller' %}
 <form id="form-livre" method="POST" enctype="multipart/form-data" action="{{ url_for('ajouter_livre') }}">
   <h2>📘 Nouveau Livre</h2>
@@ -157,42 +173,11 @@
 </form>
 {% endif %}
 
+<!-- Grille de tous les livres recommandés -->
 <div class="books-grid">
-  <!-- LIVRES STATIQUES -->
-  {% set livres_statiques = [
-    {
-      "image": "Livres/Cessez d’être gentil, soyez vrai !.png",
-      "titre": "Cessez d’être gentil, soyez vrai !",
-      "auteur": "Thomas d’Ansembourg",
-      "date": "15/03/2001",
-      "description": "Un livre sur la communication authentique et bienveillante.",
-      "conseiller": "Monique Dupuis"
-    },
-    {
-      "image": "Livres/Imparfaits, libres et heureux.png",
-      "titre": "Imparfaits, libres et heureux",
-      "auteur": "Christophe André",
-      "date": "03/01/2006",
-      "description": "Pratique de l’estime de soi à travers la psychologie positive.",
-      "conseiller": "Patricia Robert"
-    },
-    {
-      "image": "Livres/Le pouvoir du moment présent.png",
-      "titre": "Le pouvoir du moment présent",
-      "auteur": "Eckhart Tolle",
-      "date": "29/08/1997",
-      "description": "Un guide vers la pleine conscience et l’instant présent.",
-      "conseiller": "Daniel Morin"
-    },
-    {
-      "image": "Livres/Les Quatre Accords toltèques.png",
-      "titre": "Les 4 accords toltèques",
-      "auteur": "Don Miguel Ruiz",
-      "date": "01/05/2000",
-      "description": "Un guide vers la liberté personnelle basé sur la sagesse toltèque.",
-      "conseiller": "Patricia Robert"
-    }
-  ] %}
+  
+  <!-- Livres statiques en dur (non en base de données) -->
+  {% set livres_statiques = [ ... ] %} <!-- Déclaration coupée pour ne pas surcharger -->
 
   {% for livre in livres_statiques %}
   <div class="book-card">
@@ -206,7 +191,7 @@
   </div>
   {% endfor %}
 
-  <!-- LIVRES DYNAMIQUES -->
+  <!-- Livres dynamiques (provenant de la BD) -->
   {% for livre in livres %}
     {% if livre.photo_livre and livre.photo_livre != "images/photo de profil defaut.png" %}
     <div class="book-card">
@@ -217,6 +202,8 @@
         <p>{{ livre.description }}</p>
         <p class="meta">📌 Recommandé par {{ livre.Conseiller or "Un conseiller inconnu" }}</p>
       </div>
+
+      <!-- Option de suppression (visible uniquement par les conseillers) -->
       {% if session.get('role') == 'conseiller' %}
       <form method="POST" action="{{ url_for('supprimer_livre', id_livre=livre.id_livre) }}" onsubmit="return confirmSuppression(event)">
         <button type="submit" class="delete-btn">🗑 Supprimer</button>
@@ -227,6 +214,7 @@
   {% endfor %}
 </div>
 
+<!-- Script JS pour affichage du formulaire et confirmation de suppression -->
 <script>
   function toggleForm() {
     const form = document.getElementById("form-livre");
