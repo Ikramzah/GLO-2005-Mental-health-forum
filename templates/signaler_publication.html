@@ -1,72 +1,191 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Signaler une publication</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <title>Définir un nouveau mot de passe</title>
+
+  <!-- Feuilles de style internes : design pastel avec animations -->
   <style>
+    /* Mise en page générale */
     body {
-      background-color: #B8D0EB;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ecd4ff, #d4b6ff);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
-    .container {
-      max-width: 700px;
-      margin: 80px auto;
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    /* Logo flottant en haut à gauche */
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      width: 160px;
     }
-    h1 {
-      color: #6F2DBD;
+
+    /* Conteneur principal du formulaire */
+    .box {
+      background: #f4dbff;
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       text-align: center;
-      margin-bottom: 20px;
+      animation: fadeIn 1s ease forwards;
     }
+
+    h2 {
+      margin-bottom: 16px;
+      color: #6f2dbd;
+    }
+
+    /* Champs de mot de passe */
+    input[type="password"] {
+      padding: 12px;
+      width: 90%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 10px 0 20px;
+      text-align: center;
+    }
+
     label {
       display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
+      color: #333;
+      font-weight: 500;
+      font-size: 15px;
+      margin-top: 10px;
     }
-    textarea {
-      width: 100%;
-      height: 150px;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      resize: vertical;
-      margin-bottom: 20px;
-    }
+
+    /* Bouton d’enregistrement */
     button {
-      display: block;
-      margin-left: auto;
-      background-color: #6F2DBD;
+      padding: 12px 30px;
+      background-color: #a14be7;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 1em;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, background-color 0.3s ease;
     }
+
     button:hover {
-      background-color: #4e1d8b;
+      background-color: #8e35c9;
+      transform: translateY(-4px);
+    }
+
+    /* Message de chargement animé */
+    #loadingMessage {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #6f2dbd;
+      font-size: 16px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #d7aaff;
+      border-top: 3px solid #6f2dbd;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Message d'erreur */
+    .error {
+      margin-top: 15px;
+      font-weight: bold;
+      color: red;
+    }
+
+    /* Bouton de retour */
+    .retour-btn {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .retour-btn a {
+      background-color: #d4afff;
+      color: #4a0072;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .retour-btn a:hover {
+      background-color: #c287f4;
     }
   </style>
 </head>
+
 <body>
+  <!-- Logo UHealthForum en haut à gauche -->
+  <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo UHealthForum" class="logo" />
 
-  {% include 'header.html' %}
+  <!-- Boîte centrale contenant le formulaire -->
+  <div class="box">
+    <h2>🔐 Définir un nouveau mot de passe</h2>
 
-  <div class="container">
-    <h1>Signaler cette publication</h1>
-    <form method="POST" action="{{ url_for('signaler_publication', id=publication_id) }}">
-      <label for="raison">Expliquez brièvement :</label>
-      <textarea name="raison" id="raison" placeholder="Raison du signalement..." required></textarea>
-      <button type="submit">🚩 Envoyer le signalement</button>
+    <!-- Formulaire POST pour modifier le mot de passe -->
+    <form method="POST" onsubmit="showLoading()">
+      <label>Nouveau mot de passe :</label>
+      <input type="password" name="password" required />
+
+      <label>Confirmer le mot de passe :</label>
+      <input type="password" name="confirm" required />
+
+      <button type="submit">💾 Enregistrer</button>
     </form>
+
+    <!-- Message de chargement -->
+    <div id="loadingMessage">
+      🔄 Mise à jour du mot de passe en cours...
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Message d’erreur (si le mot de passe ne correspond pas ou autre) -->
+    {% if msg %}
+      <p class="error">{{ msg }}</p>
+    {% endif %}
+
+    <!-- Lien de retour au profil -->
+    <div class="retour-btn">
+      <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
+    </div>
   </div>
 
+  <!-- Script pour afficher le message de chargement -->
+  <script>
+    function showLoading() {
+      document.getElementById("loadingMessage").style.display = "block";
+    }
+  </script>
 </body>
 </html>
