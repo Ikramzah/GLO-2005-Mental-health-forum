@@ -1,15 +1,24 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Modifier la publication</title>
+
+  <!-- Feuille de style principale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <!-- Styles spécifiques à cette page -->
   <style>
+    /* Style général */
     body {
       font-family: Arial, sans-serif;
       background-color: #e6e6fa;
       padding: 40px;
     }
+
+    /* Conteneur centré du formulaire */
     .form-container {
       max-width: 700px;
       margin: auto;
@@ -18,11 +27,15 @@
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
+    /* Étiquettes des champs */
     label {
       font-weight: bold;
       display: block;
       margin-top: 20px;
     }
+
+    /* Champs de saisie et zone de texte */
     input[type="text"],
     textarea,
     select {
@@ -32,6 +45,8 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
+    /* Bouton de soumission */
     button {
       margin-top: 25px;
       background-color: #6F2DBD;
@@ -42,28 +57,41 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #4e1d8b;
     }
   </style>
 </head>
+
 <body>
+
+  <!-- Barre de navigation principale -->
   {% include 'header.html' %}
+
+  <!-- Contenu du formulaire -->
   <div class="form-container">
     <h2>Modifier votre publication</h2>
+
+    <!-- Formulaire de modification -->
     <form method="POST">
+      
+      <!-- Champ titre -->
       <label for="p_titre">Titre</label>
       <input type="text" id="p_titre" name="p_titre" value="{{ publication.p_titre }}" required>
 
+      <!-- Champ texte -->
       <label for="texte">Texte</label>
       <textarea id="texte" name="texte" rows="6" required>{{ publication.texte }}</textarea>
 
+      <!-- Statut (public ou anonyme) -->
       <label for="statut">Statut</label>
       <select id="statut" name="statut">
         <option value="public" {% if publication.statut == 'public' %}selected{% endif %}>Public</option>
         <option value="anonyme" {% if publication.statut == 'anonyme' %}selected{% endif %}>Anonyme</option>
       </select>
 
+      <!-- Bouton d'enregistrement -->
       <button type="submit">Enregistrer les modifications</button>
     </form>
   </div>
