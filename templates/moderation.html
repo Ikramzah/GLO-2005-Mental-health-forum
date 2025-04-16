@@ -2,18 +2,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8">
   <title>Modération</title>
+
+  <!-- Feuille de style principale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
 </head>
 <body>
+
+  <!-- Inclusion de la barre de navigation -->
   {% include 'header.html' %}
+
+  <!-- Conteneur principal -->
   <div class="publications-container">
     <h1>Signalements à traiter</h1>
 
+    <!-- Boucle sur les signalements à modérer -->
     {% for sig in signalements %}
-    <a href="{{ url_for('afficher_une_publication', id=sig.id_publication) }}" style="text-decoration: none; color: inherit;"><div class="publication-card">
-      <a href="{{ url_for('afficher_une_publication', id=sig.id_publication) }}" style="text-decoration: none; color: inherit;">
+
+    <!-- Carte cliquable de publication signalée -->
+    <a href="{{ url_for('afficher_une_publication', id=sig.id_publication) }}" style="text-decoration: none; color: inherit;">
+      <div class="publication-card">
+
+        <!-- En-tête de la publication signalée -->
         <div class="publication-meta">
           <img src="{{ url_for('static', filename=sig.photo_de_profil) }}" alt="Photo de profil" class="profile-pic">
           <div>
@@ -26,51 +38,50 @@
             </p>
           </div>
         </div>
+
+        <!-- Aperçu du texte de la publication -->
         <div class="publication-text">{{ sig.texte|truncate(200) }}</div>
-      </a>
-
-      <div class="publication-footer">
-        <div class="left-comments">
-          {{ sig.nb_reponses }} Commentaire{{ 's' if sig.nb_reponses > 1 }}
-        </div>
-        <div class="right-reactions">
-          {% if reactions[sig.id_publication] is defined %}
-            {% if reactions[sig.id_publication]['LIKE'] is defined %}
-              👍 {{ reactions[sig.id_publication]['LIKE'] }}
-            {% endif %}
-            {% if reactions[sig.id_publication]['LOVE'] is defined %}
-              ❤️ {{ reactions[sig.id_publication]['LOVE'] }}
-            {% endif %}
-            {% if reactions[sig.id_publication]['DISLIKE'] is defined %}
-              👎 {{ reactions[sig.id_publication]['DISLIKE'] }}
-            {% endif %}
-            {% if reactions[sig.id_publication]['SAD'] is defined %}
-              😢 {{ reactions[sig.id_publication]['SAD'] }}
-            {% endif %}
-            {% if reactions[sig.id_publication]['ANGRY'] is defined %}
-              😡 {{ reactions[sig.id_publication]['ANGRY'] }}
-            {% endif %}
-          {% endif %}
-        </div>
       </div>
+    </a>
 
-      <div style="margin-top: 15px;">
-        <p><strong>Signalé par :</strong> 
-            <a href="{{ url_for('profil_utilisateur', username=sig.username) }}" class="bouton-profil">
-                {{ sig.username }}
-            </a>             
-        </p>
-        <p><strong>Raison du signalement :</strong> {{ sig.raison }}</p>
-        <form action="{{ url_for('approuver_signalement') }}" method="post" style="display:inline;">
-          <input type="hidden" name="id_signalement" value="{{ sig.id_signalement }}">
-          <button type="submit">✅ Approuver</button>
-        </form>
-        <form action="{{ url_for('rejeter_signalement') }}" method="post" style="display:inline;">
-          <input type="hidden" name="id_signalement" value="{{ sig.id_signalement }}">
-          <button type="submit">❌ Rejeter</button>
-        </form>
+    <!-- Pied de la carte : nombre de commentaires et réactions -->
+    <div class="publication-footer">
+      <div class="left-comments">
+        {{ sig.nb_reponses }} Commentaire{{ 's' if sig.nb_reponses > 1 }}
+      </div>
+      <div class="right-reactions">
+        {% if reactions[sig.id_publication] is defined %}
+          {% if reactions[sig.id_publication]['LIKE'] is defined %} 👍 {{ reactions[sig.id_publication]['LIKE'] }} {% endif %}
+          {% if reactions[sig.id_publication]['LOVE'] is defined %} ❤️ {{ reactions[sig.id_publication]['LOVE'] }} {% endif %}
+          {% if reactions[sig.id_publication]['DISLIKE'] is defined %} 👎 {{ reactions[sig.id_publication]['DISLIKE'] }} {% endif %}
+          {% if reactions[sig.id_publication]['SAD'] is defined %} 😢 {{ reactions[sig.id_publication]['SAD'] }} {% endif %}
+          {% if reactions[sig.id_publication]['ANGRY'] is defined %} 😡 {{ reactions[sig.id_publication]['ANGRY'] }} {% endif %}
+        {% endif %}
       </div>
     </div>
+
+    <!-- Détails du signalement et boutons d'action -->
+    <div style="margin-top: 15px;">
+      <p><strong>Signalé par :</strong> 
+        <a href="{{ url_for('profil_utilisateur', username=sig.username) }}" class="bouton-profil">
+          {{ sig.username }}
+        </a>             
+      </p>
+      <p><strong>Raison du signalement :</strong> {{ sig.raison }}</p>
+
+      <!-- Bouton pour approuver le signalement -->
+      <form action="{{ url_for('approuver_signalement') }}" method="post" style="display:inline;">
+        <input type="hidden" name="id_signalement" value="{{ sig.id_signalement }}">
+        <button type="submit">✅ Approuver</button>
+      </form>
+
+      <!-- Bouton pour rejeter le signalement -->
+      <form action="{{ url_for('rejeter_signalement') }}" method="post" style="display:inline;">
+        <input type="hidden" name="id_signalement" value="{{ sig.id_signalement }}">
+        <button type="submit">❌ Rejeter</button>
+      </form>
+    </div>
+
     {% endfor %}
   </div>
 </body>
