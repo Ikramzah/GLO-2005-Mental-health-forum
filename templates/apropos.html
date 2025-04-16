@@ -1,8 +1,12 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage des caractères -->
   <meta charset="UTF-8">
   <title>À propos | U HealthForum</title>
+
+  <!-- Styles internes pour la mise en page -->
   <style>
     * {
       margin: 0;
@@ -21,6 +25,7 @@
       color: white;
     }
 
+    /* Lien de retour en haut à gauche */
     .back-link {
       position: absolute;
       top: 20px;
@@ -35,10 +40,11 @@
       text-decoration: underline;
     }
 
+    /* Conteneur principal centré */
     .container {
       max-width: 900px;
       margin: auto;
-      background-color: rgba(0, 0, 0, 0.45); /* Transparence améliorée */
+      background-color: rgba(0, 0, 0, 0.45);
       padding: 60px 40px;
       border-radius: 20px;
     }
@@ -56,16 +62,19 @@
       font-size: 24px;
     }
 
+    /* Style du texte de description */
     .description {
       line-height: 1.8;
       margin-bottom: 50px;
       font-size: 17px;
     }
 
+    /* Élément de FAQ */
     .faq-item {
       margin-bottom: 25px;
     }
 
+    /* Boutons de questions (FAQ) */
     .faq-question {
       background: none;
       border: none;
@@ -83,6 +92,7 @@
       color: #A663CC;
     }
 
+    /* Réponses des FAQ, cachées par défaut */
     .faq-answer {
       display: none;
       padding-left: 15px;
@@ -91,6 +101,7 @@
       font-size: 15px;
     }
 
+    /* Réponse visible quand active */
     .faq-answer.active {
       display: block;
       animation: fadeIn 0.4s ease-in-out;
@@ -101,6 +112,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Infos de contact */
     .contact ul {
       list-style: none;
       padding-left: 0;
@@ -123,12 +135,14 @@
 </head>
 <body>
 
+  <!-- Lien pour revenir à l'accueil -->
   <a class="back-link" href="{{ url_for('accueil') }}">← Retour à la page d'accueil</a>
 
   <div class="container">
-
+    <!-- Titre principal -->
     <h1>À propos de U HealthForum</h1>
 
+    <!-- Description du site -->
     <div class="description">
       <p>
         <strong>U HealthForum</strong> est une initiative étudiante à l’Université Laval visant à promouvoir le bien-être mental, émotionnel et social de la communauté universitaire.
@@ -136,25 +150,30 @@
       </p>
     </div>
 
+    <!-- Section FAQ -->
     <div class="faq">
       <h2>Foire aux questions (FAQ)</h2>
 
+      <!-- Question 1 -->
       <div class="faq-item">
         <button class="faq-question">🌿 Est-ce que mes publications sont anonymes ?</button>
         <div class="faq-answer">Oui, vous pouvez publier avec différents niveaux d’anonymat selon vos préférences personnelles.</div>
       </div>
 
+      <!-- Question 2 -->
       <div class="faq-item">
         <button class="faq-question">📅 Puis-je réserver un rendez-vous avec un conseiller ?</button>
         <div class="faq-answer">Bien sûr ! Consultez les disponibilités et réservez un créneau directement depuis la section dédiée aux rendez-vous.</div>
       </div>
 
+      <!-- Question 3 -->
       <div class="faq-item">
         <button class="faq-question">🎓 Ce forum est-il réservé aux étudiants de l’Université Laval ?</button>
         <div class="faq-answer">Le forum est destiné en priorité aux étudiants ULaval, mais certains accès sont ouverts aux conseillers et invités enregistrés.</div>
       </div>
     </div>
 
+    <!-- Section Contact -->
     <div class="contact">
       <h2>Contactez-nous</h2>
       <ul>
@@ -167,6 +186,7 @@
 
   </div>
 
+  <!-- Script pour activer/désactiver les réponses dans la FAQ -->
   <script>
     const questions = document.querySelectorAll('.faq-question');
     questions.forEach(q => {
