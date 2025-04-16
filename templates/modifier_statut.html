@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage UTF-8 -->
   <meta charset="UTF-8" />
   <title>Modifier le statut</title>
+
+  <!-- Styles internes -->
   <style>
+    /* Mise en page générale avec fond pastel en dégradé */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -16,6 +21,7 @@
       position: relative;
     }
 
+    /* Logo positionné en haut à gauche */
     .logo {
       position: absolute;
       top: 20px;
@@ -23,6 +29,7 @@
       width: 160px;
     }
 
+    /* Conteneur principal du formulaire */
     .box {
       background: #f4dbff;
       padding: 40px 35px;
@@ -37,6 +44,7 @@
       color: #6f2dbd;
     }
 
+    /* Liste déroulante des statuts */
     select {
       width: 90%;
       max-width: 300px;
@@ -48,6 +56,7 @@
       text-align: center;
     }
 
+    /* Bouton de validation */
     button {
       padding: 12px 30px;
       background-color: #a14be7;
@@ -66,6 +75,7 @@
       transform: translateY(-4px);
     }
 
+    /* Section de retour vers la page profil */
     .retour-btn {
       margin-top: 30px;
       text-align: center;
@@ -88,20 +98,25 @@
       background-color: #c287f4;
     }
 
+    /* Animation d’apparition du formulaire */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Logo -->
+  <!-- Logo décoratif -->
   <img src="{{ url_for('static', filename='images/affiche.svg') }}" alt="Logo USafeForum" class="logo" />
 
+  <!-- Formulaire de modification du statut étudiant -->
   <div class="box">
     <h2>🎓 Modifier votre statut étudiant</h2>
+
     <form method="POST">
+      <!-- Liste des statuts possibles avec sélection dynamique -->
       <select name="statut_etudiant" id="statut_etudiant" required>
         <option value="citoyen" {% if statut.statut_etudiant == 'citoyen' %}selected{% endif %}>Citoyen</option>
         <option value="résident permanent" {% if statut.statut_etudiant == 'résident permanent' %}selected{% endif %}>Résident permanent</option>
@@ -112,7 +127,7 @@
     </form>
   </div>
 
-  <!-- Retour -->
+  <!-- Lien de retour vers le profil utilisateur -->
   <div class="retour-btn">
     <a href="{{ url_for('profile') }}">⬅️ Retour au profil</a>
   </div>
