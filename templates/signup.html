@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Inscription</title>
+
+  <!-- Style global de la page d’inscription -->
   <style>
     :root {
       --primary: #6F2DBD;
@@ -11,6 +13,7 @@
       --ulaval-blue-hover: #0051cc;
     }
 
+    /* Style du corps de page */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -21,6 +24,7 @@
       background-position: center;
     }
 
+    /* En-tête contenant le logo ULaval */
     header {
       display: flex;
       align-items: center;
@@ -32,6 +36,7 @@
       height: 50px;
     }
 
+    /* Formulaire centré avec effet flou et fond violet clair */
     form {
       max-width: 500px;
       margin: 80px auto;
@@ -56,6 +61,7 @@
       color: white;
     }
 
+    /* Champs de saisie */
     input,
     select {
       width: 100%;
@@ -67,6 +73,7 @@
       background-color: rgba(255, 255, 255, 0.85);
     }
 
+    /* Bouton principal */
     button {
       width: 100%;
       padding: 15px;
@@ -84,6 +91,7 @@
       background-color: var(--ulaval-blue-hover);
     }
 
+    /* Texte d’aide et lien */
     p {
       text-align: center;
       font-size: 14px;
@@ -100,6 +108,7 @@
       text-decoration: underline;
     }
 
+    /* Messages de validation */
     .success {
       color: lightgreen;
       font-weight: bold;
@@ -111,12 +120,15 @@
     }
   </style>
 </head>
+
 <body>
 
+  <!-- Logo ULaval -->
   <header>
     <img src="{{ url_for('static', filename='background/logo de ulaval.png') }}" alt="Université Laval">
   </header>
 
+  <!-- Lien retour -->
   <a href="{{ url_for('accueil') }}" style="
     display: block;
     color: #6F2DBD;
@@ -127,9 +139,11 @@
     text-decoration: none;
   ">← Retour à la page d'accueil</a>
 
+  <!-- Formulaire d’inscription -->
   <form method="POST">
     <h2>Créer un compte</h2>
 
+    <!-- Champs texte principaux -->
     <label for="username">Nom d'utilisateur</label>
     <input type="text" id="username" name="username" required>
 
@@ -145,6 +159,7 @@
     <label for="date_naissance">Date de naissance</label>
     <input type="date" id="date_de_naissance" name="date_de_naissance">
 
+    <!-- Sélection du pays -->
     <label for="pays">Pays de résidence</label>
     <select name="pays" id="pays" required>
       <option value="">-- Sélectionnez un pays --</option>
@@ -153,6 +168,7 @@
       {% endfor %}
     </select>
 
+    <!-- Statut de l’utilisateur -->
     <label for="statut">Vous êtes ?</label>
     <select name="statut" id="statut" required>
       <option value="">-- Choisir un statut --</option>
@@ -162,7 +178,7 @@
       <option value="invite">Invité</option>
     </select>
 
-    <!-- 🔥 Ajout orientation sexuelle -->
+    <!-- Genre / orientation -->
     <label for="Genre">Genre</label>
     <select name="Genre" id="Genre" required>
       <option value="">-- Choisir votre Genre --</option>
@@ -172,7 +188,7 @@
       <option value="je_prefere_pas_repondre">Je préfère ne pas répondre</option>
     </select>
 
-    <!-- 🔥 Ajout anonymat -->
+    <!-- Niveau de visibilité du profil -->
     <label for="visibilite">Visibilité du profil</label>
     <select name="visibilite" id="visibilite" required>
       <option value="">-- Choisir une visibilité --</option>
@@ -180,20 +196,24 @@
       <option value="public">Public</option>
     </select>
 
+    <!-- Saisie mot de passe -->
     <label for="mot_de_passe">Mot de passe</label>
     <input type="password" id="mot_de_passe" name="mot_de_passe" required>
 
     <label for="confirmer_mot_de_passe">Confirmer le mot de passe</label>
     <input type="password" id="confirmer_mot_de_passe" name="confirmer_mot_de_passe" required>
 
+    <!-- Bouton validation -->
     <button type="submit">S'inscrire</button>
 
+    <!-- Redirection vers login -->
     <div style="text-align: center; margin-top: 15px;">
       <span style="color: white;">Déjà inscrit ? </span>
       <a href="{{ url_for('login') }}">Se connecter</a>
     </div>
   </form>
 
+  <!-- Affichage message d’erreur ou succès -->
   {% if msg %}
     <p class="{{ msg_type }}">{{ msg }}</p>
   {% endif %}
