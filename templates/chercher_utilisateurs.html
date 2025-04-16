@@ -1,16 +1,23 @@
 <!DOCTYPE html>
+<!-- Document HTML5 -->
 <html lang="fr">
 <head>
+  <!-- Encodage des caractères -->
   <meta charset="UTF-8" />
   <title>Recherche d'utilisateur</title>
+
+  <!-- Lien vers la feuille de style globale -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style_homogene.css') }}">
 </head>
 <body>
+
+  <!-- Inclusion de l'en-tête commun -->
   {% include 'header.html' %}
 
   <div class="search-container">
     <h1>Recherche d'utilisateur</h1>
 
+    <!-- Formulaire de recherche GET -->
     <form method="GET" action="{{ url_for('chercher_utilisateurs') }}">
       <input
         type="text"
@@ -21,17 +28,24 @@
       <button type="submit">Rechercher</button>
     </form>
 
+    <!-- Message si aucun résultat trouvé -->
     {% if query and users|length == 0 %}
       <p style="text-align: center; color: #666">
         Aucun utilisateur trouvé pour « {{ query }} ».
       </p>
     {% endif %}
 
+    <!-- Affichage des résultats -->
     {% if users|length > 0 %}
       <div class="resultats-utilisateurs">
         {% for user in users %}
+          <!-- Carte utilisateur cliquable -->
           <div class="user-card" onclick="window.location='{{ url_for('profil_utilisateur', username=user.username) }}'" tabindex="0">
+            
+            <!-- Avatar utilisateur (photo ou défaut) -->
             <img class="user-avatar" src="{{ url_for('static', filename=user.photo_de_profil or 'images/photo de profil defaut.png') }}" alt="Photo de profil">
+            
+            <!-- Infos utilisateur (nom, anonymat, etc.) -->
             <div class="user-info">
               <p class="username">@{{ user.username }}</p>
               {% if user.niveau_anonymat == 'anonyme' %}
